@@ -19,7 +19,7 @@ A Portfolio project by J. Adam Hughes and Justin Zarb as part of Data Science Re
              |---> [Maps (Leaflet/OpenLayers)]
 
 
-## shade-calculator
+# shade-calculator
 (working name)
 
 ## Objectives
