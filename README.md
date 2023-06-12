@@ -7,17 +7,6 @@ A Portfolio project by J. Adam Hughes and Justin Zarb as part of Data Science Re
 
 ## System flow diagram
 
-[User] ---> [Frontend] ---> [Backend] ---> [OpenStreetMap] `
-             |     |            | 
-             |     |            |---> [Overpass API]
-             |     |            |
-             |     |            |---> [Spatial Database (PostGIS)]
-             |     |            |
-             |     |            |---> [Geospatial Analysis (GeoPandas/Rasterio)]
-             |     |            |
-             |     |---> [Visualizations (matplotlib/bokeh/plotly)]
-             |
-             |---> [Maps (Leaflet/OpenLayers)]
 
 
 # shade-calculator
