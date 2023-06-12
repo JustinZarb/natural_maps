@@ -7,7 +7,7 @@ A Portfolio project by J. Adam Hughes and Justin Zarb as part of Data Science Re
 
 ## System flow diagram
 
-´
+`
 [User] ---> [Frontend] ---> [Backend] ---> [OpenStreetMap] 
              |     |            | 
              |     |            |---> [Overpass API]
@@ -19,7 +19,7 @@ A Portfolio project by J. Adam Hughes and Justin Zarb as part of Data Science Re
              |     |---> [Visualizations (matplotlib/bokeh/plotly)]
              |
              |---> [Maps (Leaflet/OpenLayers)]
-´
+`
 
 # shade-calculator
 (working name)
