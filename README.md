@@ -6,6 +6,8 @@ A Portfolio project by J. Adam Hughes and Justin Zarb as part of Data Science Re
 - Overlay shade data to provide useful but simple outdoor comfort analytics.
 
 ## System flow diagram
+
+´
 [User] ---> [Frontend] ---> [Backend] ---> [OpenStreetMap] 
              |     |            | 
              |     |            |---> [Overpass API]
@@ -17,7 +19,7 @@ A Portfolio project by J. Adam Hughes and Justin Zarb as part of Data Science Re
              |     |---> [Visualizations (matplotlib/bokeh/plotly)]
              |
              |---> [Maps (Leaflet/OpenLayers)]
-
+´
 
 ## shade-calculator
 (working name)
