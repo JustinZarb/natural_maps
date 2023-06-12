@@ -42,7 +42,10 @@ with left:
     st.markdown(
         """
         - #Todo: convert text input into an overpass prompt using a trained LLM
-        - #Todo: display the generated prompt here, as in the example below
+        - #Todo: display the generated prompt here, as in the example below.
+
+        This is where we will use NLP to create Overpass or postGIS queries from the prompt given above.
+        The goal is to create a better version of [Overpass Turbo](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Wizard), which we found not to be very intuitive.
         """
     )
     st.info(
@@ -67,12 +70,20 @@ with left:
 
 with right:
     st.header("Map display")
+    st.subheader("Streamlit-Folium")
     st.markdown(
         """Using Folium to display the map itself, and streamlit_folium to return \
         some data from interactions with the map. """
     )
+
+    # ToDo: wrap this in some other function
+
+    # ToDo: Get User coordinates
     center = {"lat": 52.49881139119491, "lng": 13.33718776702881}
 
     m = folium.Map(location=list(center.values()), zoom_start=16)
     st_data = st_folium(m, width=725)
     st_data
+
+    st.header("Advanced Map Display")
+    st.subheader("st.map or st.pydeck_chart")
