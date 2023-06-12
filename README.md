@@ -6,8 +6,19 @@ A Portfolio project by J. Adam Hughes and Justin Zarb as part of Data Science Re
 - Overlay shade data to provide useful but simple outdoor comfort analytics.
 
 ## System flow diagram
-
-
+<pre>
+[User] ---> [Frontend] ---> [Backend] ---> [OpenStreetMap] 
+             |     |            | 
+             |     |            |---> [Overpass API]
+             |     |            |
+             |     |            |---> [Spatial Database (PostGIS)]
+             |     |            |
+             |     |            |---> [Geospatial Analysis (GeoPandas/Rasterio)]
+             |     |            |
+             |     |---> [Visualizations (matplotlib/bokeh/plotly)]
+             |
+             |---> [Maps (Leaflet/OpenLayers)]
+</pre>
 
 # shade-calculator
 (working name)
