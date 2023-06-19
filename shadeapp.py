@@ -1,8 +1,7 @@
 import streamlit as st
 import os
 import folium
-
-import dev.osm_tools as osm_tools
+import dev.streamlit_functions as streamlit_functions
 
 st.set_page_config(
     page_title="Naturalmaps",
@@ -21,6 +20,7 @@ with left:
     st.header("Natural language input")
     natural_input = st.text_area(
         "What would you like to know?",
+        placeholder="eg. Find all public fountains in Berlin that are within a 200m radius of an ice cream shop.",
     )
     b = st.button("Translate to Overpass Query")
     st.header("Generated query")
@@ -30,42 +30,50 @@ with left:
         - #Todo: Finetune
         """
     )
-    st.info(
-        """
-        #### Example query
-        [out:json][timeout:25];
-        // gather results
+    ice_cream_query = """
+        [out:json];
+        // fetch area “Berlin” to search in
+        area["name"="Berlin"]->.searchArea;
+        // gather results for: “amenity=fountain”
         (
-        // query part for: “outdoor_seating=yes”
-        node["outdoor_seating"="yes"]({{bbox}});
-        way["outdoor_seating"="yes"]({{bbox}});
-        relation["outdoor_seating"="yes"]({{bbox}});
+        node["amenity"="fountain"](area.searchArea);
+        way["amenity"="fountain"](area.searchArea);
+        relation["amenity"="fountain"](area.searchArea);
+        );
+        // gather results for: “amenity=ice_cream”
+        (
+        node["amenity"="ice_cream"](area.searchArea);
+        way["amenity"="ice_cream"](area.searchArea);
+        relation["amenity"="ice_cream"](area.searchArea);
         );
         // print results
         out body;
         >;
         out skel qt;
         """
-    )
+
+    st.info(ice_cream_query)
+
     st.markdown(
         """
-        This is where we will use NLP to create Overpass or postGIS queries from the prompt given above.
-        The goal is to create a better version of [Overpass Turbo](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Wizard), which we found not to be very intuitive.
+        This query will return a .json file with all the fountains and ice cream shops in Berlin. 
+        One would then need to process the results and make additional queries to find nearby fountains for each ice cream shop.
         """
     )
+    run_query = st.button("Run query")
 
-    st.header("Process query results")
-    st.markdown("""Do something with the results""")
+    st.header("Run Query and do something")
+    st.markdown(
+        "running the above query will return a json file, on which it might be necessary to perform further operations"
+    )
+    if run_query:
+        query_result = streamlit_functions.overpass_query(ice_cream_query)
+        st.info(query_result)
 
 
 with right:
     st.header("Map display")
-    tif_path = os.path.join(
-        os.path.join(os.path.join(os.path.join(".", "dev"), "shadowcalc"), "data"),
-        "hillshade.tif",
-    )
-    st.markdown("*Show map with markers*")
-    osm_tools.simple_folium_map()
+    streamlit_functions.simple_folium_map()
 
 st.header("How to use this tool")
 st.markdown(
