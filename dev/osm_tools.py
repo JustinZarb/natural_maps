@@ -3,7 +3,7 @@ import json
 import streamlit as st
 import folium
 import rasterio
-from streamlit_folium import folium_static
+from streamlit_folium import st_folium, folium_static
 import matplotlib.pyplot as plt
 
 
@@ -53,16 +53,14 @@ def query_outdoor_seating_in_bbox(bbox):
     return overpass_query(query)
 
 
-def show_tif(filename):
+def map_with_geotiff(filename):
     # Open the GeoTIFF file with rasterio
     with rasterio.open(filename) as ds:
         # Get the GeoTIFF's bounds and transform
         data = ds.read(1)
         bounds = ds.bounds
         transform = ds.transform
-
-    plt.imsave("hillshade.png", data, cmap="gray")
-
+        plt.imsave("hillshade.png", data, cmap="gray")
     # Calculate the center of the map
     center = ((bounds.top + bounds.bottom) / 2, (bounds.left + bounds.right) / 2)
 
@@ -80,8 +78,7 @@ def show_tif(filename):
     folium_static(m)
 
 
-def st_folium():
-    st.subheader("Streamlit-Folium")
+def simple_folium_map():
     st.markdown(
         """Using Folium to display the map itself, and streamlit_folium to return \
             some data from interactions with the map. """
@@ -91,13 +88,13 @@ def st_folium():
 
     m = folium.Map(location=list(center.values()), zoom_start=16)
     st_data = st_folium(m, width=725)
-    bbox = osm_tools.bbox_from_stfolium_bounds(st_data["bounds"])
+    bbox = bbox_from_stfolium_bounds(st_data["bounds"])
     st.text(bbox)
 
     button_push = st.button(label="Show pharmacies")
     if button_push:
         st.text("running query...")
-        data = osm_tools.query_pharmacies_in_bbox(bbox)
+        data = query_pharmacies_in_bbox(bbox)
         st.text(f"{len(data)} results found")
         ## Add a marker for each node
         for element in data["elements"]:
