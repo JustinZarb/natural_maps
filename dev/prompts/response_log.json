@@ -1,0 +1,560 @@
+{
+    "What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"[out:json]; \\n node(52.500059,13.373938,52.501758,13.376034)[\\\"name\\\"~\\\"Curry 36\\\"];\\n out;\"\n}"
+            }
+        },
+        "second response": null
+    },
+    "2023-06-21 12:37:07 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": "I'm sorry, but I don't have information about specific addresses. However, Curry 36 is located at Mehringdamm 36, 10961 Berlin, Germany."
+        },
+        "second response": null
+    },
+    "2023-06-21 12:38:15 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"[out:json][timeout:25];area[name=\\\"Berlin\\\"]->.a;(node[\\\"name\\\"=\\\"Curry 36\\\"](area.a);way[\\\"name\\\"=\\\"Curry 36\\\"](area.a);relation[\\\"name\\\"=\\\"Curry 36\\\"](area.a););out body;\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7TrO9x7ts06g0pyh1Ne9oSdn8JKkB",
+            "object": "chat.completion",
+            "created": 1687351093,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "The address of Curry 36 in Berlin is:\n\nMehringdamm 36, 10961 Berlin, Germany."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 1076,
+                "completion_tokens": 25,
+                "total_tokens": 1101
+            }
+        }
+    },
+    "2023-06-21 12:46:04 | how can I reach Curry 36 in Mehringdamm?": {
+        "first response": {
+            "role": "assistant",
+            "content": "To reach Curry 36 in Mehringdamm, you can follow these directions:\n\n1. Start at your current location.\n2. Head towards the Mehringdamm subway station.\n3. Take the U6 subway line towards Alt-Mariendorf.\n4. Get off at the Mehringdamm station.\n5. Exit the station and walk southeast on Mehringdamm.\n6. Continue walking for about 250 meters until you reach Curry 36 on your left.\n\nCurry 36 is a popular Currywurst stand located at Mehringdamm 36, 10961 Berlin. Enjoy your meal!"
+        },
+        "second response": null
+    },
+    "2023-06-21 12:48:47 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"[out:json];node[amenity=fast_food][name=\\\"Curry 36\\\"];out;\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7TrYMv6KMGpGbfBjn8Z1DL4xMVPDp",
+            "object": "chat.completion",
+            "created": 1687351726,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "The address of Curry 36 in Berlin is:\n\nMehringdamm 36,\n10961 Berlin,\nGermany."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 785,
+                "completion_tokens": 24,
+                "total_tokens": 809
+            }
+        }
+    },
+    "2023-06-21 13:04:28 | how can I reach Curry 36 in Mehringdamm?": {
+        "first response": {
+            "role": "assistant",
+            "content": "To reach Curry 36 at Mehringdamm, you can follow these directions:\n\n1. Start at your current location.\n2. Head towards Mehringdamm.\n3. Once you reach Mehringdamm, look for the Curry 36 food stand.\n4. Curry 36 is located at Mehringdamm 36, 10961 Berlin, Germany.\n5. Enjoy your meal at Curry 36!\n\nIf you need detailed directions or information about public transportation options, please let me know your starting point."
+        },
+        "second response": null
+    },
+    "2023-06-21 13:07:35 | how can I reach Curry 36 in Mehringdamm?": {
+        "first response": {
+            "role": "assistant",
+            "content": "To reach Curry 36 in Mehringdamm, you can use the following transportation options:\n\n1. Public transportation: You can take the U-Bahn (subway) or S-Bahn (urban train) to Mehringdamm station. Mehringdamm is served by U6 and U7 subway lines, as well as S1, S2, and S25 S-Bahn lines. Once you reach Mehringdamm station, you can walk to Curry 36.\n\n2. Bus: There are several bus lines that stop near Mehringdamm. You can check the local bus schedule to find the most convenient route.\n\n3. Bicycle: Berlin is known for its bike-friendly infrastructure. You can cycle to Mehringdamm using bike lanes and park your bike near Curry 36.\n\n4. Walking: If you are in the vicinity, you can simply walk to Curry 36. Mehringdamm is a well-connected area, and it should be easily accessible on foot.\n\nPlease check the local public transportation websites or apps for the most up-to-date route information."
+        },
+        "second response": null
+    },
+    "2023-06-21 13:10:11 | how can I reach Curry 36 in Mehringdamm by phone?": {
+        "first response": {
+            "role": "assistant",
+            "content": "I'm sorry, but I am an AI language model and I don't have the capability to provide real-time contact information. However, you can try searching for Curry 36 in Mehringdamm online and check their official website or online directories to find their contact information such as phone number."
+        },
+        "second response": null
+    },
+    "2023-06-21 13:23:29 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"[out:json];node[name=\\\"Curry 36\\\"];out;\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7Ts5w3sQc5BPtysrHf4Dp8FKfKCfq",
+            "object": "chat.completion",
+            "created": 1687353808,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "The address of Curry 36 in Berlin is Mehringdamm 36, 10961 Berlin, Germany."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 778,
+                "completion_tokens": 23,
+                "total_tokens": 801
+            }
+        }
+    },
+    "2023-06-21 13:41:26 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"[out:json];node[name=\\\"Curry 36\\\"];out center;\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7TssDettsXxebOPiH2qE8U25DE7ty",
+            "object": "chat.completion",
+            "created": 1687356801,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "The address of Curry 36 in Berlin is Mehringdamm 36, 10961 Berlin, Germany."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 779,
+                "completion_tokens": 23,
+                "total_tokens": 802
+            }
+        }
+    },
+    "2023-06-21 13:43:33 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"[out:json][timeout:25];\\n\\narea[name=\\\"Berlin\\\"]->.searchArea;\\n( node[\\\"name\\\"=\\\"Curry 36\\\"](area.searchArea);\\n  way[\\\"name\\\"=\\\"Curry 36\\\"](area.searchArea);\\n  relation[\\\"name\\\"=\\\"Curry 36\\\"](area.searchArea);\\n);\\nout center;\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7TsuE10dxOywR5lvTlwgW9VqZXW17",
+            "object": "chat.completion",
+            "created": 1687356926,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "The address of Curry 36 in Berlin is Mehringdamm 36, 10961 Berlin, Germany."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 1114,
+                "completion_tokens": 23,
+                "total_tokens": 1137
+            }
+        }
+    },
+    "2023-06-21 13:44:55 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"node[amenity='fast_food'][name='Curry 36'];out;\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7TsvSkyq5iiWCKDmHQGPdrEznEzRv",
+            "object": "chat.completion",
+            "created": 1687357002,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "Apologies, but I couldn't retrieve the address for Curry 36 in Berlin. However, Curry 36 is located at Mehringdamm 36, 10961 Berlin, Germany."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 67,
+                "completion_tokens": 39,
+                "total_tokens": 106
+            }
+        }
+    },
+    "2023-06-21 13:54:49 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"[out:json];\\nnode['name'='Curry 36']['addr:city'='Berlin']->.result;\\n.result out;\\n\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7Tt4JofwpKDFhMQ1kvA8tTR4XWl30",
+            "object": "chat.completion",
+            "created": 1687357551,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "The address of Curry 36 in Berlin is:\nMehringdamm 36, 10961 Berlin, Germany."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 425,
+                "completion_tokens": 25,
+                "total_tokens": 450
+            }
+        }
+    },
+    "2023-06-21 13:55:00 | how can I reach Curry 36 in Mehringdamm by phone? Check OSM": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"node[phone](around:1000,52.4951,13.3896);out;\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7Tt4NOHtJRxH9CHgfgcoO2fKmj3vE",
+            "object": "chat.completion",
+            "created": 1687357555,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "I apologize, but I am unable to directly access live data from OpenStreetMap (OSM). However, I can guide you on how to find the contact information for Curry 36 in Mehringdamm.\n\nTo locate the phone number for Curry 36, you can follow these steps:\n\n1. Open your web browser and go to the OpenStreetMap website (www.openstreetmap.org).\n2. In the search bar at the top of the page, enter \"Mehringdamm, Berlin\" and press Enter or click the magnifying glass icon.\n3. The map will zoom in to the Mehringdamm area. Look for the Curry 36 location on the map, which should be marked with a symbol or label.\n4. Click on the Curry 36 location on the map to view more details.\n5. In the left-pane, you should see information about Curry 36, including its address and possibly a phone number.\n\nBy following these steps, you should be able to find the contact information for Curry 36 in Mehringdamm."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 78,
+                "completion_tokens": 216,
+                "total_tokens": 294
+            }
+        }
+    },
+    "2023-06-21 14:00:32 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"node['name'='Curry 36'];out;\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7Tt9P2LqLQEHvWpC0DfZd9DyYk9uV",
+            "object": "chat.completion",
+            "created": 1687357867,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "I'm sorry, but I couldn't find the address of Curry 36 in Berlin."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 62,
+                "completion_tokens": 18,
+                "total_tokens": 80
+            }
+        }
+    },
+    "2023-06-21 14:00:36 | how can I reach Curry 36 in Mehringdamm by phone? Check OSM if they listed a phone number": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"area[name=\\\"Mehringdamm\\\"][admin_level=10]; (node[amenity=fast_food](area);); out;\"\n}"
+            }
+        },
+        "second response": {
+            "id": "chatcmpl-7Tt9SOUctvcyAK5RftKb6KEbI7BzM",
+            "object": "chat.completion",
+            "created": 1687357870,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "I apologize, but it seems that there was an error retrieving the information from OpenStreetMap (OSM) for the phone number of Curry 36 in Mehringdamm. I recommend visiting their official website or searching online directories for the contact information you are looking for."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 92,
+                "completion_tokens": 55,
+                "total_tokens": 147
+            }
+        }
+    },
+    "2023-06-21 14:03:51 | What is the address of Curry 36 in Berlin?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"[out:json]; node(around:1000,52.503,13.417)[amenity=fast_food]; out center;\"\n}"
+            }
+        },
+        "function response": "{\"version\": 0.6, \"generator\": \"Overpass API 0.7.60.6 e2dc3e5b\", \"osm3s\": {\"timestamp_osm_base\": \"2023-06-21T14:33:29Z\", \"copyright\": \"The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.\"}, \"elements\": [{\"type\": \"node\", \"id\": 269475044, \"lat\": 52.5017902, \"lon\": 13.4165385, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"20\", \"addr:postcode\": \"10999\", \"addr:street\": \"Dresdener Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"check_date:opening_hours\": \"2022-04-19\", \"indoor_seating\": \"yes\", \"name\": \"Milchladen\", \"opening_hours\": \"Mo-Fr 11:00-18:00; Su 13:00-18:00\", \"organic\": \"only\", \"outdoor_seating\": \"yes\", \"shop\": \"convenience\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 350462678, \"lat\": 52.5009253, \"lon\": 13.418855, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"93\", \"addr:postcode\": \"10999\", \"addr:street\": \"Adalbertstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"cuisine\": \"lebanese\", \"name\": \"Maroush\", \"toilets:wheelchair\": \"no\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 474954965, \"lat\": 52.4981786, \"lon\": 13.4290467, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"14a\", \"addr:postcode\": \"10999\", \"addr:street\": \"Wiener Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"capacity:covid19\": \"2\", \"contact:phone\": \"+49 30 30368730\", \"contact:website\": \"http://chaparro-berlin.de/\", \"contact:wolt\": \"https://wolt.com/de/deu/berlin/restaurant/chaparro\", \"cuisine\": \"mexican\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"entrance\": \"yes\", \"name\": \"Chaparro\", \"opening_hours\": \"PH,Mo-Fr 12:00-22:00; Sa-Su 16:15-22:15\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 667892499, \"lat\": 52.4984654, \"lon\": 13.4281769, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"11\", \"addr:postcode\": \"10999\", \"addr:street\": \"Wiener Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"contact:website\": \"http://www.spaetzleexpress.de/start2.html\", \"cuisine\": \"german\", \"diet:vegetarian\": \"yes\", \"name\": \"Sp\\u00e4tzle Express\", \"opening_hours\": \"Mo-Su 12:00-22:00\", \"toilets:wheelchair\": \"no\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 810315332, \"lat\": 52.5002711, \"lon\": 13.4236235, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"13\", \"addr:postcode\": \"10999\", \"addr:street\": \"Oranienstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"brand\": \"Food Brother\", \"cuisine\": \"burger\", \"diet:halal\": \"yes\", \"diet:kosher\": \"yes\", \"diet:vegan\": \"limited\", \"diet:vegetarian\": \"yes\", \"drive_through\": \"no\", \"indoor_seating\": \"yes\", \"name\": \"Food Brother\", \"opening_hours\": \"Mo-Th 11:30-23:00, Fr-Su 11:30-00:00\", \"opening_hours:covid19\": \"same\", \"operator\": \"FOOD BROTHER\", \"outdoor_seating\": \"yes\", \"smoking\": \"outside\", \"takeaway\": \"yes\", \"website\": \"https://foodbrother.com/\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 848508705, \"lat\": 52.4992739, \"lon\": 13.4193661, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"134\", \"addr:postcode\": \"10999\", \"addr:street\": \"Skalitzer Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"contact:website\": \"http://www.misircarsisi.de\", \"cuisine\": \"turkish\", \"name\": \"Misir Carsisi\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 848875729, \"lat\": 52.4995381, \"lon\": 13.4173579, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"175\", \"addr:postcode\": \"10999\", \"addr:street\": \"Reichenberger Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"contact:fax\": \"+49 30 830 38325\", \"contact:phone\": \"+49 30 830 38323\", \"cuisine\": \"turkish\", \"email\": \"kottis.gemuesekebap@gmail.com\", \"internet_access\": \"wlan\", \"internet_access:fee\": \"no\", \"name\": \"Has Mevlana\", \"opening_hours\": \"Su-We 09:00-01:00, Th 09:00-02:00, Fr-Sa 09:00-04:00\", \"phone\": \"+49 30 830 38323\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 865949811, \"lat\": 52.4995697, \"lon\": 13.4175755, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"174\", \"addr:postcode\": \"10999\", \"addr:street\": \"Reichenberger Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"contact:email\": \"info@cemsdiner.de\", \"contact:phone\": \"+49 30 61671449\", \"contact:website\": \"http://www.cemsdiner.de/\", \"cuisine\": \"burger\", \"name\": \"Cem\\u2019s Diner Burgerhouse\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 866007372, \"lat\": 52.4997529, \"lon\": 13.4178805, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"98\", \"addr:postcode\": \"10999\", \"addr:street\": \"Adalbertstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"contact:phone\": \"+49 1520 62 14 304\", \"cuisine\": \"vietnamese\", \"name\": \"Huy Hoang\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 866013501, \"lat\": 52.5029073, \"lon\": 13.4137536, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"47\", \"addr:postcode\": \"10969\", \"addr:street\": \"Oranienstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"indoor_seating\": \"yes\", \"name\": \"Mimatoha\", \"outdoor_seating\": \"yes\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 866021764, \"lat\": 52.4994353, \"lon\": 13.4166734, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"10\", \"addr:postcode\": \"10999\", \"addr:street\": \"Reichenberger Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"contact:phone\": \"+49 30 6159266\", \"cuisine\": \"turkish\", \"name\": \"Izmir K\\u00f6ftecisi Konak Grill\", \"opening_hours\": \"Mo-We 10:30-02:30, Th 10:30-03:00, Fr,Sa 10:30-04:00, Su 11:30-02:30\", \"toilets:wheelchair\": \"no\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 867855171, \"lat\": 52.5000914, \"lon\": 13.4185943, \"tags\": {\"amenity\": \"fast_food\", \"cuisine\": \"turkish\", \"name\": \"Lezzer Grill\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 871561387, \"lat\": 52.5014649, \"lon\": 13.4190249, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"30\", \"addr:postcode\": \"10999\", \"addr:street\": \"Oranienstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"check_date\": \"2023-02-12\", \"cuisine\": \"falafel\", \"level\": \"0\", \"name\": \"falafelwerk\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 871641846, \"lat\": 52.4999715, \"lon\": 13.4179142, \"tags\": {\"amenity\": \"fast_food\", \"cuisine\": \"seafood\", \"name\": \"Taka Fischgrill Stube\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 871641848, \"lat\": 52.4995472, \"lon\": 13.4172643, \"tags\": {\"amenity\": \"fast_food\", \"name\": \"Orient Eck\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 872141192, \"lat\": 52.4999085, \"lon\": 13.4231539, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"194\", \"addr:postcode\": \"10999\", \"addr:street\": \"Oranienstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"cuisine\": \"lebanese\", \"diet:vegetarian\": \"yes\", \"name\": \"1001 Falafel\", \"toilets\": \"no\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 872204136, \"lat\": 52.4989158, \"lon\": 13.4216651, \"tags\": {\"amenity\": \"fast_food\", \"cuisine\": \"arab\", \"name\": \"Tekbir D\\u00f6ner\", \"opening_hours:covid19\": \"Mo-Sa 11:00-18:00\", \"toilets:wheelchair\": \"no\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 874272578, \"lat\": 52.4999772, \"lon\": 13.4180548, \"tags\": {\"amenity\": \"fast_food\", \"cuisine\": \"turkish\", \"name\": \"K\\u00f6ftehaus am Kotti\", \"toilets:wheelchair\": \"no\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 874317214, \"lat\": 52.5019071, \"lon\": 13.4173809, \"tags\": {\"addr:housenumber\": \"38\", \"addr:street\": \"Oranienstra\\u00dfe\", \"amenity\": \"fast_food\", \"check_date\": \"2023-02-12\", \"cuisine\": \"pizza\", \"level\": \"0\", \"name\": \"pizzy's\", \"opening_hours\": \"Mo-Fr 11:00-21:00\", \"payment:debit_cards\": \"yes\", \"toilets:wheelchair\": \"no\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 874355744, \"lat\": 52.5031283, \"lon\": 13.4130178, \"tags\": {\"amenity\": \"fast_food\", \"cuisine\": \"burger\", \"indoor_seating\": \"yes\", \"name\": \"Burgerkette\", \"opening_hours:signed\": \"no\", \"outdoor_seating\": \"yes\"}}, {\"type\": \"node\", \"id\": 886083589, \"lat\": 52.4981269, \"lon\": 13.4292107, \"tags\": {\"amenity\": \"fast_food\", \"contact:phone\": \"+49 30 61209670\", \"contact:website\": \"https://miu-burger.de/12729/\", \"cuisine\": \"burger\", \"name\": \"Miu Burger\"}}, {\"type\": \"node\", \"id\": 886109077, \"lat\": 52.4985101, \"lon\": 13.428061, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"11\", \"addr:postcode\": \"10999\", \"addr:street\": \"Wiener Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"cuisine\": \"turkish\", \"name\": \"Imren\", \"opening_hours\": \"Mo-Su 08:00-22:00\", \"outdoor_seating\": \"yes\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 886152063, \"lat\": 52.4986883, \"lon\": 13.4275425, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"8\", \"addr:postcode\": \"10999\", \"addr:street\": \"Wiener Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"check_date:opening_hours\": \"2022-02-24\", \"cuisine\": \"turkish\", \"name\": \"Maranda\", \"opening_hours:signed\": \"no\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 972319913, \"lat\": 52.5110599, \"lon\": 13.4167593, \"tags\": {\"addr:city\": \"Berlin\", \"addr:housenumber\": \"76\", \"addr:postcode\": \"10179\", \"addr:street\": \"K\\u00f6penicker Stra\\u00dfe\", \"amenity\": \"fast_food\", \"check_date:opening_hours\": \"2022-06-21\", \"cuisine\": \"kebab\", \"name\": \"D\\u00f6ner Box\", \"opening_hours\": \"24/7\", \"opening_hours:signed\": \"no\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 1084349573, \"lat\": 52.4981873, \"lon\": 13.4067395, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"32\", \"addr:postcode\": \"10969\", \"addr:street\": \"Gitschiner Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"check_date\": \"2022-11-16\", \"check_date:opening_hours\": \"2022-11-04\", \"indoor_seating\": \"yes\", \"level\": \"0\", \"name\": \"H\\u00e4hnchenhaus\", \"note\": \"Chicken Grill\", \"opening_hours:signed\": \"no\", \"outdoor_seating\": \"yes\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 1205048327, \"lat\": 52.4979396, \"lon\": 13.4050431, \"tags\": {\"amenity\": \"fast_food\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 1264887588, \"lat\": 52.4952655, \"lon\": 13.4197012, \"tags\": {\"addr:postcode\": \"10967\", \"amenity\": \"fast_food\", \"cuisine\": \"burger\", \"name\": \"Goldies\", \"website\": \"http://www.hamburgerheaven.de/\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 1321473171, \"lat\": 52.4962625, \"lon\": 13.4194868, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housename\": \"Prisma Pavillon\", \"addr:housenumber\": \"43\", \"addr:postcode\": \"10999\", \"addr:street\": \"Kohlfurter Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"air_conditioning\": \"no\", \"amenity\": \"fast_food\", \"contact:phone\": \"+49 30 69569595\", \"cuisine\": \"pizza;turkish;pasta;asian\", \"diet:vegan\": \"no\", \"diet:vegetarian\": \"yes\", \"indoor_seating\": \"yes\", \"name\": \"Prisma Pavillon\", \"opening_hours\": \"PH,Mo-Su 11:00-01:00\", \"outdoor_seating\": \"yes\", \"smoking\": \"outside\", \"toilets\": \"yes\", \"wheelchair\": \"limited\", \"wheelchair:description\": \"Bereich im Freien: Keine Barrieren. Bereich innen: Stufe am Eingang. Keine Toiletten.\"}}, {\"type\": \"node\", \"id\": 1346939907, \"lat\": 52.5098572, \"lon\": 13.4214234, \"tags\": {\"access:covid19\": \"no\", \"addr:city\": \"Berlin\", \"addr:housenumber\": \"58\", \"addr:postcode\": \"10179\", \"addr:street\": \"K\\u00f6penicker Stra\\u00dfe\", \"amenity\": \"fast_food\", \"check_date\": \"2022-10-22\", \"cuisine\": \"sausage\", \"delivery:covid19\": \"no\", \"diet:halal\": \"no\", \"diet:kosher\": \"no\", \"diet:vegan\": \"no\", \"diet:vegetarian\": \"yes\", \"drive_through\": \"no\", \"drive_through:covid19\": \"no\", \"indoor_seating\": \"no\", \"name\": \"Wurstpate\", \"opening_hours\": \"Mo-Fr 07:00-22:30; Sa,Su 12:00-22:30\", \"opening_hours:covid19\": \"Mo-Fr 09:00-16:30; Sa,Su,PH 12:00-18:00\", \"outdoor_seating\": \"yes\", \"payment:credit_cards\": \"no\", \"payment:debit_cards\": \"no\", \"takeaway:covid19\": \"no\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 1583884357, \"lat\": 52.4997445, \"lon\": 13.417808, \"tags\": {\"amenity\": \"fast_food\", \"contact:phone\": \"+493061609280\", \"contact:website\": \"http://www.tadim-lahmacun.de/\", \"cuisine\": \"kebab\", \"email\": \"tadim@mail.com\", \"name\": \"Tadim\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 1771511978, \"lat\": 52.4986617, \"lon\": 13.4065821, \"tags\": {\"amenity\": \"fast_food\", \"name\": \"Prinzeneck\", \"toilets:wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 2013009692, \"lat\": 52.4950151, \"lon\": 13.4211096, \"tags\": {\"amenity\": \"fast_food\", \"name\": \"Bal K\\u00f6fteci\", \"opening_hours\": \"Mo-Su,PH 10:30-01:00\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 2335103333, \"lat\": 52.4950472, \"lon\": 13.4204604, \"tags\": {\"amenity\": \"fast_food\", \"check_date:opening_hours\": \"2023-05-25\", \"cuisine\": \"kebab\", \"diet:vegan\": \"no\", \"diet:vegetarian\": \"yes\", \"indoor_seating\": \"no\", \"name\": \"International D\\u00f6ner\", \"opening_hours:signed\": \"no\", \"outdoor_seating\": \"yes\", \"smoking\": \"yes\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 2641521425, \"lat\": 52.5000448, \"lon\": 13.4241829, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"10\", \"addr:postcode\": \"10997\", \"addr:street\": \"Oranienstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"check_date\": \"2022-06-24\", \"cuisine\": \"pizza\", \"name\": \"Da Dante\", \"outdoor_seating\": \"yes\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 2641521429, \"lat\": 52.4994653, \"lon\": 13.4280873, \"tags\": {\"amenity\": \"fast_food\", \"cuisine\": \"arab\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"name\": \"Falafel in Berlin\", \"opening_hours:signed\": \"no\", \"outdoor_seating\": \"yes\", \"payment:credit_cards\": \"yes\", \"payment:debit_cards\": \"yes\", \"takeaway\": \"yes\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 2803320966, \"lat\": 52.498889, \"lon\": 13.4266476, \"tags\": {\"amenity\": \"fast_food\"}}, {\"type\": \"node\", \"id\": 2840615699, \"lat\": 52.5003538, \"lon\": 13.4188439, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"6\", \"addr:postcode\": \"10999\", \"addr:street\": \"Adalbertstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"name\": \"Gregs Finest Streetfood\", \"source\": \"Geoportal Berlin / Hauskoordinaten\"}}, {\"type\": \"node\", \"id\": 2935543802, \"lat\": 52.499448, \"lon\": 13.4185113, \"tags\": {\"addr:city\": \"Berlin\", \"addr:housenumber\": \"136\", \"addr:postcode\": \"10999\", \"addr:street\": \"Skalitzer Stra\\u00dfe\", \"amenity\": \"fast_food\", \"brand:wikidata\": \"Q116382535\", \"check_date\": \"2022-12-02\", \"contact:website\": \"http://www.burger-meister.de\", \"cuisine\": \"burger;fast_food;fries\", \"delivery\": \"yes\", \"diet:vegan\": \"no\", \"diet:vegetarian\": \"yes\", \"drive_through\": \"no\", \"indoor_seating\": \"yes\", \"level\": \"0\", \"name\": \"Burgermeister\", \"opening_hours\": \"Su-Th 11:00-03:00, Fr 11:00-04:00, Sa 12:00-04:00\", \"outdoor_seating\": \"no\", \"payment:credit_cards\": \"yes\", \"payment:debit_cards\": \"yes\", \"takeaway\": \"yes\", \"wheelchair\": \"yes\", \"wheelchair:description\": \"Behinderten-WC ohne Handlauf\"}}, {\"type\": \"node\", \"id\": 3346902286, \"lat\": 52.4988265, \"lon\": 13.4071515, \"tags\": {\"amenity\": \"fast_food\", \"name\": \"Prinzen Burger\"}}, {\"type\": \"node\", \"id\": 3499253024, \"lat\": 52.49523, \"lon\": 13.4203515, \"tags\": {\"amenity\": \"fast_food\", \"cuisine\": \"german;sausage\", \"diet:halal\": \"no\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"drive_through\": \"no\", \"indoor_seating\": \"no\", \"name\": \"Ketels\", \"opening_hours\": \"Mo-Th 11:30-22:00; Fr,Sa 11:30-23:00; PH,Su 12:30-18:30\", \"outdoor_seating\": \"yes\", \"phone\": \"+49 30 69001924\", \"smoking\": \"yes\", \"website\": \"http://www.ketelsgrill.de\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 3499253063, \"lat\": 52.4952777, \"lon\": 13.4203255, \"tags\": {\"amenity\": \"fast_food\", \"changing_table\": \"no\", \"cuisine\": \"korean\", \"diet:halal\": \"yes\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"indoor_seating\": \"no\", \"level\": \"0\", \"name\": \"Han Korean Food\", \"opening_hours\": \"Mo-Fr 12:00-02:00, Sa 13:00-02:00\", \"outdoor_seating\": \"yes\", \"smoking\": \"yes\", \"takeaway\": \"yes\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 3751809295, \"lat\": 52.5005623, \"lon\": 13.4229136, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"16\", \"addr:postcode\": \"10999\", \"addr:street\": \"Oranienstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"check_date\": \"2023-06-17\", \"contact:website\": \"http://angry-chicken.com/\", \"cuisine\": \"korean\", \"name\": \"Angry Chicken\", \"takeaway\": \"yes\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 3803711353, \"lat\": 52.5037635, \"lon\": 13.4099057, \"tags\": {\"amenity\": \"fast_food\", \"check_date\": \"2022-09-09\", \"check_date:opening_hours\": \"2022-02-25\", \"indoor_seating\": \"yes\", \"internet_access\": \"wlan\", \"internet_access:fee\": \"customers\", \"name\": \"Foodbag\", \"opening_hours:signed\": \"no\", \"outdoor_seating\": \"yes\", \"smoking\": \"outside\", \"toilets:wheelchair\": \"no\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 4030311572, \"lat\": 52.5010882, \"lon\": 13.4196147, \"tags\": {\"amenity\": \"fast_food\", \"name\": \"Noodle'n Box\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 4030311582, \"lat\": 52.5010425, \"lon\": 13.4197891, \"tags\": {\"amenity\": \"fast_food\", \"name\": \"Kiezburger\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 4034138657, \"lat\": 52.5003639, \"lon\": 13.4222779, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:postcode\": \"10999\", \"addr:street\": \"Oranienstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"check_date\": \"2023-06-17\", \"cuisine\": \"burger\", \"diet:vegetarian\": \"yes\", \"name\": \"Kreuzburger\", \"smoking\": \"no\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 4034138663, \"lat\": 52.5005879, \"lon\": 13.4222028, \"tags\": {\"amenity\": \"fast_food\", \"cuisine\": \"pizza;pasta;salad;italian\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"name\": \"Oregano\", \"opening_hours\": \"Mo-Th 11:00-02:00, Fr 11:00-04:00, Sa 12:00-04:00, Su 12:00-02:00\", \"outdoor_seating\": \"yes\", \"phone\": \"+49 30 61401096\", \"takeaway\": \"yes\", \"toilets\": \"no\", \"toilets:wheelchair\": \"no\", \"website\": \"http://oreganofood.de/\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 4185570489, \"lat\": 52.5110538, \"lon\": 13.4134043, \"tags\": {\"addr:city\": \"Berlin\", \"addr:housenumber\": \"42\", \"addr:postcode\": \"10179\", \"addr:street\": \"Neue Jakobstra\\u00dfe\", \"amenity\": \"fast_food\", \"cuisine\": \"bagel\", \"delivery\": \"yes\", \"drive_through\": \"no\", \"name\": \"Bagel Company\", \"opening_hours\": \"24/7\"}}, {\"type\": \"node\", \"id\": 4185576128, \"lat\": 52.5049631, \"lon\": 13.4072462, \"tags\": {\"addr:city\": \"Berlin\", \"addr:housenumber\": \"72\", \"addr:postcode\": \"10969\", \"addr:street\": \"Oranienstra\\u00dfe\", \"amenity\": \"fast_food\", \"contact:facebook\": \"https://www.facebook.com/akcaabatsaraykoefte\", \"cuisine\": \"kebab;turkish\", \"description:de\": \"Akcaabat-K\\u00f6fte sind leckere t\\u00fcrkische Spezial Bouletten aus Trabzon.\", \"full_name\": \"Akcaabat Saray K\\u00f6fte\", \"indoor_seating\": \"no\", \"name\": \"Akcaabat\", \"opening_hours\": \"Mo-We, Fr 10:00-20:30; Th 10:00-22:00; Su 11:00-20:30\", \"outdoor_seating\": \"yes\", \"phone\": \"+49 1523 7038463\"}}, {\"type\": \"node\", \"id\": 4423313828, \"lat\": 52.5074995, \"lon\": 13.4154055, \"tags\": {\"amenity\": \"fast_food\", \"cuisine\": \"kebab\", \"name\": \"Florya Imbiss\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 4582927492, \"lat\": 52.4980787, \"lon\": 13.421062, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"26\", \"addr:postcode\": \"10999\", \"addr:street\": \"Reichenberger Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"check_date\": \"2021-08-16\", \"contact:phone\": \"+49 30 35051142\", \"contact:website\": \"https://www.basmah-berlin.de/\", \"cuisine\": \"sudanese\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"name\": \"Basmah\", \"opening_hours\": \"Mo-Fr 11:30-21:00; Sa-Su 12:00-21:00\", \"payment:cash\": \"only\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 4974029892, \"lat\": 52.5115249, \"lon\": 13.4169273, \"tags\": {\"addr:city\": \"Berlin\", \"addr:housenumber\": \"1A\", \"addr:postcode\": \"10179\", \"addr:street\": \"Br\\u00fcckenstra\\u00dfe\", \"alt_name\": \"Burgers Burgers\", \"amenity\": \"fast_food\", \"contact:email\": \"brgrsbrgrs@outlook.de\", \"contact:phone\": \"+49 176 21406582\", \"contact:website\": \"https://www.burgersburgers.de/\", \"cuisine\": \"burger\", \"diet:meat\": \"yes\", \"diet:organic\": \"yes\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"name\": \"Brgrs Brgrs\", \"opening_hours\": \"Mo-Su 11:00-22:30\", \"operator\": \"Aktas, Aktas, Cetin GbR\", \"start_date\": \"2017-07-19\", \"takeaway\": \"yes\"}}, {\"type\": \"node\", \"id\": 5034396388, \"lat\": 52.4953785, \"lon\": 13.4202503, \"tags\": {\"amenity\": \"fast_food\", \"check_date:opening_hours\": \"2023-05-25\", \"cuisine\": \"turkish\", \"diet:halal\": \"yes\", \"diet:vegetarian\": \"yes\", \"drive_through\": \"no\", \"indoor_seating\": \"no\", \"name\": \"Ustam D\\u00f6ner\", \"opening_hours:signed\": \"no\", \"outdoor_seating\": \"yes\", \"smoking\": \"yes\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 5249077079, \"lat\": 52.4986472, \"lon\": 13.426001, \"tags\": {\"amenity\": \"fast_food\", \"name\": \"Windburger\", \"opening_hours\": \"Mo-Su 12:00-22:00\", \"toilets:wheelchair\": \"yes\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 5352674046, \"lat\": 52.4989057, \"lon\": 13.4283867, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"69\", \"addr:postcode\": \"10999\", \"addr:street\": \"Wiener Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"contact:website\": \"http://pattaya2berlin.de/\", \"cuisine\": \"vietnamese;thai\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"name\": \"Pattaya II\", \"outdoor_seating\": \"yes\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 5352674077, \"lat\": 52.4989461, \"lon\": 13.4283073, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"69\", \"addr:postcode\": \"10999\", \"addr:street\": \"Wiener Stra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"contact:facebook\": \"https://www.facebook.com/KhartoumImbiss/\", \"contact:mobile\": \"+49 176 23193916\", \"contact:yelp\": \"https://www.yelp.de/biz/khartoum-berlin-2\", \"cuisine\": \"sudanese\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"drive_through\": \"no\", \"name\": \"Khartoum\", \"opening_hours\": \"Mo-Su 11:00-24:00\", \"toilets:wheelchair\": \"no\", \"wheelchair\": \"limited\"}}, {\"type\": \"node\", \"id\": 5502001882, \"lat\": 52.4994887, \"lon\": 13.4284152, \"tags\": {\"amenity\": \"fast_food\", \"name\": \"Chicken Meister\"}}, {\"type\": \"node\", \"id\": 5876598786, \"lat\": 52.5086243, \"lon\": 13.424674, \"tags\": {\"amenity\": \"fast_food\", \"check_date\": \"2022-10-23\", \"internet_access\": \"no\", \"name\": \"Imbiss\", \"payment:cards\": \"no\", \"payment:credit_cards\": \"no\", \"payment:debit_cards\": \"no\"}}, {\"type\": \"node\", \"id\": 7589076276, \"lat\": 52.5056508, \"lon\": 13.4120669, \"tags\": {\"addr:city\": \"Berlin\", \"addr:housenumber\": \"38A\", \"addr:postcode\": \"10179\", \"addr:street\": \"Heinrich-Heine-Stra\\u00dfe\", \"amenity\": \"fast_food\", \"check_date:opening_hours\": \"2022-05-13\", \"cuisine\": \"burger\", \"drive_through\": \"no\", \"indoor_seating\": \"yes\", \"name\": \"Burger Zimmer\", \"opening_hours:signed\": \"no\", \"outdoor_seating\": \"yes\", \"payment:cash\": \"yes\", \"payment:contactless\": \"yes\", \"payment:credit_cards\": \"yes\", \"payment:girocard\": \"yes\", \"smoking\": \"outside\", \"website\": \"http://www.burger-zimmer.com/\"}}, {\"type\": \"node\", \"id\": 7934891686, \"lat\": 52.5032411, \"lon\": 13.412646, \"tags\": {\"addr:city\": \"Berlin\", \"addr:country\": \"DE\", \"addr:housenumber\": \"52\", \"addr:postcode\": \"10969\", \"addr:street\": \"Oranienstra\\u00dfe\", \"addr:suburb\": \"Kreuzberg\", \"amenity\": \"fast_food\", \"brand\": \"Domino\\u2019s Pizza\", \"brand:wikidata\": \"Q1691878\", \"brand:wikipedia\": \"de:Domino\\u2019s Pizza Deutschland\", \"contact:phone\": \"+49 30 27017120\", \"contact:website\": \"https://www.dominos.de/kaufhaus/de-berlinkreuzbergluisenstadt-33927\", \"cuisine\": \"pasta;pizza\", \"delivery\": \"yes\", \"indoor_seating\": \"yes\", \"name\": \"Domino\\u2019s\", \"opening_hours\": \"Su-Th 11:00-23:00; Fr-Sa 11:00-24:00\", \"outdoor_seating\": \"yes\", \"takeaway\": \"yes\"}}, {\"type\": \"node\", \"id\": 8290426030, \"lat\": 52.5031153, \"lon\": 13.4298991, \"tags\": {\"amenity\": \"fast_food\", \"contact:phone\": \"+49 30 51060315\", \"cuisine\": \"italian\", \"diet:vegetarian\": \"yes\", \"indoor_seating\": \"yes\", \"level\": \"0\", \"name\": \"Olive\", \"opening_hours\": \"Mo-Fr 12:00-23:00; Sa-Su 14:00-23:00\", \"outdoor_seating\": \"yes\", \"takeaway\": \"yes\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 9846743898, \"lat\": 52.4998263, \"lon\": 13.4166957, \"tags\": {\"amenity\": \"fast_food\", \"name\": \"Lalesoy Kokorec\", \"outdoor_seating\": \"yes\", \"website\": \"www.lalesoy.de\"}}, {\"type\": \"node\", \"id\": 9846849130, \"lat\": 52.4998358, \"lon\": 13.4170494, \"tags\": {\"amenity\": \"fast_food\", \"check_date\": \"2022-06-25\", \"cuisine\": \"burger\", \"level\": \"0\", \"name\": \"Siaburger\", \"outdoor_seating\": \"yes\"}}, {\"type\": \"node\", \"id\": 9846854231, \"lat\": 52.4998683, \"lon\": 13.4170755, \"tags\": {\"amenity\": \"fast_food\", \"check_date\": \"2022-06-25\", \"cuisine\": \"georgian\", \"level\": \"0\", \"name\": \"Gio's Georgische K\\u00fcche\", \"outdoor_seating\": \"yes\", \"start_date\": \"2022-06-18\"}}, {\"type\": \"node\", \"id\": 9846859834, \"lat\": 52.4996735, \"lon\": 13.4169419, \"tags\": {\"amenity\": \"fast_food\", \"check_date\": \"2022-06-25\", \"level\": \"0\", \"name\": \"Lookma Berlin\", \"outdoor_seating\": \"yes\"}}, {\"type\": \"node\", \"id\": 10106683989, \"lat\": 52.5037375, \"lon\": 13.402962, \"tags\": {\"addr:city\": \"Berlin\", \"addr:housenumber\": \"41\", \"addr:postcode\": \"10969\", \"addr:street\": \"Ritterstra\\u00dfe\", \"amenity\": \"fast_food\", \"cuisine\": \"kebab\", \"indoor_seating\": \"yes\", \"name\": \"Gala Bistro\", \"outdoor_seating\": \"yes\"}}, {\"type\": \"node\", \"id\": 10693130762, \"lat\": 52.5020225, \"lon\": 13.4196465, \"tags\": {\"amenity\": \"fast_food\", \"check_date\": \"2023-02-25\", \"diet:vegan\": \"yes\", \"diet:vegetarian\": \"yes\", \"name\": \"Saha\"}}]}",
+        "second response": {
+            "error": "invalid arguments for overpass_query"
+        }
+    },
+    "2023-06-21 14:06:06 | What are the coordinates of Rathaus Sch\u00f6neberg?": {
+        "first response": {
+            "role": "assistant",
+            "content": null,
+            "function_call": {
+                "name": "overpass_query",
+                "arguments": "{\n  \"query\": \"[out:json];\\nnode[name=\\\"Rathaus Sch\u00f6neberg\\\"];\\nout;\"\n}"
+            }
+        },
+        "function response": "{\"version\": 0.6, \"generator\": \"Overpass API 0.7.60.6 e2dc3e5b\", \"osm3s\": {\"timestamp_osm_base\": \"2023-06-21T14:35:33Z\", \"copyright\": \"The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.\"}, \"elements\": [{\"type\": \"node\", \"id\": 638587729, \"lat\": 52.4851005, \"lon\": 13.344872, \"tags\": {\"bench\": \"yes\", \"bin\": \"yes\", \"highway\": \"bus_stop\", \"lit\": \"yes\", \"name\": \"Rathaus Sch\\u00f6neberg\", \"shelter\": \"yes\", \"tactile_paving\": \"no\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 638587730, \"lat\": 52.4853667, \"lon\": 13.3452702, \"tags\": {\"bench\": \"no\", \"bin\": \"no\", \"highway\": \"bus_stop\", \"lit\": \"yes\", \"name\": \"Rathaus Sch\\u00f6neberg\", \"shelter\": \"no\", \"tactile_paving\": \"no\", \"wheelchair\": \"yes\"}}, {\"type\": \"node\", \"id\": 765928652, \"lat\": 52.4841788, \"lon\": 13.3445052, \"tags\": {\"amenity\": \"taxi\", \"name\": \"Rathaus Sch\\u00f6neberg\", \"phone\": \"+49 30 7811407\"}}, {\"type\": \"node\", \"id\": 3901824904, \"lat\": 52.4836456, \"lon\": 13.3417912, \"tags\": {\"check_date:wheelchair\": \"2022-09-24\", \"name\": \"Rathaus Sch\\u00f6neberg\", \"railway\": \"subway_entrance\", \"wheelchair\": \"no\"}}, {\"type\": \"node\", \"id\": 3901824980, \"lat\": 52.483363, \"lon\": 13.3419865, \"tags\": {\"name\": \"Rathaus Sch\\u00f6neberg\", \"public_transport\": \"stop_position\", \"railway\": \"stop\", \"ref:BVG\": \"242402\", \"subway\": \"yes\", \"website\": \"https://qr.bvg.de/h242402\"}}, {\"type\": \"node\", \"id\": 3957979301, \"lat\": 52.4851027, \"lon\": 13.3449776, \"tags\": {\"bus\": \"yes\", \"name\": \"Rathaus Sch\\u00f6neberg\", \"public_transport\": \"stop_position\", \"ref:BVG\": \"101085\", \"website\": \"https://qr.bvg.de/h101085\"}}, {\"type\": \"node\", \"id\": 3957979302, \"lat\": 52.4851531, \"lon\": 13.3451726, \"tags\": {\"bus\": \"yes\", \"name\": \"Rathaus Sch\\u00f6neberg\", \"public_transport\": \"stop_position\"}}, {\"type\": \"node\", \"id\": 3957979303, \"lat\": 52.4853639, \"lon\": 13.3451684, \"tags\": {\"bus\": \"yes\", \"name\": \"Rathaus Sch\\u00f6neberg\", \"public_transport\": \"stop_position\", \"ref:BVG\": \"100636\", \"website\": \"https://qr.bvg.de/h100636\"}}, {\"type\": \"node\", \"id\": 4651729967, \"lat\": 52.4829916, \"lon\": 13.3419575, \"tags\": {\"name\": \"Rathaus Sch\\u00f6neberg\", \"public_transport\": \"stop_position\", \"railway\": \"stop\", \"ref:BVG\": \"242401\", \"subway\": \"yes\", \"website\": \"https://qr.bvg.de/h242401\"}}, {\"type\": \"node\", \"id\": 5134482957, \"lat\": 52.4831773, \"lon\": 13.341972, \"tags\": {\"name\": \"Rathaus Sch\\u00f6neberg\", \"old_name\": \"Stadtpark\", \"operator\": \"Berliner Verkehrsbetriebe\", \"public_transport\": \"station\", \"railway\": \"station\", \"start_date\": \"1910-10-01\", \"station\": \"subway\", \"subway\": \"yes\", \"wheelchair\": \"yes\", \"wikidata\": \"Q570926\", \"wikipedia\": \"de:U-Bahnhof Rathaus Sch\\u00f6neberg\"}}, {\"type\": \"node\", \"id\": 10895912182, \"lat\": 52.4825984, \"lon\": 13.3421741, \"tags\": {\"name\": \"Rathaus Sch\\u00f6neberg\", \"railway\": \"subway_entrance\", \"wheelchair\": \"no\"}}]}",
+        "second response": {
+            "id": "chatcmpl-7TtENTtZQlH1ooPvfGCaytaybgc8B",
+            "object": "chat.completion",
+            "created": 1687358175,
+            "model": "gpt-3.5-turbo-0613",
+            "choices": [
+                {
+                    "index": 0,
+                    "message": {
+                        "role": "assistant",
+                        "content": "The coordinates of Rathaus Sch\u00f6neberg are approximately 52.4851005 latitude and 13.344872 longitude."
+                    },
+                    "finish_reason": "stop"
+                }
+            ],
+            "usage": {
+                "prompt_tokens": 1191,
+                "completion_tokens": 26,
+                "total_tokens": 1217
+            }
+        }
+    },
+    "2023-06-21 14:20:54 | What are the coordinates of Rathaus Sch\u00f6neberg?": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"node['name'='Rathaus Sch\u00f6neberg'];out;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:22:28 | Find bike parking near tech parks in Kreuzberg, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"(node[amenity=bicycle_parking](around:2000,52.4976,13.4148););out;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:36:40 | Find bike parking near tech parks in Kreuzberg, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"[out:json];\\narea[\\\"name\\\"=\\\"Berlin\\\"][\\\"admin_level\\\"=\\\"2\\\"];\\n(node[\\\"amenity\\\"=\\\"bicycle_parking\\\"](area);\\n way[\\\"amenity\\\"=\\\"bicycle_parking\\\"](area);\\n relation[\\\"amenity\\\"=\\\"bicycle_parking\\\"](area);\\n);\\nout center;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:36:43 | Show me locations of farmers markets in Neuk\u00f6lln, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"[out:json];\" +\n           \"area[name='Berlin'];\" +\n           \"way(area)[name='Neuk\u00f6lln'];\" +\n           \"node(w)[amenity='marketplace'][organic='no'][shop='farm'];\" +\n           \"out center;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:36:47 | Display historical buildings in Mitte, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"area[name=\\\"Berlin\\\"][admin_level=2]->.a; (node(around.a:1000)[historic=\\\"castle\\\"]; node(around.a:1000)[historic=\\\"monument\\\"]; node(around.a:1000)[historic=\\\"palace\\\"]; node(around.a:1000)[historic=\\\"church\\\"]; node(around.a:1000)[historic=\\\"museum\\\"];); out;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:36:56 | Show me the hiking trails in Grunewald, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"area[name='Berlin']->.a; (way['highway'='path'](area.a); way['highway'='track'](area.a);); out;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:36:58 | Find hospitals and clinics in Charlottenburg, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"[out:json][timeout:25];(node[name~'hospital|clinic'][leisure='hospital']({{bbox}}); ); out body;>;out skel qt;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:37:02 | Show me schools and libraries in Prenzlauer Berg, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"[out:json][timeout:25];(node[amenity=school](around:1000,52.5411,13.4155););out body;node[amenity=library](around:1000,52.5411,13.4155);out body;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:37:07 | Display all newspaper offices in Friedrichshain, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"[out:json][timeout:25];\\narea(3602533707)->.searchArea;\\n\\n(\\n  node(area.searchArea)['amenity'='newspaper'];\\n  way(area.searchArea)['amenity'='newspaper'];\\n  relation(area.searchArea)['amenity'='newspaper'];\\n);\\nout body;\\n>\\n;\\nout skel qt;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:37:10 | Show me parks and recreational areas in Tiergarten, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"[out:json][timeout:25];(way[leisure=park](around:2000,52.5165,13.3645););out;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:37:14 | Find gyms and sports facilities in Sch\u00f6neberg, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"[out:json];area[name='Sch\u00f6neberg'];(node[leisure=sports_centre](area);way[leisure=sports_centre](area);relation[leisure=sports_centre](area););out center;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    },
+    "2023-06-21 14:37:19 | Show me music venues and recording studios in Friedrichshain-Kreuzberg, Berlin": {
+        "log": {
+            "first response": {
+                "role": "assistant",
+                "content": null,
+                "function_call": {
+                    "name": "overpass_query",
+                    "arguments": "{\n  \"query\": \"[out:json];(node[amenity=recording_studio](52.4912,13.4163,52.528,13.463);way[amenity=recording_studio](52.4912,13.4163,52.528,13.463);node[amenity=music_venue](52.4912,13.4163,52.528,13.463);way[amenity=music_venue](52.4912,13.4163,52.528,13.463););out center;\"\n}"
+                }
+            },
+            "second response": null
+        }
+    }
+}
