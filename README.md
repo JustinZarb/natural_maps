@@ -1,5 +1,5 @@
 # NaturalMaps
-A Portfolio project by J. Adam Hughes and Justin Zarb as part of Data Science Retreat.
+A Portfolio project by Pasquale Zito, Adam Hughes and Justin Zarb as part of Data Science Retreat.
 
 ## Objectives
 - Use natural language processing to make map queries more accessible to non-specialists.
