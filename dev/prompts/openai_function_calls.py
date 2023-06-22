@@ -15,8 +15,13 @@ import requests
 from time import gmtime, strftime
 
 
-def overpass_query(query):
-    """Run an overpass query"""
+def overpass_query(prompt, query):
+    """Run an overpass query
+    To improve chances of success, run this multiple times for simpler queries.
+    eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
+    in this example, a complex query is likely to fail, so it is better to run
+    a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg
+    """
     overpass_url = "http://overpass-api.de/api/interpreter"
     response = requests.get(overpass_url, params={"data": query})
     if response.content:
@@ -32,10 +37,14 @@ def overpass_query(query):
 
     data_str = json.dumps(data)
 
+    # Write Overpass API Call to JSON
+    timestamp = strftime("%Y-%m-%d %H:%M:%S", gmtime())
     save_to_json(
-        file_path="overpass_query_log.json", this_run_name=query, this_run_log=data_str
+        file_path="overpass_query_log.json",
+        timestamp=timestamp,
+        prompt=prompt,
+        this_run_log={"query": query, "response": data_str},
     )
-
     return data_str
 
 
@@ -66,8 +75,6 @@ def save_to_json(file_path: str, timestamp: str, prompt: str, this_run_log: dict
     # Add data for this run
     this_run_name = f"{timestamp} | {prompt}"
     data[this_run_name] = {
-        # "timestamp": timestamp,
-        # "prompt": prompt,
         "log": this_run_log,
     }
 
@@ -96,16 +103,24 @@ def run_conversation(messages: list):
         },
         {
             "name": "overpass_query",
-            "description": "runs a query through the overpass API",
+            "description": """Run an overpass query
+            To improve chances of success, run this multiple times for simpler queries.
+            eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
+            in this example, a complex query is likely to fail, so it is better to run
+            a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg""",
             "parameters": {
                 "type": "object",
                 "properties": {
+                    "prompt": {
+                        "type": "string",
+                        "description": "Serves no other purpose than logging",
+                    },
                     "query": {
                         "type": "string",
                         "description": "The overpass QL query to execute",
                     },
                 },
-                "required": ["query"],
+                "required": ["prompt", "query"],
             },
         },
     ]
@@ -130,64 +145,64 @@ def run_conversation(messages: list):
 
         function_name = response_message["function_call"]["name"]
         function_to_call = available_functions[function_name]
+        print(f"Calling {function_name}")
+
+        # Attempt to load JSON
         try:
             function_args = json.loads(response_message["function_call"]["arguments"])
-            print(f"Calling {function_name}")
+            json_failed = False
+        except json.JSONDecodeError as e:
+            json_failed = True
+            function_response = {
+                "invalid args": str(e),
+                "input": response_message["function_call"]["arguments"],
+            }
 
+        if not json_failed:
             if function_name == "overpass_query":
-                function_response = function_to_call(query=function_args.get("query"))
+                function_response = function_to_call(
+                    prompt=function_args.get("prompt"), query=function_args.get("query")
+                )
                 assert function_response, f"{function_name} failed to get a response."
 
-            elif function_name == "get_current_weather":
+            elif (
+                function_name == "get_current_weather"
+            ):  # Leftover from example as reference.
                 function_response = function_to_call(
                     location=function_args.get("location"),
                     unit=function_args.get("unit"),
                 )
 
-            # Step 4: send the info on the function call and function response to GPT
-            messages.append(
-                response_message
-            )  # extend conversation with assistant's reply
-            messages.append(
-                {
-                    "role": "function",
-                    "name": function_name,
-                    "content": function_response,
-                }
-            )  # extend conversation with function response
+        # Step 4: send the info on the function call and function response to GPT
+        messages.append(response_message)  # extend conversation with assistant's reply
+        messages.append(
+            {
+                "role": "function",
+                "name": function_name,
+                "content": function_response,
+            }
+        )  # extend conversation with function response
 
-            second_response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo-0613",
-                messages=messages,
-            )  # get a new response from GPT where it can see the function response
+        second_response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-0613",
+            messages=messages,
+        )  # get a new response from GPT where it can see the function response
+    else:
+        function_response = None
+        second_response = None
 
-        except:
-            # Throw an exception if the arguments do not conform to the expected format and skip the second API call
-            second_response = {"error": f"invalid arguments for {function_name}"}
-
-    # Log results
     timestamp = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-
-    try:
-        save_to_json(
-            file_path="response_log.json",
-            timestamp=timestamp,
-            prompt=messages[0]["content"],
-            this_run_log={
-                "first response": response_message,
-                "function response": function_response[:2000],
-                "second response": second_response,
-            },
-        )
-        return second_response
-    except:
-        save_to_json(
-            file_path="response_log.json",
-            timestamp=timestamp,
-            prompt=messages[0]["content"],
-            this_run_log={"first response": response_message, "second response": None},
-        )
-        return response_message
+    save_to_json(
+        file_path="response_log.json",
+        timestamp=timestamp,
+        prompt=messages[0]["content"],
+        this_run_log={
+            "first response": response_message,
+            "function response": function_response[:2000],
+            "second response": second_response,
+        },
+    )
+    return response_message
 
 
 def run_prompt(prompt: str):
@@ -209,4 +224,4 @@ def run_prompt(prompt: str):
 
 
 if __name__ == "__main__":
-    run_prompt("What is the address of Curry 36 in Berlin?")
+    run_prompt("What are the coordinates and address of Rathaus Schöneberg?")
