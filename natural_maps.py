@@ -64,7 +64,7 @@ with left:
 
     st.header("Run Query and do something")
     st.markdown(
-        "running the above query will return a json file, on which it might be necessary to perform further operations"
+        "running the above query will return a json file, upon which it might be necessary to perform further operations"
     )
     if run_query:
         query_result = streamlit_functions.overpass_query(ice_cream_query)

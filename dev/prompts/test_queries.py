@@ -1,4 +1,4 @@
-from openai_function_calls import run_prompt
+from dev.prompts.openai_function_calls_function import run_prompt
 import pandas as pd
 
 prompts = pd.read_csv("prompts.csv")

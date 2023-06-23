@@ -3,6 +3,7 @@
 The code follows the methodology described here https://platform.openai.com/docs/guides/gpt/function-calling, where
 functions can be defined and fed to GPT3, which is finetuned to understand and run them.
 
+It is quite buggy and will eventually be deleted. 
 Returns:
     _type_: _description_
 """
@@ -34,7 +35,7 @@ def overpass_query(prompt, query):
         data = {
             "warning": "received an empty response from Overpass API. Tell the user."
         }
-
+    print(data)
     data_str = json.dumps(data)
 
     # Write Overpass API Call to JSON
@@ -84,7 +85,6 @@ def save_to_json(file_path: str, timestamp: str, prompt: str, this_run_log: dict
 
 def run_conversation(messages: list):
     # Step 1: send the conversation and available functions to GPT
-
     functions = [
         {
             "name": "get_current_weather",
@@ -130,58 +130,75 @@ def run_conversation(messages: list):
         messages=messages,
         functions=functions,
         function_call="auto",  # auto is default, but we'll be explicit
+        n=3,  # Adding n=3 to try and generate three responses
     )
 
     response_message = response["choices"][0]["message"]
 
-    # Step 2: check if GPT wanted to call a function
-    if response_message.get("function_call"):
-        # Step 3: call the function
-        # Note: the JSON response may not always be valid; be sure to handle errors
-        available_functions = {
-            "get_current_weather": get_current_weather,
-            "overpass_query": overpass_query,
-        }  # only one function in this example, but you can have multiple
+    for choice in response["choices"]:
+        response_message = choice["message"]
+        # Step 2: check if GPT wanted to call a function
+        if response_message.get("function_call"):
+            # Step 3: call the function
+            # Note: the JSON response may not always be valid; be sure to handle errors
+            available_functions = {
+                "get_current_weather": get_current_weather,
+                "overpass_query": overpass_query,
+            }  # only one function in this example, but you can have multiple
 
-        function_name = response_message["function_call"]["name"]
-        function_to_call = available_functions[function_name]
-        print(f"Calling {function_name}")
+            function_name = response_message["function_call"]["name"]
+            function_to_call = available_functions[function_name]
+            print(f"Calling {function_name}")
 
-        # Attempt to load JSON
-        try:
-            function_args = json.loads(response_message["function_call"]["arguments"])
-            json_failed = False
-        except json.JSONDecodeError as e:
-            json_failed = True
-            function_response = {
-                "invalid args": str(e),
-                "input": response_message["function_call"]["arguments"],
-            }
-
-        if not json_failed:
-            if function_name == "overpass_query":
-                function_response = function_to_call(
-                    prompt=function_args.get("prompt"), query=function_args.get("query")
+            # Attempt to load JSON
+            try:
+                function_args = json.loads(
+                    response_message["function_call"]["arguments"]
                 )
-                assert function_response, f"{function_name} failed to get a response."
+                json_failed = False
+            except json.JSONDecodeError as e:
+                json_failed = True
+                function_response = {
+                    "invalid args": str(e),
+                    "input": response_message["function_call"]["arguments"],
+                }
 
-            elif (
-                function_name == "get_current_weather"
-            ):  # Leftover from example as reference.
-                function_response = function_to_call(
-                    location=function_args.get("location"),
-                    unit=function_args.get("unit"),
-                )
+            if not json_failed:
+                if function_name == "overpass_query":
+                    function_response = function_to_call(
+                        prompt=function_args.get("prompt"),
+                        query=function_args.get("query"),
+                    )
 
-        # Step 4: send the info on the function call and function response to GPT
-        messages.append(response_message)  # extend conversation with assistant's reply
-        messages.append(
-            {
-                "role": "function",
-                "name": function_name,
-                "content": function_response,
-            }
-        )  # extend conversation with function response
+                    data = json.loads(function_response)
+                    if "elements" in data:
+                        elements = data["elements"]
+                    else:
+                        continue
+                    if elements == []:
+                        continue
+
+                elif (
+                    function_name == "get_current_weather"
+                ):  # Leftover from example as reference.
+                    function_response = function_to_call(
+                        location=function_args.get("location"),
+                        unit=function_args.get("unit"),
+                    )
+
+            # Check which of the Overpass queries returned any data
+
+            # Step 4: send the info on the function call and function response to GPT
+            messages.append(
+                response_message
+            )  # extend conversation with assistant's reply
+            messages.append(
+                {
+                    "role": "function",
+                    "name": function_name,
+                    "content": function_response,
+                }
+            )  # extend conversation with function response
 
         second_response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
@@ -198,7 +215,7 @@ def run_conversation(messages: list):
         prompt=messages[0]["content"],
         this_run_log={
             "first response": response_message,
-            "function response": function_response[:2000],
+            "function response": function_response,
             "second response": second_response,
         },
     )
