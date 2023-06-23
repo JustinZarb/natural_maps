@@ -40,7 +40,8 @@ class ChatBot:
                     To improve chances of success, run this multiple times for simpler queries.
                     eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
                     in this example, a complex query is likely to fail, so it is better to run
-                    a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg""",
+                    a first query for bike parking in Kreuzberg and a second one for tech parks 
+                    in Kreuzberg""",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -108,8 +109,7 @@ class ChatBot:
                 data = response.json()
             except:
                 data = {"error": str(response)}
-        else:
-            print("Empty response from Overpass API")
+        else:  # ToDo: check this.. it might not make sense
             data = {
                 "warning": "received an empty response from Overpass API. Tell the user."
             }
@@ -120,12 +120,14 @@ class ChatBot:
         filepath = os.path.expanduser("~/naturalmaps_logs/overpass_query_log.json")
         success = True if "error" not in data_str else False
         returned_something = len(data["elements"]) > 0
+
         self.overpass_queries[query] = {
             "prompt": prompt,
             "success": success,
             "returned something": returned_something,
             "data": data_str,
         }
+
         self.save_to_json(
             file_path=filepath,
             timestamp=timestamp,
@@ -158,8 +160,54 @@ class ChatBot:
             {"role": "function", "name": function_name, "content": content}
         )
 
+    def execute_function(self, response_message):
+        """Execute a function from self.functions
+
+        Args:
+            response_message (_type_): The message from the language model with the required inputs
+            to run the function
+        """
+        # Return false if we decide that the function failed
+        self.function_status_pass = False
+
+        function_name = response_message["function_call"]["name"]
+        function_args = response_message["function_call"]["arguments"]
+
+        if function_name in self.functions:
+            function_to_call = self.functions[function_name]
+            try:
+                function_args_dict = json.loads(function_args)
+                json_failed = False
+            except json.JSONDecodeError as e:
+                json_failed = True
+                function_response = {
+                    "invalid args": str(e),
+                    "input": function_args,
+                }
+
+            if not json_failed:
+                # Specific checks for self.overpass_query()
+                if function_name == "overpass_query":
+                    function_response = function_to_call(**function_args_dict)
+                    data = json.loads(function_response)
+                    if "elements" in data:
+                        elements = data["elements"]
+                        if elements == []:
+                            function_response = "Overpass query returned no results"
+                        else:
+                            # Overpass query worked! Passed!
+                            self.function_status_pass = True
+                    else:
+                        function_response = (
+                            "Overpass Query does not contain any elements"
+                        )
+
+            self.add_function_message(function_name, function_response)
+        else:
+            print("Function not found:", function_name)
+
     def is_valid_message(self, message):
-        # Check if the message content is a valid string. Add other conditions if necessary.
+        """Check if the message content is a valid JSON string"""
         if message.get("function_call"):
             if message["function_call"].get("arguments"):
                 function_args = message["function_call"]["arguments"]
@@ -198,12 +246,7 @@ class ChatBot:
             function_call="auto",
             n=n,
         )
-
-        if n == 1:
-            response_messages = [response["choices"][0]["message"]]
-        else:
-            # create a list with n response messages
-            response_messages = [choice["message"] for choice in response["choices"]]
+        response_messages = [choice["message"] for choice in response["choices"]]
 
         # Filter out invalid messages based on your condition
         valid_response_messages = [
@@ -217,56 +260,32 @@ class ChatBot:
 
         return valid_response_messages, invalid_response_messages
 
-    def execute_function(self, response_message):
-        self.function_status_pass = False
-
-        function_name = response_message["function_call"]["name"]
-        function_args = response_message["function_call"]["arguments"]
-
-        if function_name in self.functions:
-            function_to_call = self.functions[function_name]
-            try:
-                function_args_dict = json.loads(function_args)
-                json_failed = False
-            except json.JSONDecodeError as e:
-                json_failed = True
-                function_response = {
-                    "invalid args": str(e),
-                    "input": function_args,
-                }
-
-            if not json_failed:
-                # Specific checks for self.overpass_query()
-                if function_name == "overpass_query":
-                    function_response = function_to_call(**function_args_dict)
-                    data = json.loads(function_response)
-                    if "elements" in data:
-                        elements = data["elements"]
-                        if elements == []:
-                            function_response = "Overpass query returned no results"
-                        else:
-                            self.function_status_pass = True
-                    else:
-                        function_response = (
-                            "Overpass Query does not contain any elements"
-                        )
-
-            self.add_function_message(function_name, function_response)
-        else:
-            print("Function not found:", function_name)
-
     def run_conversation(self):
+        """Run this after every user message
+        originally had the following structure:
+        - create overpass query from user message
+        - do a function call and return the query result
+        - interpret the query result for the user.
+
+        To reduce failures due to hallucinated query formats, three queries are generated in
+        response to the first message and are run sequentially until one of them works.
+
+        As user messages get more complex, this may need to be broken down into smaller steps.
+        In its current form, the calls are built into a loop which feed each response from the
+        large language model back into the conversation history, so that the next response has
+        all the previous responses as context.
+        """
         print(
             "newest question:",
             [m["content"] for m in self.messages if m["role"] == "user"][-1],
         )
 
-        # Increase the n to 3 if this is the first user message, to increase chances of a working query
+        # Increase n to 3 if this is the first user message, to increase chances of a working query
         num_user_messages = sum(
             1 for message in self.messages if message["role"] == "user"
         )
         if num_user_messages == 1:
-            n = 3
+            n = 3  # return 3 responses to increase chances of success
             # the chat id is {timestamp}_{first question}
             self.id = self.id + "_" + self.messages[0]["content"]
         else:
@@ -274,11 +293,10 @@ class ChatBot:
         save_path = os.path.expanduser(f"~/naturalmaps_logs/{self.id}.json")
 
         """
+        ### UNDER CONSTRUCTION ###
         Change the code below to enable the language model
         to act as an agent and repeat actions until the goal is achieved
         """
-
-        ######
         counter = 0
         while counter < 5:
             print(counter)
@@ -315,8 +333,6 @@ class ChatBot:
 
 
 chatbot = ChatBot()
-# chatbot.add_user_message("are there any public toilets in Monbijoupark?")
-# print(chatbot.run_conversation())
 chatbot.add_user_message(
     "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
 )
