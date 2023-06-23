@@ -12,6 +12,7 @@ class ChatBot:
         assert openai.api_key, "Failed to find API keys"
 
         self.messages = []
+        self.overpass_queries = {}
         self.functions = {
             "get_current_weather": self.get_current_weather,
             "overpass_query": self.overpass_query,
@@ -116,11 +117,24 @@ class ChatBot:
         # Write Overpass API Call to JSON
         timestamp = self.get_timestamp()
         filepath = os.path.expanduser("~/naturalmaps_logs/overpass_query_log.json")
+        success = True if "error" not in data_str else False
+        returned_something = len(data["elements"]) > 0
+        self.overpass_queries[query] = {
+            "prompt": prompt,
+            "success": success,
+            "returned something": returned_something,
+            "data": data_str,
+        }
         self.save_to_json(
             file_path=filepath,
             timestamp=timestamp,
             prompt=prompt,
-            log={"query": query, "response": data_str},
+            log={
+                "query": query,
+                "response": data_str,
+                "query_success": success,
+                "returned_something": returned_something,
+            },
         )
 
         return data_str
@@ -191,23 +205,26 @@ class ChatBot:
             response_messages = [choice["message"] for choice in response["choices"]]
 
         # Filter out invalid messages based on your condition
-        response_messages = [
+        valid_response_messages = [
             msg for msg in response_messages if self.is_valid_message(msg)
         ]
+        invalid_response_messages = [
+            "invalid args"
+            for msg in response_messages
+            if not self.is_valid_message(msg)
+        ]
 
-        self.messages += response_messages
-        return response_messages
+        self.messages += valid_response_messages
+        return valid_response_messages, invalid_response_messages
 
     def execute_function(self, response_message):
         function_name = response_message["function_call"]["name"]
         function_args = response_message["function_call"]["arguments"]
-        print(function_args)
 
         if function_name in self.functions:
             function_to_call = self.functions[function_name]
             try:
                 function_args_dict = json.loads(function_args)
-                print(function_args)
                 json_failed = False
             except json.JSONDecodeError as e:
                 json_failed = True
@@ -232,8 +249,6 @@ class ChatBot:
             print("Function not found:", function_name)
 
     def run_conversation(self):
-        timestamp = self.get_timestamp()
-
         print(
             "newest question:",
             [m["content"] for m in self.messages if m["role"] == "user"][-1],
@@ -247,15 +262,19 @@ class ChatBot:
             n = 3
             # the chat id is {timestamp}_{first question}
             self.id = self.id + "_" + self.messages[0]["content"]
-            save_path = os.path.expanduser(f"~/naturalmaps_logs/{self.id}.json")
         else:
             n = 1
+        save_path = os.path.expanduser(f"~/naturalmaps_logs/{self.id}.json")
 
         # Process first message
-        response_messages = self.process_messages(n)
+        response_messages, invalid_ = self.process_messages(n)
         # save response of first message
+        timestamp = self.get_timestamp()
         self.save_to_json(
-            file_path=save_path, timestamp=timestamp, prompt=None, log=self.messages
+            file_path=save_path,
+            timestamp=timestamp,
+            prompt=None,
+            log={"valid_messages": self.messages, "invalid_messages": invalid_},
         )
 
         # Check if response includes a function call, and if yes, run it.
@@ -263,11 +282,19 @@ class ChatBot:
             if response_message.get("function_call"):
                 self.execute_function(response_message)
 
-        response_message = self.process_messages()
+        response_message, invalid_ = self.process_messages()
 
         # Save the processed response
+        timestamp = self.get_timestamp()
         self.save_to_json(
-            file_path=save_path, timestamp=timestamp, prompt=None, log=self.messages
+            file_path=save_path,
+            timestamp=timestamp,
+            prompt=None,
+            log={
+                "valid_messages": self.messages,
+                "invalid_messages": invalid_,
+                "overpass_queries": self.overpass_queries,
+            },
         )
         return response_message
 
@@ -275,5 +302,7 @@ class ChatBot:
 chatbot = ChatBot()
 chatbot.add_user_message("are there any public toilets in Monbijoupark?")
 print(chatbot.run_conversation())
-# chatbot.add_user_message("are there any ping pong tables in Monbijoupark? which one is closest to a toilet?")
-# print(chatbot.run_conversation())
+chatbot.add_user_message(
+    "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
+)
+print(chatbot.run_conversation())
