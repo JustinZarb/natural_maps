@@ -17,6 +17,7 @@ class ChatBot:
             "get_current_weather": self.get_current_weather,
             "overpass_query": self.overpass_query,
         }
+        self.function_status_pass = False  # Used to indicate function success
         self.function_metadata = [
             {
                 "name": "get_current_weather",
@@ -214,10 +215,11 @@ class ChatBot:
             if not self.is_valid_message(msg)
         ]
 
-        self.messages += valid_response_messages
         return valid_response_messages, invalid_response_messages
 
     def execute_function(self, response_message):
+        self.function_status_pass = False
+
         function_name = response_message["function_call"]["name"]
         function_args = response_message["function_call"]["arguments"]
 
@@ -234,15 +236,20 @@ class ChatBot:
                 }
 
             if not json_failed:
+                # Specific checks for self.overpass_query()
                 if function_name == "overpass_query":
                     function_response = function_to_call(**function_args_dict)
                     data = json.loads(function_response)
                     if "elements" in data:
                         elements = data["elements"]
                         if elements == []:
-                            function_response = "no result found"
+                            function_response = "Overpass query returned no results"
+                        else:
+                            self.function_status_pass = True
                     else:
-                        function_response = "no result found"
+                        function_response = (
+                            "Overpass Query does not contain any elements"
+                        )
 
             self.add_function_message(function_name, function_response)
         else:
@@ -266,42 +273,50 @@ class ChatBot:
             n = 1
         save_path = os.path.expanduser(f"~/naturalmaps_logs/{self.id}.json")
 
-        # Process first message
-        response_messages, invalid_ = self.process_messages(n)
-        # save response of first message
-        timestamp = self.get_timestamp()
-        self.save_to_json(
-            file_path=save_path,
-            timestamp=timestamp,
-            prompt=None,
-            log={"valid_messages": self.messages, "invalid_messages": invalid_},
-        )
+        """
+        Change the code below to enable the language model
+        to act as an agent and repeat actions until the goal is achieved
+        """
 
-        # Check if response includes a function call, and if yes, run it.
-        for response_message in response_messages:
-            if response_message.get("function_call"):
-                self.execute_function(response_message)
+        ######
+        counter = 0
+        while counter < 5:
+            print(counter)
+            # Process messages
+            response_messages, invalid_messages = self.process_messages(n)
+            self.messages += response_messages
 
-        response_message, invalid_ = self.process_messages()
+            # Check if response includes a function call, and if yes, run it.
+            for response_message in response_messages:
+                if response_message.get("function_call"):
+                    if self.function_status_pass:
+                        continue  # skips running the next API calls
+                    self.execute_function(response_message)
 
-        # Save the processed response
-        timestamp = self.get_timestamp()
-        self.save_to_json(
-            file_path=save_path,
-            timestamp=timestamp,
-            prompt=None,
-            log={
-                "valid_messages": self.messages,
-                "invalid_messages": invalid_,
-                "overpass_queries": self.overpass_queries,
-            },
-        )
+            response_message, invalid_messages = self.process_messages()
+
+            # Save the processed response
+            timestamp = self.get_timestamp()
+            self.save_to_json(
+                file_path=save_path,
+                timestamp=timestamp,
+                prompt=None,
+                log={
+                    "valid_messages": self.messages,
+                    "invalid_messages": invalid_messages,
+                    "overpass_queries": self.overpass_queries,
+                },
+            )
+            counter += 1
+            # if self.is_goal_achieved(response_message):
+            #    break
+
         return response_message
 
 
 chatbot = ChatBot()
-chatbot.add_user_message("are there any public toilets in Monbijoupark?")
-print(chatbot.run_conversation())
+# chatbot.add_user_message("are there any public toilets in Monbijoupark?")
+# print(chatbot.run_conversation())
 chatbot.add_user_message(
     "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
 )
