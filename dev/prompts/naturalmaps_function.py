@@ -62,27 +62,6 @@ def get_current_weather(location, unit="fahrenheit"):
     return json.dumps(weather_info)
 
 
-def save_to_json(file_path: str, timestamp: str, prompt: str, this_run_log: dict):
-    json_file_path = file_path
-    # Check if the file exists
-    if os.path.isfile(json_file_path):
-        # If it exists, open it and load the JSON data
-        with open(json_file_path, "r") as f:
-            data = json.load(f)
-    else:
-        # If it doesn't exist, create an empty dictionary
-        data = {}
-
-    # Add data for this run
-    this_run_name = f"{timestamp} | {prompt}"
-    data[this_run_name] = {
-        "log": this_run_log,
-    }
-
-    with open(json_file_path, "w") as f:
-        json.dump(data, f, indent=4)
-
-
 def run_conversation(messages: list):
     # Step 1: send the conversation and available functions to GPT
     functions = [
