@@ -44,17 +44,48 @@ class ChatBot:
                     "properties": {
                         "prompt": {
                             "type": "string",
-                            "description": "Serves no other purpose than logging",
+                            "description": "The user query for logging. DO NOT PARAPHRASE THIS!",
                         },
                         "query": {
                             "type": "string",
-                            "description": "The overpass QL query to execute",
+                            "description": "The overpass QL query to execute. Important: Ensure that this is a properly formatted .json string.",
                         },
                     },
                     "required": ["prompt", "query"],
                 },
             },
         ]
+        # Create a chatbot id using creation timestamp and first question
+        self.id = self.get_timestamp()
+
+    def save_to_json(self, file_path: str, timestamp: str, prompt: str, log: dict):
+        json_file_path = file_path
+
+        # Check if the folder exists and if not, create it.
+        folder_path = os.path.dirname(json_file_path)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+
+        # Check if the file exists
+        if os.path.isfile(json_file_path):
+            # If it exists, open it and load the JSON data
+            with open(json_file_path, "r") as f:
+                data = json.load(f)
+        else:
+            # If it doesn't exist, create an empty dictionary
+            data = {}
+
+        # Add data for this run
+        this_run_name = f"{timestamp} | {prompt}"
+        data[this_run_name] = {
+            "log": log,
+        }
+
+        with open(json_file_path, "w") as f:
+            json.dump(data, f, indent=4)
+
+    def get_timestamp(self):
+        return strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
     def get_openai_key_from_env(self):
         # Get api_key (saved locally)
@@ -83,12 +114,13 @@ class ChatBot:
         data_str = json.dumps(data)
 
         # Write Overpass API Call to JSON
-        timestamp = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        timestamp = self.get_timestamp()
+        filepath = os.path.expanduser("~/naturalmaps_logs/overpass_query_log.json")
         self.save_to_json(
-            file_path="~/naturalmaps_logs/overpass_query_log.json",
+            file_path=filepath,
             timestamp=timestamp,
             prompt=prompt,
-            this_run_log={"query": query, "response": data_str},
+            log={"query": query, "response": data_str},
         )
 
         return data_str
@@ -103,35 +135,6 @@ class ChatBot:
         }
         return json.dumps(weather_info)
 
-    def save_to_json(
-        self, file_path: str, timestamp: str, prompt: str, this_run_log: dict
-    ):
-        json_file_path = file_path
-
-        # Check if the folder exists and if not, create it.
-        folder_path = os.path.dirname(json_file_path)
-        folder_path = os.path.expanduser(folder_path)
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)
-
-        # Check if the file exists
-        if os.path.isfile(json_file_path):
-            # If it exists, open it and load the JSON data
-            with open(json_file_path, "r") as f:
-                data = json.load(f)
-        else:
-            # If it doesn't exist, create an empty dictionary
-            data = {}
-
-        # Add data for this run
-        this_run_name = f"{timestamp} | {prompt}"
-        data[this_run_name] = {
-            "log": this_run_log,
-        }
-
-        with open(json_file_path, "w") as f:
-            json.dump(data, f, indent=4)
-
     def add_user_message(self, content):
         self.messages.append({"role": "user", "content": content})
 
@@ -141,6 +144,21 @@ class ChatBot:
         )
 
     def process_messages(self, n=1):
+        """A general purpose function to prepare an answer based on all the previous messages
+
+        Issues: currently modifying the original prompt
+
+        Args:
+            n (int, optional): Changes the number of responses from GPT.
+            Increasing this raises the chances tha one answer will generate
+            a valid api call from Overpass, but will also increase the cost.
+            Defaults to 1. Set to 3 if the message is the first one, in the future
+            this could be changed to run whenever the overpass_query function
+            is called.
+
+        Returns:
+            _type_: _description_
+        """
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
             messages=self.messages,
@@ -191,22 +209,43 @@ class ChatBot:
             print("Function not found:", function_name)
 
     def run_conversation(self):
+        timestamp = self.get_timestamp()
+
+        print(
+            "newest question:",
+            [m["content"] for m in self.messages if m["role"] == "user"][-1],
+        )
+
         # Increase the n to 3 if this is the first user message, to increase chances of a working query
-        print([message for message in self.messages if message["role"] == "user"])
         num_user_messages = sum(
             1 for message in self.messages if message["role"] == "user"
         )
+        if num_user_messages == 1:
+            n = 3
+            # the chat id is {timestamp}_{first question}
+            self.id = self.id + "_" + self.messages[0]["content"]
+            save_path = os.path.expanduser(f"~/naturalmaps_logs/{self.id}.json")
+        else:
+            n = 1
 
-        n = 3 if num_user_messages == 1 else 1
-        print("n=", n)
+        # Process first message
         response_messages = self.process_messages(n)
+        # save response of first message
+        self.save_to_json(
+            file_path=save_path, timestamp=timestamp, prompt=None, log=self.messages
+        )
 
+        # Check if response includes a function call, and if yes, run it.
         for response_message in response_messages:
             if response_message.get("function_call"):
                 self.execute_function(response_message)
 
         response_message = self.process_messages()
 
+        # Save the processed response
+        self.save_to_json(
+            file_path=save_path, timestamp=timestamp, prompt=None, log=self.messages
+        )
         return response_message
 
 
