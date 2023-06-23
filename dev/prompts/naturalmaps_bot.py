@@ -44,7 +44,7 @@ class ChatBot:
                     "properties": {
                         "prompt": {
                             "type": "string",
-                            "description": "The user query for logging. DO NOT PARAPHRASE THIS!",
+                            "description": "The user message. Used for logging. Do not paraphrase.",
                         },
                         "query": {
                             "type": "string",
@@ -143,6 +143,21 @@ class ChatBot:
             {"role": "function", "name": function_name, "content": content}
         )
 
+    def is_valid_message(self, message):
+        # Check if the message content is a valid string. Add other conditions if necessary.
+        if message.get("function_call"):
+            if message["function_call"].get("arguments"):
+                function_args = message["function_call"]["arguments"]
+                if isinstance(function_args, str):
+                    try:
+                        json.loads(function_args)  # Attempt to parse the JSON string
+                        return True  # Return True if it's a valid JSON string
+                    except json.JSONDecodeError:
+                        return False  # Return False if it's not a valid JSON string
+            return False
+        else:
+            return True
+
     def process_messages(self, n=1):
         """A general purpose function to prepare an answer based on all the previous messages
 
@@ -159,6 +174,8 @@ class ChatBot:
         Returns:
             _type_: _description_
         """
+
+        # This breaks if the messages are not valid
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
             messages=self.messages,
@@ -169,9 +186,15 @@ class ChatBot:
 
         if n == 1:
             response_messages = [response["choices"][0]["message"]]
-
         else:
+            # create a list with n response messages
             response_messages = [choice["message"] for choice in response["choices"]]
+
+        # Filter out invalid messages based on your condition
+        response_messages = [
+            msg for msg in response_messages if self.is_valid_message(msg)
+        ]
+
         self.messages += response_messages
         return response_messages
 
