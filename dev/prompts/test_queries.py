@@ -1,4 +1,4 @@
-from dev.prompts.openai_function_calls_function import run_prompt
+from dev.prompts.naturalmaps_function import run_prompt  # change to naturalmaps_bot
 import pandas as pd
 
 prompts = pd.read_csv("prompts.csv")

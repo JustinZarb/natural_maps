@@ -1,131 +1,131 @@
-promptType,prompt
-Basic Query,Find all the ping pong tables in Monbijoupark
-Basic Query,Find all the public toilets in Monbijoupark
-Basic Query,"Find bike parking near tech parks in Kreuzberg, Berlin"
-Basic Query,"Show me locations of farmers markets in Neukölln, Berlin"
-Basic Query,"Display historical buildings in Mitte, Berlin"
-Basic Query,"Show me the hiking trails in Grunewald, Berlin"
-Basic Query,"Find hospitals and clinics in Charlottenburg, Berlin"
-Basic Query,"Show me schools and libraries in Prenzlauer Berg, Berlin"
-Basic Query,"Display all newspaper offices in Friedrichshain, Berlin"
-Basic Query,"Show me parks and recreational areas in Tiergarten, Berlin"
-Basic Query,"Find gyms and sports facilities in Schöneberg, Berlin"
-Basic Query,"Show me music venues and recording studios in Friedrichshain-Kreuzberg, Berlin"
-Basic Query,"Find affordable grocery stores in Neukölln, Berlin"
-Basic Query,"Show me locations of job centers in Marzahn-Hellersdorf, Berlin"
-Basic Query,"Find child-friendly parks in Pankow, Berlin"
-Basic Query,What is the current distribution of EV charging stations in Kreuzberg?
-Basic Query,What is the current distribution of public art in Kreuzberg?
-Basic Query,What is the current distribution of wellness facilities in Kreuzberg?
-Basic Query,What is the current distribution of bike lanes in Kreuzberg?
-Climate Resilience,How are EV charging stations in Mitte distributed in relation to flood-prone areas?
-Climate Resilience,How are public art installations in Mitte distributed in relation to areas prone to heat waves?
-Climate Resilience,How are wellness facilities in Mitte distributed in relation to flood-prone areas?
-Climate Resilience,How are bike lanes in Mitte distributed in relation to areas prone to heat waves?
-find all (complex),Find all public benches in parks in Kreuzberg that are next to a lake and have a clear view to the west.
-find all (complex),Find all locations in Neukölln where a food truck is allowed to park within 50m of a public park.
-find all (complex),Find all pairs of trees in public parks in Prenzlauer Berg which are between 2 and 5 m apart and would be ideal to hang a hammock.
-find all (complex),Find all pedestrian bridges in Mitte that are over canals at least 10m wide.
-find all (complex),Find all squares in Friedrichshain that are surrounded by at least 5 cafes within a radius of 100m.
-find all (complex),Find all bicycle racks in Charlottenburg that are within 50m of a canal and have at least 10 spaces.
-find all (complex),Find all locations in Schöneberg where a pedestrian can cross the street within 500m of a subway station.
-find all (complex),Find all public fountains in Tiergarten that are within a 200m radius of an ice cream shop.
-find all (complex),Find all bus stops in Wedding that are within 50m of a pub.
-find all (complex),Find all public parks in Köpenick that are within 200m of a beach.
-find all (complex),Find all quiet places (no main roads within 200m) in Spandau that have at least one bench and one tree.
-find all (complex),Find all hills in Zehlendorf with a gradient of more than 10% that are within 100m of a tram stop.
-find all (complex),Find all spots in Tempelhof that are more than 200m away from any path and would be suitable for bird watching.
-find all (complex),Find all buildings in Mitte that are more than 50m high and less than 100m from a U-Bahn station.
-find all (complex),Find all the bus stops in Reinickendorf that are within a 100m radius of a coffee shop that opens before 7 AM.
-find all (complex),Find all public spaces in Kreuzberg that are surrounded by at least three Doner Kebab shops within a radius of 200m.
-find all (complex),Find all the quietest spots (at least 200m away from any road) in Pankow's public parks.
-find all (complex),"Find all the pedestrian paths in Charlottenburg that are at least 2km long, pass through a park, and have at least 3 pubs along the route."
-find all (complex),Find all places in Neukölln where you can stand on a bridge and see at least two other bridges.
-find all (complex),"Find all the points in Brandenburg's Spreewald from which you can see the Spree River, but are at least 1km away from any public path."
-Food,Find all restaurants that offer both indoor and outdoor seating and are wheelchair accessible.
-Food,Identify restaurants that have vegan options and are open after 20:00.
-Food,List all the restaurants that offer Italian cuisine and have a website for more information.
-Food,Find restaurants that are open on Sundays and have outdoor seating for a nice brunch.
-Food,Identify restaurants that offer Asian cuisine and have a unique feature like being a microbrewery.
-Food,Find restaurants that are open throughout the week and offer payment options like Mastercard and Visa.
-Food,Identify restaurants that have a changing table and are open during the day for a family lunch.
-Food,Find restaurants that are open on weekdays till late night for planning a dinner meeting.
-Food,Identify restaurants that offer Wi-Fi and have indoor seating for a working lunch.
-Food,Find restaurants that are open on weekends till late night for planning a get-together.
-Food,Identify restaurants that have a website and offer online reservation options.
-Food,Find restaurants that offer vegan options and are planning to expand their menu.
-Food,Identify restaurants that offer vegetarian options and are open during the day for a healthy lunch.
-public transport,"Where are the noisiest parts of our district, and how can we tweak public transport routes to help bring down the noise levels?"
-public transport,Which parts of our district have the worst air quality? Can we improve public transport in these areas to cut down on car usage?
-public transport,How can we use environmental data to show the public the positive impact of using public transport?
-public transport,"What are the hard-to-reach areas in our district, and how can we improve public transport links to these places?"
-public transport,How can we use environmental data to encourage more people to use public transport and make our district greener?
-public transport,"Which parts of our district are most at risk from climate change, and how can we use public transport to help mitigate this?"
-public transport,Can we identify any patterns between areas with poor air quality and low public transport usage?
-public transport,Are there areas in our district where increased public transport could significantly reduce noise pollution?
-public transport,Are there correlations between areas with high car usage and high levels of air pollution?
-public transport,What specific steps can we take to improve public transport in areas with poor air quality?
-public transport,How can we leverage technology to monitor and improve the environmental impact of our public transport systems?
-public transport,"Can we envision a future where our district is both environmentally friendly and has a robust, efficient public transport system? What steps do we need to take to get there?"
-public transport,How can we improve the routes and accessibility of public transport to promote healthier lifestyles and improve the overall wellness of our district's residents?
-Spatial Relations,Find bike parking spots in Berlin that are within 500 meters of a tech park
-Spatial Relations,Show me locations of farmers markets in Berlin that are within 1 km of a popular restaurant
-Spatial Relations,Display historical buildings in Berlin that are less than 2 km from the Berlin Wall
-Spatial Relations,Show me the hiking trails in Berlin that are within 1 km of a lake
-Spatial Relations,Find hospitals in Berlin that are within 500 meters of a pharmacy
-Spatial Relations,Show me schools in Berlin that are within 1 km of a library
-Spatial Relations,Display all newspaper offices in Berlin that are within 2 km of the government district
-Spatial Relations,Show me parks in Berlin that have benches and trees 2-5m apart for hanging a hammock
-Spatial Relations,Find gyms in Berlin that are within 500 meters of a health food store
-Spatial Relations,Show me music venues in Berlin that are within 1 km of a recording studio
-Spatial Relations,Find affordable grocery stores in Berlin that are within 1 km of a public transport stop
-Spatial Relations,Show me locations of job centers in Berlin that are within 2 km of a language school
-Spatial Relations,Find child-friendly parks in Berlin that are within 1 km of a school
-Spatial Relations,Which areas in Neukölln have the least access to EV charging stations?
-Spatial Relations,Which areas in Neukölln have the least access to public art?
-Spatial Relations,Which areas in Neukölln have the least access to wellness facilities?
-Spatial Relations,Which areas in Neukölln have the least access to bike lanes?
-Sustainability,What is the carbon emission reduction potential if we increase the number of EV charging stations in Charlottenburg?
-Sustainability,How does the presence of public art installations in Charlottenburg correlate with the use of sustainable transport options?
-Sustainability,What is the potential impact on public health if we increase the number of wellness facilities in Charlottenburg?
-Sustainability,What is the carbon emission reduction potential if we increase the number of bike lanes in Charlottenburg?
-Umweltatlas clean,Find bike parking spots in Kreuzberg that are within 500 meters of a tech park and in areas with low noise pollution according to the Umweltatlas maps
-Umweltatlas clean,Show me locations of farmers markets in Prenzlauer Berg that are within 1 km of a popular restaurant and in areas with high green space according to the Umweltatlas maps
-Umweltatlas clean,Display historical buildings in Mitte that are less than 2 km from the Berlin Wall and in areas with high cultural significance according to the Umweltatlas maps
-Umweltatlas clean,Show me the hiking trails in Grunewald that are within 1 km of a lake and in areas with high biodiversity according to the Umweltatlas maps
-Umweltatlas clean,Find hospitals in Charlottenburg that are within 500 meters of a pharmacy and in areas with good public transport access according to the Umweltatlas maps
-Umweltatlas clean,Show me schools in Friedrichshain that are within 1 km of a library and in areas with low traffic volume according to the Umweltatlas maps
-Umweltatlas clean,Display all newspaper offices in Mitte that are within 2 km of the government district and in areas with high population density according to the Umweltatlas maps
-Umweltatlas clean,Show me parks in Neuk�lln that have benches and trees 2-5m apart for hanging a hammock and in areas with low air pollution according to the Umweltatlas maps
-Umweltatlas clean,Find gyms in Sch�neberg that are within 500 meters of a health food store and in areas with high pedestrian safety according to the Umweltatlas maps
-Umweltatlas clean,Show me music venues in Friedrichshain that are within 1 km of a recording studio and in areas with high nightlife activity according to the Umweltatlas maps
-Umweltatlas Organic,How does the distribution of EV charging stations correlate with green spaces in Prenzlauer Berg?
-Umweltatlas Organic,How does the distribution of public art correlate with green spaces in Prenzlauer Berg?
-Umweltatlas Organic,How does the distribution of wellness facilities correlate with green spaces in Prenzlauer Berg?
-Umweltatlas Organic,How does the distribution of bike lanes correlate with green spaces in Prenzlauer Berg?
-Umweltatlas Organic,Find a quiet place to park my bike near a tech park in Kreuzberg.
-Umweltatlas Organic,"Show me farmers markets near popular restaurants in Prenzlauer Berg, preferably in a green and pleasant area."
-Umweltatlas Organic,"Find historical buildings in Mitte, especially those near the Berlin Wall, in culturally significant areas."
-Umweltatlas Organic,Find hiking trails in Grunewald that are close to a lake and surrounded by diverse wildlife.
-Umweltatlas Organic,Find hospitals in Charlottenburg that are close to a pharmacy and easily accessible by public transport.
-Umweltatlas Organic,Find schools in Friedrichshain that are close to a library and in a quiet area with low traffic.
-Umweltatlas Organic,"Find newspaper offices in Mitte that are close to the government district and in a busy, populated area."
-Umweltatlas Organic,Show me parks in Neukölln where I can hang my hammock between trees and where the air is clean.
-Umweltatlas Organic,Find gyms in Schöneberg that are close to a health food store and in a safe area for pedestrians.
-Umweltatlas Organic,Find music venues in Friedrichshain that are close to a recording studio and in an area with a vibrant nightlife.
-Umweltatlas Organic,Find affordable grocery stores in Neukölln that are close to a bus or train stop.
-Umweltatlas Organic,"Show me job centers near language schools in Wedding, preferably in a diverse neighborhood."
-Umweltatlas Organic,"Find child-friendly parks near schools in Marzahn, preferably in a quiet area with low traffic."
-Food,Find a restaurant that opens early in the morning and has a changing table for babies.
-Food,List vegan-friendly restaurants.
-Food,Find a restaurant that is wheelchair accessible.
-Food,Which Italian restaurants are there?
-Food,Which restaurants offer outdoor seating?
-Food,Which restaurants are open until midnight or later?
-Food,Which restaurants offer vegetarian options?
-Food,Are there any Asian restaurants?
-Food,I'm looking for a restaurant that accepts debit cards or contactless payments.
-Food,Can you find restaurants that have their menu on their website?
-Food,I'm looking for a restaurant that serves Austrian cuisine.
-Food,I prefer restaurants where smoking is not allowed. Can you find such restaurants?
-Food,Are there any restaurants that offer live music?
+promptType,prompt,Output on map,Interesting metrics
+Basic Query,Find all the ping pong tables in Monbijoupark,"points, one color",
+Basic Query,Find all the public toilets in Monbijoupark,"points, one color",
+Basic Query,"Find bike parking near tech parks in Kreuzberg, Berlin","points and areas, two colors",
+Basic Query,"Show me locations of farmers markets in Neukölln, Berlin","points, one color",
+Basic Query,"Display historical buildings in Mitte, Berlin","points, one color",
+Basic Query,"Show me the hiking trails in Grunewald, Berlin",paths,
+Basic Query,"Find hospitals and clinics in Charlottenburg, Berlin","points, two colors",
+Basic Query,"Show me schools and libraries in Prenzlauer Berg, Berlin","points, two colors",
+Basic Query,"Display all newspaper offices in Friedrichshain, Berlin","points, one color",
+Basic Query,"Show me parks and recreational areas in Tiergarten, Berlin","points, areas, multiple colors",
+Basic Query,"Find gyms and sports facilities in Schöneberg, Berlin","points, two colors",
+Basic Query,"Show me music venues and recording studios in Friedrichshain-Kreuzberg, Berlin","points, two colors",
+Basic Query,"Find affordable grocery stores in Neukölln, Berlin","points, color gradient",
+Basic Query,"Show me locations of job centers in Marzahn-Hellersdorf, Berlin",points,
+Basic Query,"Find child-friendly parks in Pankow, Berlin","points, one color",
+Basic Query,What is the current distribution of EV charging stations in Kreuzberg?,points and/or heatmap,
+Basic Query,What is the current distribution of public art in Kreuzberg?,points and/or heatmap,
+Basic Query,What is the current distribution of wellness facilities in Kreuzberg?,points and/or heatmap,
+Basic Query,What is the current distribution of bike lanes in Kreuzberg?,paths and/or heatmap,
+Climate Resilience,How are EV charging stations in Mitte distributed in relation to flood-prone areas?,points and heatmap,
+Climate Resilience,How are fountains in Mitte distributed in relation to areas prone to heat waves?,points and heatmap,"fountains per km² in high, medium and low heat risk areas"
+Climate Resilience,How are wellness facilities in Mitte distributed in relation to flood-prone areas?,points and heatmap,
+Climate Resilience,How are bike lanes in Mitte distributed in relation to areas prone to heat waves?,paths with colored segments and choropleth,
+find all (complex),Find all public benches in parks in Kreuzberg that are next to a lake and have a clear view to the west.,"points, areas, color gradient",
+find all (complex),Find all locations in Neukölln where a food truck is allowed to park within 50m of a public park.,,
+find all (complex),Find all pairs of trees in public parks in Prenzlauer Berg which are between 2 and 5 m apart and would be ideal to hang a hammock.,,
+find all (complex),Find all pedestrian bridges in Mitte that are over canals at least 10m wide.,,
+find all (complex),Find all squares in Friedrichshain that are surrounded by at least 5 cafes within a radius of 100m.,,
+find all (complex),Find all bicycle racks in Charlottenburg that are within 50m of a canal and have at least 10 spaces.,,
+find all (complex),Find all locations in Schöneberg where a pedestrian can cross the street within 500m of a subway station.,,
+find all (complex),Find all public fountains in Tiergarten that are within a 200m radius of an ice cream shop.,,
+find all (complex),Find all bus stops in Wedding that are within 50m of a pub.,,
+find all (complex),Find all public parks in Köpenick that are within 200m of a beach.,,
+find all (complex),Find all quiet places (no main roads within 200m) in Spandau that have at least one bench and one tree.,,
+find all (complex),Find all hills in Zehlendorf with a gradient of more than 10% that are within 100m of a tram stop.,,
+find all (complex),Find all spots in Tempelhof that are more than 200m away from any path and would be suitable for bird watching.,,
+find all (complex),Find all buildings in Mitte that are more than 50m high and less than 100m from a U-Bahn station.,,
+find all (complex),Find all the bus stops in Reinickendorf that are within a 100m radius of a coffee shop that opens before 7 AM.,,
+find all (complex),Find all public spaces in Kreuzberg that are surrounded by at least three Doner Kebab shops within a radius of 200m.,,
+find all (complex),Find all the quietest spots (at least 200m away from any road) in Pankow's public parks.,,
+find all (complex),"Find all the pedestrian paths in Charlottenburg that are at least 2km long, pass through a park, and have at least 3 pubs along the route.",,
+find all (complex),Find all places in Neukölln where you can stand on a bridge and see at least two other bridges.,,
+find all (complex),"Find all the points in Brandenburg's Spreewald from which you can see the Spree River, but are at least 1km away from any public path.",,
+Food,Find all restaurants that offer both indoor and outdoor seating and are wheelchair accessible.,,
+Food,Identify restaurants that have vegan options and are open after 20:00.,,
+Food,List all the restaurants that offer Italian cuisine and have a website for more information.,,
+Food,Find restaurants that are open on Sundays and have outdoor seating for a nice brunch.,,
+Food,Identify restaurants that offer Asian cuisine and have a unique feature like being a microbrewery.,,
+Food,Find restaurants that are open throughout the week and offer payment options like Mastercard and Visa.,,
+Food,Identify restaurants that have a changing table and are open during the day for a family lunch.,,
+Food,Find restaurants that are open on weekdays till late night for planning a dinner meeting.,,
+Food,Identify restaurants that offer Wi-Fi and have indoor seating for a working lunch.,,
+Food,Find restaurants that are open on weekends till late night for planning a get-together.,,
+Food,Identify restaurants that have a website and offer online reservation options.,,
+Food,Find restaurants that offer vegan options and are planning to expand their menu.,,
+Food,Identify restaurants that offer vegetarian options and are open during the day for a healthy lunch.,,
+public transport,"Where are the noisiest parts of our district, and how can we tweak public transport routes to help bring down the noise levels?",,
+public transport,Which parts of our district have the worst air quality? Can we improve public transport in these areas to cut down on car usage?,,
+public transport,How can we use environmental data to show the public the positive impact of using public transport?,,
+public transport,"What are the hard-to-reach areas in our district, and how can we improve public transport links to these places?",,
+public transport,How can we use environmental data to encourage more people to use public transport and make our district greener?,,
+public transport,"Which parts of our district are most at risk from climate change, and how can we use public transport to help mitigate this?",,
+public transport,Can we identify any patterns between areas with poor air quality and low public transport usage?,,
+public transport,Are there areas in our district where increased public transport could significantly reduce noise pollution?,,
+public transport,Are there correlations between areas with high car usage and high levels of air pollution?,,
+public transport,What specific steps can we take to improve public transport in areas with poor air quality?,,
+public transport,How can we leverage technology to monitor and improve the environmental impact of our public transport systems?,,
+public transport,"Can we envision a future where our district is both environmentally friendly and has a robust, efficient public transport system? What steps do we need to take to get there?",,
+public transport,How can we improve the routes and accessibility of public transport to promote healthier lifestyles and improve the overall wellness of our district's residents?,,
+Spatial Relations,Find bike parking spots in Berlin that are within 500 meters of a tech park,,
+Spatial Relations,Show me locations of farmers markets in Berlin that are within 1 km of a popular restaurant,,
+Spatial Relations,Display historical buildings in Berlin that are less than 2 km from the Berlin Wall,,
+Spatial Relations,Show me the hiking trails in Berlin that are within 1 km of a lake,,
+Spatial Relations,Find hospitals in Berlin that are within 500 meters of a pharmacy,,
+Spatial Relations,Show me schools in Berlin that are within 1 km of a library,,
+Spatial Relations,Display all newspaper offices in Berlin that are within 2 km of the government district,,
+Spatial Relations,Show me parks in Berlin that have benches and trees 2-5m apart for hanging a hammock,,
+Spatial Relations,Find gyms in Berlin that are within 500 meters of a health food store,,
+Spatial Relations,Show me music venues in Berlin that are within 1 km of a recording studio,,
+Spatial Relations,Find affordable grocery stores in Berlin that are within 1 km of a public transport stop,,
+Spatial Relations,Show me locations of job centers in Berlin that are within 2 km of a language school,,
+Spatial Relations,Find child-friendly parks in Berlin that are within 1 km of a school,,
+Spatial Relations,Which areas in Neukölln have the least access to EV charging stations?,,
+Spatial Relations,Which areas in Neukölln have the least access to public art?,,
+Spatial Relations,Which areas in Neukölln have the least access to wellness facilities?,,
+Spatial Relations,Which areas in Neukölln have the least access to bike lanes?,,
+Sustainability,What is the carbon emission reduction potential if we increase the number of EV charging stations in Charlottenburg?,,
+Sustainability,How does the presence of public art installations in Charlottenburg correlate with the use of sustainable transport options?,,
+Sustainability,What is the potential impact on public health if we increase the number of wellness facilities in Charlottenburg?,,
+Sustainability,What is the carbon emission reduction potential if we increase the number of bike lanes in Charlottenburg?,,
+Umweltatlas clean,Find bike parking spots in Kreuzberg that are within 500 meters of a tech park and in areas with low noise pollution according to the Umweltatlas maps,,
+Umweltatlas clean,Show me locations of farmers markets in Prenzlauer Berg that are within 1 km of a popular restaurant and in areas with high green space according to the Umweltatlas maps,,
+Umweltatlas clean,Display historical buildings in Mitte that are less than 2 km from the Berlin Wall and in areas with high cultural significance according to the Umweltatlas maps,,
+Umweltatlas clean,Show me the hiking trails in Grunewald that are within 1 km of a lake and in areas with high biodiversity according to the Umweltatlas maps,,
+Umweltatlas clean,Find hospitals in Charlottenburg that are within 500 meters of a pharmacy and in areas with good public transport access according to the Umweltatlas maps,,
+Umweltatlas clean,Show me schools in Friedrichshain that are within 1 km of a library and in areas with low traffic volume according to the Umweltatlas maps,,
+Umweltatlas clean,Display all newspaper offices in Mitte that are within 2 km of the government district and in areas with high population density according to the Umweltatlas maps,,
+Umweltatlas clean,Show me parks in Neuk�lln that have benches and trees 2-5m apart for hanging a hammock and in areas with low air pollution according to the Umweltatlas maps,,
+Umweltatlas clean,Find gyms in Sch�neberg that are within 500 meters of a health food store and in areas with high pedestrian safety according to the Umweltatlas maps,,
+Umweltatlas clean,Show me music venues in Friedrichshain that are within 1 km of a recording studio and in areas with high nightlife activity according to the Umweltatlas maps,,
+Umweltatlas Organic,How does the distribution of EV charging stations correlate with green spaces in Prenzlauer Berg?,,
+Umweltatlas Organic,How does the distribution of public art correlate with green spaces in Prenzlauer Berg?,,
+Umweltatlas Organic,How does the distribution of wellness facilities correlate with green spaces in Prenzlauer Berg?,,
+Umweltatlas Organic,How does the distribution of bike lanes correlate with green spaces in Prenzlauer Berg?,,
+Umweltatlas Organic,Find a quiet place to park my bike near a tech park in Kreuzberg.,,
+Umweltatlas Organic,"Show me farmers markets near popular restaurants in Prenzlauer Berg, preferably in a green and pleasant area.",,
+Umweltatlas Organic,"Find historical buildings in Mitte, especially those near the Berlin Wall, in culturally significant areas.",,
+Umweltatlas Organic,Find hiking trails in Grunewald that are close to a lake and surrounded by diverse wildlife.,,
+Umweltatlas Organic,Find hospitals in Charlottenburg that are close to a pharmacy and easily accessible by public transport.,,
+Umweltatlas Organic,Find schools in Friedrichshain that are close to a library and in a quiet area with low traffic.,,
+Umweltatlas Organic,"Find newspaper offices in Mitte that are close to the government district and in a busy, populated area.",,
+Umweltatlas Organic,Show me parks in Neukölln where I can hang my hammock between trees and where the air is clean.,,
+Umweltatlas Organic,Find gyms in Schöneberg that are close to a health food store and in a safe area for pedestrians.,,
+Umweltatlas Organic,Find music venues in Friedrichshain that are close to a recording studio and in an area with a vibrant nightlife.,,
+Umweltatlas Organic,Find affordable grocery stores in Neukölln that are close to a bus or train stop.,,
+Umweltatlas Organic,"Show me job centers near language schools in Wedding, preferably in a diverse neighborhood.",,
+Umweltatlas Organic,"Find child-friendly parks near schools in Marzahn, preferably in a quiet area with low traffic.",,
+Food,Find a restaurant that opens early in the morning and has a changing table for babies.,,
+Food,List vegan-friendly restaurants.,,
+Food,Find a restaurant that is wheelchair accessible.,,
+Food,Which Italian restaurants are there?,,
+Food,Which restaurants offer outdoor seating?,,
+Food,Which restaurants are open until midnight or later?,,
+Food,Which restaurants offer vegetarian options?,,
+Food,Are there any Asian restaurants?,,
+Food,I'm looking for a restaurant that accepts debit cards or contactless payments.,,
+Food,Can you find restaurants that have their menu on their website?,,
+Food,I'm looking for a restaurant that serves Austrian cuisine.,,
+Food,I prefer restaurants where smoking is not allowed. Can you find such restaurants?,,
+Food,Are there any restaurants that offer live music?,,
