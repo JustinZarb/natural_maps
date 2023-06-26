@@ -12,6 +12,7 @@ import plotly.express as px
 import osmnx as ox
 import folium
 import contextily as cx
+from shapely.geometry import Polygon, Point, LineString
 
 
 def overpass_query(query):
@@ -35,10 +36,12 @@ def bbox_from_st_data(bounds):
     return bbox
 
 
-def map_location(place_name):
+def name_to_gdf(place_name):
     # Use OSMnx to geocode the location
-    gdf = ox.geocode_to_gdf(place_name)
+    return ox.geocode_to_gdf(place_name)
 
+
+def map_location(gdf):
     # Get the geometry type of the location
     geometry_type = gdf["geometry"].iloc[0].geom_type
 
@@ -55,11 +58,10 @@ def map_location(place_name):
         minx, miny, maxx, maxy = gdf["geometry"].iloc[0].bounds
         m = folium.Map(location=[(miny + maxy) / 2, (minx + maxx) / 2], width="100")
         m.fit_bounds([[miny, minx], [maxy, maxx]])
-        folium.GeoJson(gdf).add_to(m)
 
-    st_data = st_folium(m)
-
-    return st_data
+        # add the geojson to the map. this breaks things afterwards
+        # folium.GeoJson(gdf).add_to(m)
+    return m
 
 
 def count_tag_frequency(data, tag=None):
@@ -102,12 +104,18 @@ def generate_wordcloud(frequency_dict):
     return wordcloud
 
 
-def get_unique_tags_in_bbox(bbox: list):
+def get_nodes_with_tags_in_bbox(bbox: list):
     """Get unique tag keys within a bounding box and plot the top 200 in a wordcloud
+    In this case it is necessary to run a query in overpass because
+    osmnx.geometries.geometries_from_bbox requires an input for "tags", but here
+    we want to get all of them.
+
+    ToDo: Limit the query size
+
     returns:
         data: the query response in json format
     """
-    # Run overpass query for the given bounding box
+
     overpass_url = "http://overpass-api.de/api/interpreter"
     overpass_query = f"""
     [out:json];
@@ -135,39 +143,55 @@ def get_tags(place_name, tags_keys):
     return objects
 
 
+def add_nodes_to_map(m: folium.Map, bbox: list, tags: dict):
+    """_summary_
+
+    Args:
+        m (folium.map): st.folium map to modify
+        bbox (list): bounding box returned by streamlit folium
+        tags (dict): a dictionary of tags to add to the map
+
+    Returns:
+
+    """
+    # bbox = [S, W, N, E]
+    west = bbox[1]
+    south = bbox[0]
+    north = bbox[2]
+    east = bbox[3]
+
+    poly_from_bbox = Polygon(
+        [(west, south), (east, south), (east, north), (west, north)]
+    )
+
+    geometries = ox.geometries_from_polygon(poly_from_bbox, tags)
+
+    points = []
+    # Add geometries to m
+    for _, row in geometries.iterrows():
+        for tag in tags:
+            if tag in row and row[tag]:
+                # If the geometry is a point, add a CircleMarker
+                if isinstance(row["geometry"], Point):
+                    x, y = list(row["geometry"].coords)[0]
+                    points.append(
+                        folium.CircleMarker(
+                            location=[y, x],
+                            radius=5,
+                            fill=True,
+                            fill_color="red",
+                            fill_opacity=1.0,
+                            popup=tag,
+                        )
+                    )
+
+    return points
+
+
 def plot_network(place_name):
     G = ox.graph_from_place(place_name, network_type="drive")
     fig, ax = ox.plot_graph(ox.project_graph(G), show=False, close=False)
     st.pyplot(fig)
-
-
-def simple_folium_map():
-    st.markdown(
-        """Using Folium to display the map itself, and streamlit_folium to return \
-            some data from interactions with the map. """
-    )
-
-    center = {"lat": 52.49881139119491, "lng": 13.33718776702881}
-    button_push = st.button(label="Show pharmacies")
-
-    if button_push:
-        st.text("running query...")
-        data = query_pharmacies_in_bbox(bbox)
-        st.text(f"{len(data)} results found")
-        ## Add a marker for each node
-        for element in data["elements"]:
-            st.text(element)
-            if "lat" in element and "lon" in element:
-                marker = folium.Marker(location=[element["lat"], element["lon"]])
-                marker.add_to(m)
-
-    m = folium.Map(location=list(center.values()), zoom_start=16)
-    st_data = st_folium(m, width=725)
-    bbox = bbox_from_stfolium_bounds(st_data["bounds"])
-    st.text(bbox)
-
-    # Show the map after adding the markers
-    # st_folium(m, width=725)
 
 
 #### Older functions
