@@ -189,6 +189,7 @@ class ChatBot:
             _type_: _description_
         """
 
+        # Fine tuning docs here: https://platform.openai.com/docs/api-reference/chat/create
         # This breaks if the messages are not valid
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
@@ -196,6 +197,8 @@ class ChatBot:
             functions=self.function_metadata,
             function_call="auto",
             n=n,
+            temperature=0.7,  # recommended to NOT use both temperature and top_p
+            # top_p=0.5,
         )
 
         if n == 1:
@@ -299,10 +302,17 @@ class ChatBot:
         return response_message
 
 
+# Testing Chatbot messages here
 chatbot = ChatBot()
-chatbot.add_user_message("are there any public toilets in Monbijoupark?")
+# chatbot.add_user_message("are there any public toilets in Monbijoupark?")
+
+# chatbot.add_user_message("show me the ping pong tables and toilets in Monbijoupark?")
+
+chatbot.add_user_message("show me the ping pong tables in Gleisdreieck Park?")
+
 print(chatbot.run_conversation())
-chatbot.add_user_message(
-    "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
-)
-print(chatbot.run_conversation())
+
+# chatbot.add_user_message(
+#     "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
+# )
+# print(chatbot.run_conversation())
