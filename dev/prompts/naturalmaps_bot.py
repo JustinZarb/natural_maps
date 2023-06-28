@@ -19,6 +19,27 @@ class ChatBot:
         }
         self.function_metadata = [
             {
+                "name": "overpass_query",
+                "description": """Turn the user's message into an overpass QL query.
+            To improve chances of success, run this multiple times for simpler queries.
+            example prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
+            """,
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "prompt": {
+                            "type": "string",
+                            "description": "The user message. Do not paraphrase.",
+                        },
+                        "query": {
+                            "type": "string",
+                            "description": "The overpass QL query to be executed. Important: Ensure that this is a properly formatted .json string.",
+                        },
+                    },
+                    "required": ["prompt", "query"],
+                },
+            },
+            {
                 "name": "get_current_weather",
                 "description": "Get the current weather in a given location",
                 "parameters": {
@@ -31,28 +52,6 @@ class ChatBot:
                         "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
                     },
                     "required": ["location"],
-                },
-            },
-            {
-                "name": "overpass_query",
-                "description": """Run an overpass query
-                    To improve chances of success, run this multiple times for simpler queries.
-                    eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
-                    in this example, a complex query is likely to fail, so it is better to run
-                    a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg""",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "prompt": {
-                            "type": "string",
-                            "description": "The user message. Used for logging. Do not paraphrase.",
-                        },
-                        "query": {
-                            "type": "string",
-                            "description": "The overpass QL query to execute. Important: Ensure that this is a properly formatted .json string.",
-                        },
-                    },
-                    "required": ["prompt", "query"],
                 },
             },
         ]
@@ -264,7 +263,7 @@ class ChatBot:
             self.id = self.id + "_" + self.messages[0]["content"]
         else:
             n = 1
-        save_path = os.path.expanduser(f"~/naturalmaps_logs/{self.id}.json")
+        save_path = os.path.expanduser(f"./naturalmaps_logs/{self.id}.json")
 
         # Process first message
         response_messages, invalid_ = self.process_messages(n)
@@ -305,4 +304,7 @@ print(chatbot.run_conversation())
 chatbot.add_user_message(
     "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
 )
+print(chatbot.run_conversation())
+
+chatbot.add_user_message("Would it be possible to buy an ice-cream in Monbijoupark?")
 print(chatbot.run_conversation())
