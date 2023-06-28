@@ -13,79 +13,60 @@ st.set_page_config(
 
 st.title("Natural Maps")
 
-####
+# Explore the data manually
+with st.expander("Manually explore a map area"):
+    # Text input for place name
+    place_name = st.text_input(
+        "Location",
+        value="Augsburger Strasse, Berlin",
+    )
+    st.session_state.place_name = place_name
+    st.session_state.gdf = st_functions.name_to_gdf(place_name)
 
-# Text input for place name
-place_name = st.text_input(
-    "Location",
-    value="Augsburger Strasse, Berlin",
-)
-st.session_state.place_name = place_name
-st.session_state.gdf = st_functions.name_to_gdf(place_name)
+    # Columns
+    explore_left, explore_right = st.columns((1, 2), gap="small")
+    # Left: Map
+    with explore_left:
+        m = st_functions.update_map()
+        st_data = st_folium(m)
 
-# Create a folium map
-m = st_functions.map_location(st.session_state.gdf)
+    # Right: Chat/Explore
+    with explore_right:
+        explore_data(st_data)
 
+# Talk to the map!
+st.subheader("Natural language input")
 
-def add_markers_to_map(m, points):
-    for point in points:
-        point.add_to(m)
-    return m
+bot_left, bot_right = st.columns((1, 2), gap="small")
+with bot_left:
+    m = folium.Map(
+        height="50%",
+    )
+    st_folium(m)
 
+with bot_right:
+    import numpy as np
 
-# Columns
-left, right = st.columns((1, 2), gap="small")
-
-# Left: Map
-with left:
-    # Add any user-generated geometry
-    if "points" in st.session_state:
-        st.markdown(st.session_state.points)
-        add_markers_to_map(m, st.session_state.points)
-
-    st_data = st_folium(m)
-
-# Right: Chat/Explore
-with right:
-    explore_data(st_data)
+    message = st.chat_message("assistant")
+    message.write("Hello human")
+    message.bar_chart(np.random.randn(30, 3))
 
 
-st.header("Natural language input")
-natural_input = st.text_area(
-    "What would you like to know?",
-    placeholder="eg. Find all public fountains in Berlin that are within a 200m radius of an ice cream shop.",
-)
-b = st.button("Translate to Overpass Query")
-st.header("Generated query")
 st.markdown(
     """
-    - #Todo: Test a zero-shot with a pretrained LLM
-    - #Todo: Finetune
-    """
-)
-ice_cream_query = """
-    [out:json];
-    // fetch area “Berlin” to search in
-    area["name"="Berlin"]->.searchArea;
-    // gather results for: “amenity=fountain”
-    (
-    node["amenity"="fountain"](area.searchArea);
-    way["amenity"="fountain"](area.searchArea);
-    relation["amenity"="fountain"](area.searchArea);
-    );
-    // gather results for: “amenity=ice_cream”
-    (
-    node["amenity"="ice_cream"](area.searchArea);
-    way["amenity"="ice_cream"](area.searchArea);
-    relation["amenity"="ice_cream"](area.searchArea);
-    );
-    // print results
-    out body;
-    >;
-    out skel qt;
-    """
+NaturalMaps is an attempt to explore maps with natural language, 
+such as “Find all the quietest coffee shops in Berlin that open before 
+8 AM and are in close proximity to a library.” At the moment, this is 
+readily accessible open data, but going beyond simple queries requires 
+expert know-how. We are exploring ways to make this information and 
+analysis more accessible to the user.
 
-st.info(ice_cream_query)
+\n
+Naturalmaps is a portfolio project by J. Adam Hughes, Justin Zarb 
+and Pasquale Zito, developed as part of Data Science Retreat. 
+[Github Repo](https://github.com/JustinZarb/shade-calculator)"""
+)
+
 
 st.markdown(
     """
@@ -121,8 +102,4 @@ st.markdown(
 | Freelance Writer | Always in search of quiet spots to sit, observe, and pen their thoughts. | Find all the quietest coffee shops (at least 200m away from any main road) in Berlin that open before 8 AM and are in close proximity to a library or a bookstore. |
 
 """
-)
-
-st.markdown(
-    "A Portfolio project by J. Adam Hughes, Pasquale Zito and Justin Zarb as part of Data Science Retreat. [Github Repo](https://github.com/JustinZarb/shade-calculator)"
 )
