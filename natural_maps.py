@@ -1,6 +1,9 @@
 import streamlit as st
 import dev.streamlit_functions as st_functions
-import pandas as pd
+from dev.st_explore_with_wordcloud import explore_data
+import folium
+from streamlit_folium import st_folium
+import pydeck as pdk
 
 st.set_page_config(
     page_title="Naturalmaps",
@@ -9,106 +12,61 @@ st.set_page_config(
 )
 
 st.title("Natural Maps")
-st.markdown(
-    "A Portfolio project by J. Adam Hughes, Pasquale Zito and Justin Zarb as part of Data Science Retreat. [Github Repo](https://github.com/JustinZarb/shade-calculator)"
-)
-place_name = st.text_input(
-    "Location",
-    value="Charlottenburg, Charlottenburg-Wilmersdorf, Berlin, Germany",
-)
 
-left, right = st.columns((1, 2), gap="small")
-
-
-with left:
-    st_data = st_functions.map_location(place_name)
-    current_bbox = st_functions.bbox_from_st_data(st_data["bounds"])
-
-    # Check if 'bbox' is in the session state
-    if "bbox" in st.session_state:
-        # Check if the current bbox is different from the previous bbox
-        if st.session_state.bbox != current_bbox:
-            # reset get_keys if it has been set to True
-            if "get_keys" in st.session_state:
-                st.session_state.get_keys = False
-            st.session_state.bbox = current_bbox
-    else:
-        # If 'bbox' is not in the session state, add it
-        st.session_state.bbox = current_bbox
-
-    # st.markdown(st_osmnx.get_tags(place_name, tags={"leisure": "park"}))
-    # st_osmnx.plot_network(place_name)
-
-with right:
-    st.text(st.session_state.bbox)
-
-    data = st.empty()
-    tags_in_box = st.empty()
-
-    get_keys = st.checkbox(
-        label="Need inspiration? Check this box to see common tags in this area",
-        key="get_keys",
+# Explore the data manually
+with st.expander("Manually explore a map area"):
+    # Text input for place name
+    place_name = st.text_input(
+        "Location",
+        value="Augsburger Strasse, Berlin",
     )
-    if get_keys:
-        data = st_functions.get_unique_tags_in_bbox(st.session_state.bbox)
-        st.session_state.bbox_data = data
-        st.session_state.tags_in_bbox = st_functions.count_tag_frequency(data)
+    st.session_state.place_name = place_name
+    st.session_state.gdf = st_functions.name_to_gdf(place_name)
 
-        # wordcloud tags
-        st.subheader("Tags in this area")
-        tags_wordcloud = st_functions.generate_wordcloud(st.session_state.tags_in_bbox)
-        st.image(tags_wordcloud.to_array(), use_column_width=True)
+    # Columns
+    explore_left, explore_right = st.columns((1, 2), gap="small")
+    # Left: Map
+    with explore_left:
+        m = st_functions.update_map()
+        st_data = st_folium(m)
 
-        st.selectbox(
-            label="select a key",
-            options=st.session_state.tags_in_bbox.keys(),
-            key="tag_key",
-        )
+    # Right: Chat/Explore
+    with explore_right:
+        explore_data(st_data)
 
-        if "tag_key" in st.session_state:
-            value_frequency = st_functions.count_tag_frequency(
-                data, tag=st.session_state.tag_key
-            )
-            values_wordcloud = st_functions.generate_wordcloud(value_frequency)
-            st.subheader(f"top values for {st.session_state.tag_key}")
-            st.image(values_wordcloud.to_array(), use_column_width=True)
+# Talk to the map!
+st.subheader("Natural language input")
 
-st.header("Natural language input")
-natural_input = st.text_area(
-    "What would you like to know?",
-    placeholder="eg. Find all public fountains in Berlin that are within a 200m radius of an ice cream shop.",
-)
-b = st.button("Translate to Overpass Query")
-st.header("Generated query")
+bot_left, bot_right = st.columns((1, 2), gap="small")
+with bot_left:
+    m = folium.Map(
+        height="50%",
+    )
+    st_folium(m)
+
+with bot_right:
+    import numpy as np
+
+    message = st.chat_message("assistant")
+    message.write("Hello human")
+    message.bar_chart(np.random.randn(30, 3))
+
+
 st.markdown(
     """
-    - #Todo: Test a zero-shot with a pretrained LLM
-    - #Todo: Finetune
-    """
-)
-ice_cream_query = """
-    [out:json];
-    // fetch area “Berlin” to search in
-    area["name"="Berlin"]->.searchArea;
-    // gather results for: “amenity=fountain”
-    (
-    node["amenity"="fountain"](area.searchArea);
-    way["amenity"="fountain"](area.searchArea);
-    relation["amenity"="fountain"](area.searchArea);
-    );
-    // gather results for: “amenity=ice_cream”
-    (
-    node["amenity"="ice_cream"](area.searchArea);
-    way["amenity"="ice_cream"](area.searchArea);
-    relation["amenity"="ice_cream"](area.searchArea);
-    );
-    // print results
-    out body;
-    >;
-    out skel qt;
-    """
+NaturalMaps is an attempt to explore maps with natural language, 
+such as “Find all the quietest coffee shops in Berlin that open before 
+8 AM and are in close proximity to a library.” At the moment, this is 
+readily accessible open data, but going beyond simple queries requires 
+expert know-how. We are exploring ways to make this information and 
+analysis more accessible to the user.
 
-st.info(ice_cream_query)
+\n
+Naturalmaps is a portfolio project by J. Adam Hughes, Justin Zarb 
+and Pasquale Zito, developed as part of Data Science Retreat. 
+[Github Repo](https://github.com/JustinZarb/shade-calculator)"""
+)
+
 
 st.markdown(
     """
