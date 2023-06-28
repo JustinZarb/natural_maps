@@ -300,9 +300,9 @@ class ChatBot:
 
 
 chatbot = ChatBot()
-chatbot.add_user_message("are there any public toilets in Monbijoupark?")
+chatbot.add_user_message("are there any public toilets in Monbijoupark, Berlin?")
 print(chatbot.run_conversation())
-chatbot.add_user_message(
-    "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
-)
+
+# chatbot.add_user_message(    "look for shops and restaurants in Friedrichshain, Berlin. check if any of them is tagged as gluten free"
+# )
 print(chatbot.run_conversation())

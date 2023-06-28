@@ -12,7 +12,26 @@ import plotly.express as px
 import osmnx as ox
 import folium
 import contextily as cx
-from shapely.geometry import Polygon, Point, LineString
+from shapely.geometry import Polygon, Point, LineString, mapping
+import pydeck as pdk
+from math import sqrt, log
+from pyproj import Transformer
+import hashlib
+
+
+def word_to_color(word):
+    # Use MD5 hash to convert the word into a hexadecimal number
+    hash_object = hashlib.md5(word.encode())
+    hex_dig = hash_object.hexdigest()
+
+    # Take the first 6 characters of the hex number and convert it into an RGB color
+    hex_color = hex_dig[:6]
+    r = int(hex_color[:2], 16)
+    g = int(hex_color[2:4], 16)
+    b = int(hex_color[4:6], 16)
+    a = 255
+    # Return the RGB color as a tuple
+    return [r, g, b, a]
 
 
 def overpass_query(query):
@@ -41,7 +60,7 @@ def name_to_gdf(place_name):
     return ox.geocode_to_gdf(place_name)
 
 
-def map_location(gdf):
+def map_location(gdf, feature_group=None):
     # Get the geometry type of the location
     geometry_type = gdf["geometry"].iloc[0].geom_type
 
@@ -60,8 +79,120 @@ def map_location(gdf):
         m.fit_bounds([[miny, minx], [maxy, maxx]])
 
         # add the geojson to the map. this breaks things afterwards
-        # folium.GeoJson(gdf).add_to(m)
+        folium.GeoJson(gdf).add_to(m)
+
+    if feature_group:
+        feature_group.add_to(m)
+
     return m
+
+
+def gdf_to_layer(gdf):
+    """Create layer to visualize in PYDECK
+
+    Args:
+        gdf (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # Get the geometry type of the location
+    geometry_type = gdf["geometry"].iloc[0].geom_type
+    # Convert the GeoDataFrame to a DataFrame
+    df = gdf.drop(columns=["geometry"])
+
+    if geometry_type == "Point":
+        df["lat"] = gdf["geometry"].y
+        df["lon"] = gdf["geometry"].x
+        # Create a scatterplot layer
+        layer = pdk.Layer(
+            "ScatterplotLayer",
+            df,
+            get_position=["lon", "lat"],
+            get_radius=100,
+            get_fill_color=[255, 0, 0],
+        )
+    else:
+        df["geometry"] = gdf["geometry"].apply(
+            lambda geom: mapping(geom)["coordinates"]
+        )
+        # Create a GeoJsonLayer
+        layer = pdk.Layer(
+            "PolygonLayer",
+            df,
+            get_polygon="geometry",
+            get_fill_color=[255, 0, 0, 20],  # Set a static color
+            get_line_color=[255, 0, 0],
+            get_line_width="zoom_level",
+            stroked=True,
+            # filled=True,
+            extruded=False,
+        )
+
+    return layer
+
+
+def calculate_zoom_level(gdf):
+    """Calculate zoom level for PYDECK
+
+    Args:
+        gdf (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # Get the bounds of the geometry
+    minx, miny, maxx, maxy = gdf["geometry"].iloc[0].bounds
+
+    # Calculate the diagonal length of the bounding box
+    diagonal_length = sqrt((maxx - minx) ** 2 + (maxy - miny) ** 2)
+
+    # Calculate a base zoom level based on the diagonal length
+    # This is a rough estimate and may need to be adjusted to fit your specific needs
+    base_zoom = 9 - log(maxx - minx)
+
+    # Make sure the zoom level is within the valid range (0-22)
+    zoom_level = max(0, min(base_zoom, 22))
+
+    return zoom_level
+
+
+def map_location_pydeck(gdf, layers=[]):
+    # Get the geometry type of the location
+    geometry_type = gdf["geometry"].iloc[0].geom_type
+
+    # If the geometry is a point, create a map centered around the point
+    if geometry_type == "Point":
+        center_lat = gdf["geometry"].iloc[0].y
+        center_lon = gdf["geometry"].iloc[0].x
+        zoom_level = 14
+
+    # If the geometry is not a point, calculate the center and zoom level
+    else:
+        minx, miny, maxx, maxy = gdf["geometry"].iloc[0].bounds
+        center_lat = (miny + maxy) / 2
+        center_lon = (minx + maxx) / 2
+
+        # Make sure the zoom level is within the valid range (0-22)
+        zoom_level = calculate_zoom_level(gdf)
+
+    # Create the initial view state
+    view_state = pdk.ViewState(
+        latitude=center_lat, longitude=center_lon, zoom=zoom_level, pitch=0, bearing=0
+    )
+
+    # Create layer from gdf
+    location_layer = gdf_to_layer(gdf)
+    layers.append(location_layer)
+
+    # Create the deck
+    deck = pdk.Deck(
+        map_style="mapbox://styles/mapbox/outdoors-v11",
+        layers=layers,  # Add your layers here
+        initial_view_state=view_state,
+    )
+
+    return deck
 
 
 def count_tag_frequency(data, tag=None):
@@ -143,17 +274,8 @@ def get_tags(place_name, tags_keys):
     return objects
 
 
-def add_nodes_to_map(m: folium.Map, bbox: list, tags: dict):
-    """_summary_
-
-    Args:
-        m (folium.map): st.folium map to modify
-        bbox (list): bounding box returned by streamlit folium
-        tags (dict): a dictionary of tags to add to the map
-
-    Returns:
-
-    """
+def get_points_from_bbox_and_tags(bbox: list, tags: dict):
+    """Run a Overpass query given bbox and tags"""
     # bbox = [S, W, N, E]
     west = bbox[1]
     south = bbox[0]
@@ -165,6 +287,59 @@ def add_nodes_to_map(m: folium.Map, bbox: list, tags: dict):
     )
 
     geometries = ox.geometries_from_polygon(poly_from_bbox, tags)
+
+    return geometries
+
+
+def filter_nodes_with_tags(nodes: dict, tags: dict):
+    """Get a subset of nodes from some geometry returned by overpass
+
+    Args:
+        nodes (dict): Objects returned from Overpass
+        tags (dict): Tags to search for
+    """
+    selection = {}
+
+    for key, values in tags.items():
+        for value in values:
+            selection[value] = [
+                e
+                for e in nodes["elements"]
+                if (key in e["tags"].keys()) and (value in e["tags"].values())
+            ]
+
+    return selection
+
+
+def pydeck_scatter_from_points(chart_data):
+    """Generate a scatterplot layer from a list of points
+
+    Args:
+        geometries (_type_): _description_
+    """
+
+    scatterplot_layer = pdk.Layer(
+        "ScatterplotLayer",
+        data=chart_data,
+        get_position="[lon, lat]",
+        get_color="[200, 30, 0, 160]",
+        get_radius=200,
+    )
+    return
+
+
+def folium_circles_from_bbox_tags(bbox: list, tags: dict):
+    """Create folium circle markers for nodes on map.
+
+    Args:
+        m (folium.map): st.folium map to modify
+        bbox (list): bounding box returned by streamlit folium
+        tags (dict): a dictionary of tags to add to the map
+
+    Returns:
+
+    """
+    geometries = get_points_from_bbox_and_tags(bbox, tags)
 
     points = []
     # Add geometries to m
