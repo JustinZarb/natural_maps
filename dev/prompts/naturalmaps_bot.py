@@ -197,7 +197,7 @@ class ChatBot:
             functions=self.function_metadata,
             function_call="auto",
             n=n,
-            temperature=0.7,  # recommended to NOT use both temperature and top_p
+            temperature=0.1,  # recommended to NOT use both temperature and top_p
             # top_p=0.5,
         )
 
@@ -262,7 +262,7 @@ class ChatBot:
             1 for message in self.messages if message["role"] == "user"
         )
         if num_user_messages == 1:
-            n = 3
+            n = 1
             # the chat id is {timestamp}_{first question}
             self.id = self.id + "_" + self.messages[0]["content"]
         else:
@@ -277,7 +277,7 @@ class ChatBot:
             file_path=save_path,
             timestamp=timestamp,
             prompt=None,
-            log={"valid_messages": self.messages, "invalid_messages": invalid_},
+            log={"valid_initial_messages": self.messages, "invalid_initial_messages": invalid_},
         )
 
         # Check if response includes a function call, and if yes, run it.
@@ -294,8 +294,8 @@ class ChatBot:
             timestamp=timestamp,
             prompt=None,
             log={
-                "valid_messages": self.messages,
-                "invalid_messages": invalid_,
+                "valid_initial_messages": self.messages,
+                "invalid_initial_messages": invalid_,
                 "overpass_queries": self.overpass_queries,
             },
         )
@@ -305,10 +305,11 @@ class ChatBot:
 # Testing Chatbot messages here
 chatbot = ChatBot()
 # chatbot.add_user_message("are there any public toilets in Monbijoupark?")
+# chatbot.add_user_message("are there any benches in Monbijoupark?")
 
-# chatbot.add_user_message("show me the ping pong tables and toilets in Monbijoupark?")
+# chatbot.add_user_message("show me the ping pong tables in Monbijoupark?")
 
-chatbot.add_user_message("show me the ping pong tables in Gleisdreieck Park?")
+chatbot.add_user_message("show me the benches in Gleisdreieck Park?")
 
 print(chatbot.run_conversation())
 
