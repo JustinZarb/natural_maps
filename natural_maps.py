@@ -18,7 +18,7 @@ with st.expander("Manually explore a map area"):
     # Text input for place name
     place_name = st.text_input(
         "Location",
-        value="Augsburger Strasse, Berlin",
+        value="Berlin",
     )
     st.session_state.place_name = place_name
     st.session_state.gdf = st_functions.name_to_gdf(place_name)
@@ -40,7 +40,7 @@ st.subheader("Natural language input")
 bot_left, bot_right = st.columns((1, 2), gap="small")
 with bot_left:
     m = folium.Map(
-        height="50%",
+        height="100%",
     )
     st_folium(m)
 
@@ -66,23 +66,6 @@ Naturalmaps is a portfolio project by J. Adam Hughes, Justin Zarb
 and Pasquale Zito, developed as part of Data Science Retreat. 
 [Github Repo](https://github.com/JustinZarb/shade-calculator)"""
 )
-
-
-st.markdown(
-    """
-    This query will return a .json file with all the fountains and ice cream shops in Berlin. 
-    One would then need to process the results and make additional queries to find nearby fountains for each ice cream shop.
-    """
-)
-run_query = st.button("Run query")
-
-st.header("Run Query and do something")
-st.markdown(
-    "running the above query will return a json file, upon which it might be necessary to perform further operations"
-)
-if run_query:
-    query_result = st_functions.overpass_query(ice_cream_query)
-    st.info(query_result)
 
 st.header("How to use this tool")
 st.markdown(

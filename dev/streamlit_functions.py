@@ -279,23 +279,6 @@ def filter_nodes_with_tags(nodes: dict, tags: dict):
     return selection
 
 
-def pydeck_scatter_from_points(chart_data):
-    """Generate a scatterplot layer from a list of points
-
-    Args:
-        geometries (_type_): _description_
-    """
-
-    scatterplot_layer = pdk.Layer(
-        "ScatterplotLayer",
-        data=chart_data,
-        get_position="[lon, lat]",
-        get_color="[200, 30, 0, 160]",
-        get_radius=200,
-    )
-    return
-
-
 def create_circles_from_nodes(json_obj):
     # Loop over each node in the 'bar' key of the JSON object
     circles = []
@@ -331,6 +314,23 @@ def create_circles_from_nodes(json_obj):
 
 
 #### Older functions
+
+
+def pydeck_scatter_from_points(chart_data):
+    """Generate a scatterplot layer from a list of points
+
+    Args:
+        geometries (_type_): _description_
+    """
+
+    scatterplot_layer = pdk.Layer(
+        "ScatterplotLayer",
+        data=chart_data,
+        get_position="[lon, lat]",
+        get_color="[200, 30, 0, 160]",
+        get_radius=200,
+    )
+    return
 
 
 def plot_network(place_name):
