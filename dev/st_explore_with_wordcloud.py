@@ -29,99 +29,6 @@ def generate_wordcloud():
     st.image(values_wordcloud.to_array(), use_column_width=True)
 
 
-def explore_data_fix(st_data):
-    if st_data["zoom"] >= 13:
-        # Initialize the checkbox value in the session state if it's not already set
-        if "explore_area" not in st.session_state:
-            st.session_state["explore_area"] = False
-
-        # Use the session state value for the checkbox
-        st.session_state["explore_area"] = st.checkbox(
-            label=f"Common tags in this view",
-            value=st.session_state.explore_area,
-            key="explore_area",
-        )
-
-        # Create a checkbox that will control whether the map and data are stored in the session state
-        if st.session_state.explore_area:
-            # check if  m and st_data already exist in the session state
-            if "st_data" not in st.session_state:
-                # Store the map and data in the session state
-                st.session_state["st_data"] = st_data
-                # get bbox
-                st.session_state["bbox"] = st_functions.bbox_from_st_data(
-                    st.session_state.st_data["bounds"]
-                )
-                # query all nodes with tags in bbox
-                st.session_state["nodes"] = st_functions.get_nodes_with_tags_in_bbox(
-                    st.session_state.bbox
-                )
-                # get the tag content as a dictionary
-                st.session_state["tags_in_bbox"] = st_functions.count_tag_frequency(
-                    st.session_state.nodes
-                )
-
-            # show a wordcloud of amenities in the search area
-            generate_wordcloud()
-
-            if "selection" in st.session_state:
-                st.subheader("Currently shown on map:")
-                for key, value in st.session_state.selection.items():
-                    st.markdown(f"{key}")
-                    df = pd.json_normalize(value, sep="\n")
-                    st.table(df)
-
-            current_selection = st.multiselect(
-                "Items to show on map:",
-                options=st.session_state.value_frequency.keys(),
-            )
-
-            # Initialize the add_selection checkbox value in the session state if it's not already set
-            if "add_selection" not in st.session_state:
-                st.session_state["add_selection"] = False
-
-            # Use the session state value for the add_selection checkbox
-            st.session_state["add_selection"] = st.checkbox(
-                "Add items to map",
-                value=st.session_state.add_selection,
-                key="add_selection",
-            )
-
-            if st.session_state.add_selection:
-                # show selected values on the map in different colors
-                st.session_state.tags = {
-                    st.session_state.selected_key: current_selection
-                }
-                st.markdown(st.session_state.tags)
-
-                # ToDo: Use this instead of running a new call
-                st.session_state.selection = st_functions.filter_nodes_with_tags(
-                    st.session_state.nodes, st.session_state.tags
-                )
-                ## st_folium
-                st.session_state.circles = st_functions.create_circles_from_nodes(
-                    st.session_state.selection
-                )
-                # Reset the checkbox
-                st.session_state.add_selection = False
-            else:
-                # delete selection and geometry
-                temporary_variables = [
-                    "tags",
-                    "selection",
-                    "circles",
-                ]
-                for var in temporary_variables:
-                    if var in st.session_state:
-                        del st.session_state[var]
-
-        else:
-            # delete
-            temporary_variables = [
-                "gdf",
-            ]
-
-
 def explore_data(st_data):
     if st_data["zoom"] >= 13:
         # Initialize the checkbox value in the session state if it's not already set
@@ -174,13 +81,6 @@ def explore_data(st_data):
                 key="multiselected_options",
             )
 
-            if "selected_nodes" in st.session_state:
-                st.subheader("Currently shown on map:")
-                for key, value in st.session_state.selected_nodes.items():
-                    st.markdown(f"{key}")
-                    df = pd.json_normalize(value, sep="\n")
-                    st.table(df)
-
             if "add_selection" not in st.session_state:
                 st.session_state.add_selection = None
 
@@ -228,6 +128,13 @@ def explore_data(st_data):
                         del st.session_state[var]
 
             st.button("Reset selection", on_click=clear_selection)
+
+            if "selected_nodes" in st.session_state:
+                st.subheader("Currently shown on map:")
+                for key, value in st.session_state.selected_nodes.items():
+                    st.markdown(f"{key}")
+                    df = pd.json_normalize(value, sep="\n")
+                    st.table(df)
 
         else:
             # delete
