@@ -20,21 +20,6 @@ class ChatBot:
         self.function_status_pass = False  # Used to indicate function success
         self.function_metadata = [
             {
-                "name": "get_current_weather",
-                "description": "Get the current weather in a given location",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "location": {
-                            "type": "string",
-                            "description": "The city and state, e.g. San Francisco, CA",
-                        },
-                        "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
-                    },
-                    "required": ["location"],
-                },
-            },
-            {
                 "name": "overpass_query",
                 "description": """Run an overpass query
                     To improve chances of success, run this multiple times for simpler queries.
@@ -290,7 +275,7 @@ class ChatBot:
             self.id = self.id + "_" + self.messages[0]["content"]
         else:
             n = 1
-        save_path = os.path.expanduser(f"~/naturalmaps_logs/{self.id}.json")
+        save_path = os.path.expanduser(f"./naturalmaps_logs/{self.id}.json")
 
         """
         ### UNDER CONSTRUCTION ###
@@ -336,4 +321,5 @@ chatbot = ChatBot()
 chatbot.add_user_message(
     "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
 )
+
 print(chatbot.run_conversation())

@@ -164,3 +164,6 @@ dev/shadowcalc/data/*
 
 # .json filess
 *.json
+
+*~
+

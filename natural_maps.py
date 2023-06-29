@@ -1,7 +1,9 @@
 import streamlit as st
-import os
+import dev.streamlit_functions as st_functions
+from dev.st_explore_with_wordcloud import explore_data
 import folium
-import dev.streamlit_functions as streamlit_functions
+from streamlit_folium import st_folium
+import pydeck as pdk
 
 st.set_page_config(
     page_title="Naturalmaps",
@@ -10,77 +12,67 @@ st.set_page_config(
 )
 
 st.title("Natural Maps")
+
+# Explore the data manually
+with st.expander("Manually explore a map area"):
+    # Text input for place name
+    place_name = st.text_input(
+        "Location",
+        value="Berlin",
+    )
+    st.session_state.place_name = place_name
+    st.session_state.gdf = st_functions.name_to_gdf(place_name)
+
+    # Columns
+    explore_left, explore_right = st.columns((1, 2), gap="small")
+    # Left: Map
+    with explore_left:
+        m = st_functions.update_map()
+        st_data = st_folium(m)
+
+    # Right: Chat/Explore
+    with explore_right:
+        explore_data(st_data)
+
+# Talk to the map!
+st.subheader("Natural language input")
+
+bot_left, bot_right = st.columns((1, 2), gap="small")
+with bot_left:
+    m = folium.Map(
+        height="100%",
+    )
+    st_folium(m)
+
+with bot_right:
+    import numpy as np
+
+    message = st.chat_message("assistant")
+    message.write("Hello human")
+    message.bar_chart(np.random.randn(30, 3))
+
+
 st.markdown(
-    "A Portfolio project by J. Adam Hughes, Pasquale Zito and Justin Zarb as part of Data Science Retreat. [Github Repo](https://github.com/JustinZarb/shade-calculator)"
+    """
+NaturalMaps is an attempt to explore maps with natural language, 
+such as “Find all the quietest coffee shops in Berlin that open before 
+8 AM and are in close proximity to a library.” At the moment, this is 
+readily accessible open data, but going beyond simple queries requires 
+expert know-how. We are exploring ways to make this information and 
+analysis more accessible to the user.
+
+\n
+Naturalmaps is a portfolio project by J. Adam Hughes, Justin Zarb 
+and Pasquale Zito, developed as part of Data Science Retreat. 
+[Github Repo](https://github.com/JustinZarb/shade-calculator)"""
 )
-
-left, right = st.columns(2)
-
-with left:
-    st.header("Natural language input")
-    natural_input = st.text_area(
-        "What would you like to know?",
-        placeholder="eg. Find all public fountains in Berlin that are within a 200m radius of an ice cream shop.",
-    )
-    b = st.button("Translate to Overpass Query")
-    st.header("Generated query")
-    st.markdown(
-        """
-        - #Todo: Test a zero-shot with a pretrained LLM
-        - #Todo: Finetune
-        """
-    )
-    ice_cream_query = """
-        [out:json];
-        // fetch area “Berlin” to search in
-        area["name"="Berlin"]->.searchArea;
-        // gather results for: “amenity=fountain”
-        (
-        node["amenity"="fountain"](area.searchArea);
-        way["amenity"="fountain"](area.searchArea);
-        relation["amenity"="fountain"](area.searchArea);
-        );
-        // gather results for: “amenity=ice_cream”
-        (
-        node["amenity"="ice_cream"](area.searchArea);
-        way["amenity"="ice_cream"](area.searchArea);
-        relation["amenity"="ice_cream"](area.searchArea);
-        );
-        // print results
-        out body;
-        >;
-        out skel qt;
-        """
-
-    st.info(ice_cream_query)
-
-    st.markdown(
-        """
-        This query will return a .json file with all the fountains and ice cream shops in Berlin. 
-        One would then need to process the results and make additional queries to find nearby fountains for each ice cream shop.
-        """
-    )
-    run_query = st.button("Run query")
-
-    st.header("Run Query and do something")
-    st.markdown(
-        "running the above query will return a json file, upon which it might be necessary to perform further operations"
-    )
-    if run_query:
-        query_result = streamlit_functions.overpass_query(ice_cream_query)
-        st.info(query_result)
-
-
-with right:
-    st.header("Map display")
-    streamlit_functions.simple_folium_map()
 
 st.header("How to use this tool")
 st.markdown(
     """Open Street Map is awesome but hard to query. We are here to study what can
-     be done and streamline the process of question -> query -> process -> output. 
-     Here are some examples of how we imagine this to be used: 
-     """
+    be done and streamline the process of question -> query -> process -> output. 
+    Here are some examples of how we imagine this to be used: 
+    """
 )
 st.markdown(
     """
