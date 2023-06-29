@@ -16,6 +16,7 @@ class ChatBot:
         self.functions = {
             "get_current_weather": self.get_current_weather,
             "overpass_query": self.overpass_query,
+            "geocode_location_name": self.geocode_location_name,
         }
         self.function_metadata = [
             {
@@ -36,6 +37,28 @@ class ChatBot:
             {
                 "name": "overpass_query",
                 "description": """Run an overpass query
+                    To improve chances of success, run this multiple times for simpler queries.
+                    eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
+                    in this example, a complex query is likely to fail, so it is better to run
+                    a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg""",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "prompt": {
+                            "type": "string",
+                            "description": "The user message. Used for logging. Do not paraphrase.",
+                        },
+                        "query": {
+                            "type": "string",
+                            "description": "The overpass QL query to execute. Important: Ensure that this is a properly formatted .json string.",
+                        },
+                    },
+                    "required": ["prompt", "query"],
+                },
+            },
+                        {
+                "name": "geocode_location_name",
+                "description": """TODO-Run an overpass query
                     To improve chances of success, run this multiple times for simpler queries.
                     eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
                     in this example, a complex query is likely to fail, so it is better to run
@@ -98,7 +121,7 @@ class ChatBot:
         To improve chances of success, run this multiple times for simpler queries.
         eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
         in this example, a complex query is likely to fail, so it is better to run
-        a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg
+        a first query for bike parking in Kreuzberg and a second one for tech parks in Kreuzberg
         """
         overpass_url = "http://overpass-api.de/api/interpreter"
         response = requests.get(overpass_url, params={"data": query})
@@ -148,6 +171,16 @@ class ChatBot:
             "forecast": ["sunny", "windy"],
         }
         return json.dumps(weather_info)
+    
+    def geocode_location_name(self, name, unit="fahrenheit"):
+    """Get the current weather in a given location"""
+    weather_info = {
+        "location": location,
+        "temperature": "72",
+        "unit": unit,
+        "forecast": ["sunny", "windy"],
+    }
+    return json.dumps(geolocation_info)
 
     def add_user_message(self, content):
         self.messages.append({"role": "user", "content": content})
@@ -246,6 +279,8 @@ class ChatBot:
                             function_response = "no result found"
                     else:
                         function_response = "no result found"
+                elif function_name == "get_current_weather":
+                    function_response = function_to_call(**function_args_dict)
 
             self.add_function_message(function_name, function_response)
         else:
@@ -304,12 +339,15 @@ class ChatBot:
 
 # Testing Chatbot messages here
 chatbot = ChatBot()
-# chatbot.add_user_message("are there any public toilets in Monbijoupark?")
+# chatbot.add_user_message("are there any toilets in Monbijoupark?")
 # chatbot.add_user_message("are there any benches in Monbijoupark?")
+# chatbot.add_user_message("are there any toilets in charlottenburg?")
+# chatbot.add_user_message("whats the weather in Berlin?")
+
 
 # chatbot.add_user_message("show me the ping pong tables in Monbijoupark?")
 
-chatbot.add_user_message("show me the benches in Gleisdreieck Park?")
+chatbot.add_user_message("are there any toilets in Gleisdreieck Park?")
 
 print(chatbot.run_conversation())
 
