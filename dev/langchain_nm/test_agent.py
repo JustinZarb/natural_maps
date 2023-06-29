@@ -1,4 +1,10 @@
-from langchain import LLMMathChain, OpenAI, SerpAPIWrapper, SQLDatabase, SQLDatabaseChain
+from langchain import (
+    LLMMathChain,
+    OpenAI,
+    SerpAPIWrapper,
+    SQLDatabase,
+    SQLDatabaseChain,
+)
 from langchain.agents import initialize_agent, Tool
 from langchain.agents import AgentType
 from langchain.chat_models import ChatOpenAI
@@ -27,7 +33,7 @@ import os
 api_key = os.getenv("OPENAI_KEY")
 
 from typing import Union
-  
+
 llm = ChatOpenAI(temperature=0, openai_api_key=api_key, model_name="gpt-3.5-turbo-0613")
 
 chain_to_overpass_prompt = PromptTemplate(
@@ -39,6 +45,7 @@ chain_to_overpass_prompt = PromptTemplate(
 chain_to_overpass = LLMChain(
     llm=llm, prompt=chain_to_overpass_prompt, output_key="ql_query"
 )
+
 
 def overpass_query(ql_query):
     """Run an overpass query"""
@@ -65,6 +72,7 @@ def transform_func(inputs: dict) -> dict:
     query_input = inputs["ql_query"]
     op_answer = overpass_query(query_input)
     return {"overpass_answer": op_answer}
+
 
 transform_chain = TransformChain(
     input_variables=["ql_query"],
@@ -106,9 +114,7 @@ from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 
 # initialize conversational memory
 conversational_memory = ConversationBufferWindowMemory(
-        memory_key='chat_history',
-        k=5,
-        return_messages=True
+    memory_key="chat_history", k=5, return_messages=True
 )
 
 from langchain.agents import initialize_agent
@@ -121,25 +127,28 @@ agent = initialize_agent(
     llm=llm,
     verbose=True,
     max_iterations=3,
-    early_stopping_method='generate',
-    memory=conversational_memory
+    early_stopping_method="generate",
+    memory=conversational_memory,
 )
 
-text="are there any ping pong tables in Monbijoupark?"
+text = "are there any ping pong tables in Monbijoupark?"
 
 
-
-
-llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613", openai_api_key=api_key,)
+llm = ChatOpenAI(
+    temperature=0,
+    model="gpt-3.5-turbo-0613",
+    openai_api_key=api_key,
+)
 
 agent = initialize_agent(tools, llm, agent=AgentType.OPENAI_FUNCTIONS, verbose=True)
 
+
 class CircumferenceTool(BaseTool):
-      name = "Circumference calculator"
-      description = "use this tool when you need to calculate a circumference using the radius of a circle"
+    name = "Circumference calculator"
+    description = "use this tool when you need to calculate a circumference using the radius of a circle"
 
     def _run(self, radius: Union[int, float]):
-        return float(radius)*2.0*pi
+        return float(radius) * 2.0 * pi
 
     def _arun(self, radius: int):
         raise NotImplementedError("This tool does not support async")

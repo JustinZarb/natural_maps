@@ -2,7 +2,9 @@
 
 based on the following example: https://python.langchain.com/docs/modules/agents/agent_types/plan_and_execute
 """
+import os
 
+# Langchain imports
 from langchain.chat_models import ChatOpenAI
 from langchain.experimental.plan_and_execute import (
     PlanAndExecute,
@@ -14,19 +16,25 @@ from langchain import SerpAPIWrapper
 from langchain.agents.tools import Tool
 from langchain import LLMMathChain
 
-import os
+# Custom tool imports
+from tools.overpass.tool import OverpassQueryTool
+
+
 
 serpapi_api_key = os.getenv("SERPAPI_API_KEY")
 
 search = SerpAPIWrapper(serpapi_api_key=serpapi_api_key)
 llm = OpenAI(temperature=0)
 llm_math_chain = LLMMathChain.from_llm(llm=llm, verbose=True)
+overpass_sequential_chain = OverpassQueryTool.
+
 tools = [
     Tool(
-        name="Search",
-        func=search.run,
-        description="useful for when you need to answer questions about current events",
+        name="OverpassQueryTool",
+        func=overpass_sequential_chain.run,
+        description="useful for when you need to look for things and places and their properties",
     ),
+    
     Tool(
         name="Calculator",
         func=llm_math_chain.run,
