@@ -4,6 +4,7 @@ import json
 import pandas as pd
 import requests
 from time import gmtime, strftime
+import osmnx as ox
 
 
 class ChatBot:
@@ -12,21 +13,42 @@ class ChatBot:
         assert openai.api_key, "Failed to find API keys"
 
         self.messages = []
+        self.add_system_message(
+            content="""Let's first understand the problem and devise a plan to solve the problem."
+            " Please output the plan starting with the header 'Plan:' "
+            "and then followed by a numbered list of steps. "
+            "Please make the plan the minimum number of steps required "
+            "to accurately complete the task. If the task is a question, "
+            "the final step should almost always be 'Given the above steps taken, "
+            "please respond to the users original question'. "
+            "At the end of your plan, say '<END_OF_PLAN>'"""
+        )
+
         self.overpass_queries = {}
         self.functions = {
-            "get_current_weather": self.get_current_weather,
-            "overpass_query": self.overpass_query,
+            "" "overpass_query": self.overpass_query,
         }
         self.function_status_pass = False  # Used to indicate function success
         self.function_metadata = [
             {
                 "name": "overpass_query",
                 "description": """Run an overpass query
-                    To improve chances of success, run this multiple times for simpler queries.
-                    eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
-                    in this example, a complex query is likely to fail, so it is better to run
-                    a first query for bike parking in Kreuzberg and a second one for tech parks 
-                    in Kreuzberg""",
+                    To improve chances of success, keep the queries simple.
+                    You might have an idea where places are, but you sometimes guess wrong, so always use geocodeArea, which gives a more accurate location.
+                    
+                    eg. prompt: "Find toilets in Charlottenburg"
+                    
+                    [out:json][timeout:25];
+                    /{/{geocodeArea:charlottenburg}}->.searchArea;
+                    (
+                    node["amenity"="toilets"](area.searchArea);
+                    way["amenity"="toilets"](area.searchArea);
+                    relation["amenity"="toilets"](area.searchArea);
+                    );
+                    out body;
+                    >;
+                    out skel qt;
+                    """,
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -45,6 +67,10 @@ class ChatBot:
         ]
         # Create a chatbot id using creation timestamp and first question
         self.id = self.get_timestamp()
+
+    def name_to_gdf(self, place_name):
+        # Use OSMnx to geocode the location
+        return ox.geocode_to_gdf(place_name)
 
     def save_to_json(self, file_path: str, timestamp: str, prompt: str, log: dict):
         json_file_path = file_path
@@ -127,16 +153,6 @@ class ChatBot:
 
         return data_str
 
-    def get_current_weather(self, location, unit="fahrenheit"):
-        """Get the current weather in a given location"""
-        weather_info = {
-            "location": location,
-            "temperature": "72",
-            "unit": unit,
-            "forecast": ["sunny", "windy"],
-        }
-        return json.dumps(weather_info)
-
     def add_user_message(self, content):
         self.messages.append({"role": "user", "content": content})
 
@@ -144,6 +160,9 @@ class ChatBot:
         self.messages.append(
             {"role": "function", "name": function_name, "content": content}
         )
+
+    def add_system_message(self, content):
+        self.messages.append({"role": "system", "content": content})
 
     def execute_function(self, response_message):
         """Execute a function from self.functions
@@ -266,13 +285,12 @@ class ChatBot:
         )
 
         # Increase n to 3 if this is the first user message, to increase chances of a working query
-        num_user_messages = sum(
-            1 for message in self.messages if message["role"] == "user"
-        )
+        user_messages = [m for m in self.messages if m["role"] == "user"]
+        num_user_messages = len(user_messages)
         if num_user_messages == 1:
-            n = 3  # return 3 responses to increase chances of success
+            n = 1  # increase the number of initial responses to increase chances of success
             # the chat id is {timestamp}_{first question}
-            self.id = self.id + "_" + self.messages[0]["content"]
+            self.id = self.id + "_" + user_messages[0]["content"]
         else:
             n = 1
         save_path = os.path.expanduser(f"./naturalmaps_logs/{self.id}.json")
@@ -284,7 +302,6 @@ class ChatBot:
         """
         counter = 0
         while counter < 5:
-            print(counter)
             # Process messages
             response_messages, invalid_messages = self.process_messages(n)
             self.messages += response_messages
@@ -299,6 +316,7 @@ class ChatBot:
             response_message, invalid_messages = self.process_messages()
 
             # Save the processed response
+            print(response_message, invalid_messages)
             timestamp = self.get_timestamp()
             self.save_to_json(
                 file_path=save_path,
@@ -311,6 +329,7 @@ class ChatBot:
                 },
             )
             counter += 1
+
             # if self.is_goal_achieved(response_message):
             #    break
 
