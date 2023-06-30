@@ -173,14 +173,14 @@ class ChatBot:
         return json.dumps(weather_info)
     
     def geocode_location_name(self, name, unit="fahrenheit"):
-    """Get the current weather in a given location"""
-    weather_info = {
-        "location": location,
-        "temperature": "72",
-        "unit": unit,
-        "forecast": ["sunny", "windy"],
-    }
-    return json.dumps(geolocation_info)
+        """Get the current weather in a given location"""
+        weather_info = {
+            "location": location,
+            "temperature": "72",
+            "unit": unit,
+            "forecast": ["sunny", "windy"],
+        }
+        return json.dumps(geolocation_info)
 
     def add_user_message(self, content):
         self.messages.append({"role": "user", "content": content})
