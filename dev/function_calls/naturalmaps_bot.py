@@ -27,10 +27,12 @@ class ChatBot:
         self.function_metadata = [
             {
                 "name": "overpass_query",
-                "description": """Run an overpass query
-                    To improve chances of success, keep the queries simple.
-                    You might have an idea where places are, but you sometimes guess wrong, so always use geocodeArea, which gives a more accurate location.
-                    
+                "description": """Run an overpass QL query.
+                    Instructions:
+                    - Keep the queries simple and specific.
+                    - Always use Overpass built-in geocodeArea for locations like this /{/{geocodeArea:charlottenburg}}->.searchArea; 
+                    - Do not exceed size to 100 unless a previous attempt was unsuccessful.
+                    - If running broad searches such as [node[~'^(amenity|leisure)$'~'.'](\{\{bbox}});], stick to only nodes. 
                     eg. prompt: "Find toilets in Charlottenburg"
                     
                     [out:json][timeout:25];
@@ -159,8 +161,12 @@ class ChatBot:
         self.log_overpass_query(human_prompt, generated_query, data_str)
         return data_str
 
+    def add_system_message(self, content):
+        self.messages.append({"role": "system", "content": content})
+
     def add_user_message(self, content):
         self.messages.append({"role": "user", "content": content})
+
         self.add_system_message(
             content="""Let's first understand the problem and devise a plan to solve the problem."
             " Please output the plan starting with the header 'Plan:' "
@@ -176,9 +182,6 @@ class ChatBot:
         self.messages.append(
             {"role": "function", "name": function_name, "content": content}
         )
-
-    def add_system_message(self, content):
-        self.messages.append({"role": "system", "content": content})
 
     def execute_function(self, response_message):
         """Execute a function from self.functions
@@ -206,25 +209,39 @@ class ChatBot:
                 }
 
             if not json_failed:
+                try:
+                    function_response = function_to_call(**function_args_dict)
+                except TypeError as e:
+                    function_response = {
+                        "invalid args": str(e),
+                        "input": function_args,
+                    }
                 # Specific checks for self.overpass_query()
                 if function_name == "overpass_query":
-                    function_response = function_to_call(**function_args_dict)
                     data = json.loads(function_response)
+                    if len(function_response) > 4096:
+                        function_response = "Overpass query returned too many results."
                     if "elements" in data:
                         elements = data["elements"]
                         if elements == []:
-                            function_response = "Overpass query returned no results"
+                            function_response += (
+                                "-> Overpass query returned no results."
+                            )
                         else:
                             # Overpass query worked! Passed!
                             self.function_status_pass = True
-                    else:
-                        function_response = (
-                            "Overpass Query does not contain any elements"
-                        )
 
-            self.add_function_message(function_name, function_response)
         else:
-            print("Function not found:", function_name)
+            function_response = f"{function_name} not found"
+
+        self.add_function_message(function_name, function_response)
+        self.add_system_message(
+            content=f"Treat each of the steps in the plan as discreet steps. Does the function response contain enough information"
+            f"to answer step {self.current_step}? If not, state what you would do next (eg. 'trying again with a larger search area')."
+            f"If it did, respond with 'Step {self.current_step+1}' and solve this step."
+            "If you do not have an adequate function to run the next step, give an appropriate message and skip to the final step."
+            "If some steps failed, provide a response explaining what worked and what didn't. Provide any useful information from partial results."
+        )
 
     def is_valid_message(self, message):
         """Check if the message content is a valid JSON string"""
@@ -280,6 +297,11 @@ class ChatBot:
 
         return valid_response_messages, invalid_response_messages
 
+    def read_plan(self, plan):
+        lines = plan.split("\n")
+        lines = [l for l in lines if l != ""][1:-1]
+        return lines
+
     def run_conversation(self):
         """Run this after every user message
         originally had the following structure:
@@ -294,12 +316,8 @@ class ChatBot:
         In its current form, the calls are built into a loop which feed each response from the
         large language model back into the conversation history, so that the next response has
         all the previous responses as context.
-        """
-        self.latest_question = [
-            m["content"] for m in self.messages if m["role"] == "user"
-        ][-1]
-        print(f"Latest question:{self.latest_question}")
 
+        # Removing this as it was a hack
         # Increase n to 3 if this is the first user message, to increase chances of a working query
         user_messages = [m for m in self.messages if m["role"] == "user"]
         num_user_messages = len(user_messages)
@@ -309,22 +327,46 @@ class ChatBot:
             self.id = self.id + "_" + user_messages[0]["content"]
         else:
             n = 1
-        save_path = os.path.expanduser(f"./naturalmaps_logs/{self.id}.json")
 
-        """
         ### UNDER CONSTRUCTION ###
         Change the code below to enable the language model
         to act as an agent and repeat actions until the goal is achieved
         """
+        self.latest_question = [
+            m["content"] for m in self.messages if m["role"] == "user"
+        ][-1]
+        print(f"Latest question:{self.latest_question}")
+
         counter = 0
         while counter < 5:
             # Process messages
-            response_messages, invalid_messages = self.process_messages(n)
+            response_messages, invalid_messages = self.process_messages(1)
             self.messages += response_messages
             self.invalid_messages += invalid_messages
+            self.plan = []
+            self.current_step = 1
 
             # Check if response includes a function call, and if yes, run it.
             for response_message in response_messages:
+                # Check for a plan (should only happen in the first response)
+                if (response_message.get("content")) and (
+                    response_message.get("content").startswith("Plan:")
+                ):
+                    self.plan = self.read_plan(response_message.get("content"))
+                    print(f"plan: {self.plan}")
+
+                # Check progress
+                if (response_message.get("content")) and (
+                    "step" in str.lower(response_message.get("content"))
+                ):
+                    try:
+                        self.current_step = int(
+                            response_message.get("content").split("Step ")[1][0]
+                        )
+                    except:
+                        print(response_message.get("content"))
+                        self.current_step += 1
+
                 if response_message.get("function_call"):
                     if self.function_status_pass:
                         continue  # skips running the next API calls
@@ -334,21 +376,18 @@ class ChatBot:
             #    break
             counter += 1
 
-            # Save the processed response
-            print(response_message, invalid_messages)
+            filename = f"{self.id} | {self.latest_question}"
+            filepath = os.path.join(self.log_path, filename)
 
-        filename = f"{self.id} | {self.latest_question}"
-        filepath = os.path.join(self.log_path, filename)
-
-        self.save_to_json(
-            file_path=filepath,
-            this_run_name="some_metadata",
-            log={
-                "valid_messages": self.messages,
-                "invalid_messages": self.invalid_messages,
-                "overpass_queries": self.overpass_queries,
-            },
-        )
+            self.save_to_json(
+                file_path=filepath,
+                this_run_name=f"iteration {counter} step {self.current_step}",
+                log={
+                    "valid_messages": self.messages,
+                    "invalid_messages": self.invalid_messages,
+                    "overpass_queries": self.overpass_queries,
+                },
+            )
 
         return response_message
 
