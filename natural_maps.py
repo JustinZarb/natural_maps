@@ -37,11 +37,10 @@ with st.expander("Manually explore a map area"):
 # Talk to the map!
 st.subheader("Natural language input")
 
+
 bot_left, bot_right = st.columns((1, 2), gap="small")
 with bot_left:
-    m = folium.Map(
-        height="100%",
-    )
+    m = st_functions.map_location()
     st_folium(m)
 
 with bot_right:
