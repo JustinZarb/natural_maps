@@ -8,10 +8,12 @@ import osmnx as ox
 
 
 class ChatBot:
-    def __init__(self):
+    def __init__(self, log_path: str = None):
+        # Get OpenAI Key
         self.get_openai_key_from_env()
         assert openai.api_key, "Failed to find API keys"
 
+        # Initialize Messages
         self.messages = []
         self.add_system_message(
             content="""Let's first understand the problem and devise a plan to solve the problem."
@@ -24,7 +26,7 @@ class ChatBot:
             "At the end of your plan, say '<END_OF_PLAN>'"""
         )
 
-        self.overpass_queries = {}
+        # Initialize Functions
         self.functions = {
             "" "overpass_query": self.overpass_query,
         }
@@ -52,11 +54,11 @@ class ChatBot:
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "prompt": {
+                        "human_prompt": {
                             "type": "string",
                             "description": "The user message. Used for logging. Do not paraphrase.",
                         },
-                        "query": {
+                        "generated_query": {
                             "type": "string",
                             "description": "The overpass QL query to execute. Important: Ensure that this is a properly formatted .json string.",
                         },
@@ -65,8 +67,13 @@ class ChatBot:
                 },
             },
         ]
-        # Create a chatbot id using creation timestamp and first question
+
+        # Logging parameters
+        self.overpass_queries = {}
         self.id = self.get_timestamp()
+        if log_path is None:
+            log_path = "~/naturalmaps_logs"
+            self.log_path = os.path.expanduser(log_path)
 
     def name_to_gdf(self, place_name):
         # Use OSMnx to geocode the location
@@ -106,7 +113,39 @@ class ChatBot:
         api_key = os.getenv("OPENAI_KEY")
         openai.api_key = api_key
 
-    def overpass_query(self, prompt, query):
+    def log_overpass_query(self, prompt, query, data_str):
+        # Write Overpass API Call to JSON
+        timestamp = self.get_timestamp()
+        filepath = os.path.join(self.log_path, "overpass_query_log.json")
+        success = True if "error" not in data_str else False
+        data_dict = json.loads(data_str)
+        returned_something = (
+            True
+            if ("elements" in data_dict and len(data_dict["elements"])) > 0
+            else False
+        )
+
+        # This gets saved in the chat log
+        self.overpass_queries[query] = {
+            "valid_query": success,
+            "returned_something": returned_something,
+            "data": data_str,
+        }
+
+        # This gets saved in a separate log for overpass ueries
+        self.save_to_json(
+            file_path=filepath,
+            timestamp=timestamp,
+            prompt=prompt,
+            log={
+                "overpassql_query": query,
+                "overpass_response": data_str,
+                "valid_query": success,
+                "returned_something": returned_something,
+            },
+        )
+
+    def overpass_query(self, human_prompt, generated_query):
         """Run an overpass query
         To improve chances of success, run this multiple times for simpler queries.
         eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
@@ -114,7 +153,7 @@ class ChatBot:
         a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg
         """
         overpass_url = "http://overpass-api.de/api/interpreter"
-        response = requests.get(overpass_url, params={"data": query})
+        response = requests.get(overpass_url, params={"data": generated_query})
         if response.content:
             try:
                 data = response.json()
@@ -125,32 +164,7 @@ class ChatBot:
                 "warning": "received an empty response from Overpass API. Tell the user."
             }
         data_str = json.dumps(data)
-
-        # Write Overpass API Call to JSON
-        timestamp = self.get_timestamp()
-        filepath = os.path.expanduser("~/naturalmaps_logs/overpass_query_log.json")
-        success = True if "error" not in data_str else False
-        returned_something = len(data["elements"]) > 0
-
-        self.overpass_queries[query] = {
-            "prompt": prompt,
-            "success": success,
-            "returned something": returned_something,
-            "data": data_str,
-        }
-
-        self.save_to_json(
-            file_path=filepath,
-            timestamp=timestamp,
-            prompt=prompt,
-            log={
-                "query": query,
-                "response": data_str,
-                "query_success": success,
-                "returned_something": returned_something,
-            },
-        )
-
+        self.log_overpass_query(human_prompt, generated_query, data_str)
         return data_str
 
     def add_user_message(self, content):
@@ -315,23 +329,23 @@ class ChatBot:
 
             response_message, invalid_messages = self.process_messages()
 
-            # Save the processed response
-            print(response_message, invalid_messages)
-            timestamp = self.get_timestamp()
-            self.save_to_json(
-                file_path=save_path,
-                timestamp=timestamp,
-                prompt=None,
-                log={
-                    "valid_messages": self.messages,
-                    "invalid_messages": invalid_messages,
-                    "overpass_queries": self.overpass_queries,
-                },
-            )
-            counter += 1
-
             # if self.is_goal_achieved(response_message):
             #    break
+            counter += 1
+
+        # Save the processed response
+        print(response_message, invalid_messages)
+        timestamp = self.get_timestamp()
+        self.save_to_json(
+            file_path=save_path,
+            timestamp=timestamp,
+            prompt=None,
+            log={
+                "valid_messages": self.messages,
+                "invalid_messages": invalid_messages,
+                "overpass_queries": self.overpass_queries,
+            },
+        )
 
         return response_message
 
