@@ -72,6 +72,16 @@ class ChatBot:
         # Use OSMnx to geocode the location
         return ox.geocode_to_gdf(place_name)
 
+    def distance_calc(self, gdf, lat, lon):
+        # Calculate the distance between two points
+        gdf["distance"] = gdf.apply(
+            lambda row: ox.distance.great_circle_vec(
+                lat, lon, row["geometry"].y, row["geometry"].x
+            ),
+            axis=1,
+        )
+        return gdf
+
     def save_to_json(self, file_path: str, this_run_name: str, log: dict):
         json_file_path = file_path
 
