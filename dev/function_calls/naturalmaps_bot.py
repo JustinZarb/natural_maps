@@ -75,7 +75,9 @@ class ChatBot:
         return ox.geocode_to_gdf(place_name)
 
     def save_to_json(self, file_path: str, this_run_name: str, log: dict):
-        json_file_path = file_path
+        json_file_path = (
+            file_path if file_path.endswith(".json") else file_path + ".json"
+        )
 
         # Check if the folder exists and if not, create it.
         folder_path = os.path.dirname(json_file_path)
@@ -236,9 +238,9 @@ class ChatBot:
 
         self.add_function_message(function_name, function_response)
         self.add_system_message(
-            content=f"Treat each of the steps in the plan as discreet steps. Does the function response contain enough information"
-            f"to answer step {self.current_step}? If not, state what you would do next (eg. 'trying again with a larger search area')."
-            f"If it did, respond with 'Step {self.current_step+1}' and solve this step."
+            content=f"Does the function response contain enough information to answer step {self.current_step}? "
+            "If not, state what you would do next (eg. 'trying again with a larger search area')."
+            f"If it does, move on to the next step and respond with 'Step {self.current_step+1}'."
             "If you do not have an adequate function to run the next step, give an appropriate message and skip to the final step."
             "If some steps failed, provide a response explaining what worked and what didn't. Provide any useful information from partial results."
         )
@@ -317,17 +319,6 @@ class ChatBot:
         large language model back into the conversation history, so that the next response has
         all the previous responses as context.
 
-        # Removing this as it was a hack
-        # Increase n to 3 if this is the first user message, to increase chances of a working query
-        user_messages = [m for m in self.messages if m["role"] == "user"]
-        num_user_messages = len(user_messages)
-        if num_user_messages == 1:
-            n = 1  # increase the number of initial responses to increase chances of success
-            # the chat id is {timestamp}_{first question}
-            self.id = self.id + "_" + user_messages[0]["content"]
-        else:
-            n = 1
-
         ### UNDER CONSTRUCTION ###
         Change the code below to enable the language model
         to act as an agent and repeat actions until the goal is achieved
@@ -394,7 +385,7 @@ class ChatBot:
 
 chatbot = ChatBot()
 chatbot.add_user_message(
-    "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
+    "are there any table tennis tables in Monbijoupark? Are there any nearby toilets around? which ping pong table is closest to a toilet?"
 )
 
 print(chatbot.run_conversation())
