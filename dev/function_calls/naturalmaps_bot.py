@@ -3,7 +3,7 @@ import os
 import json
 import pandas as pd
 import requests
-from time import gmtime, strftime
+from time import localtime, strftime
 import osmnx as ox
 
 
@@ -15,16 +15,9 @@ class ChatBot:
 
         # Initialize Messages
         self.messages = []
-        self.add_system_message(
-            content="""Let's first understand the problem and devise a plan to solve the problem."
-            " Please output the plan starting with the header 'Plan:' "
-            "and then followed by a numbered list of steps. "
-            "Please make the plan the minimum number of steps required "
-            "to accurately complete the task. If the task is a question, "
-            "the final step should almost always be 'Given the above steps taken, "
-            "please respond to the users original question'. "
-            "At the end of your plan, say '<END_OF_PLAN>'"""
-        )
+
+        # Invalid messages cannot be added to the chat but should be saved For logging
+        self.invalid_messages = []
 
         # Initialize Functions
         self.functions = {
@@ -79,7 +72,7 @@ class ChatBot:
         # Use OSMnx to geocode the location
         return ox.geocode_to_gdf(place_name)
 
-    def save_to_json(self, file_path: str, timestamp: str, prompt: str, log: dict):
+    def save_to_json(self, file_path: str, this_run_name: str, log: dict):
         json_file_path = file_path
 
         # Check if the folder exists and if not, create it.
@@ -97,7 +90,6 @@ class ChatBot:
             data = {}
 
         # Add data for this run
-        this_run_name = f"{timestamp} | {prompt}"
         data[this_run_name] = {
             "log": log,
         }
@@ -106,16 +98,17 @@ class ChatBot:
             json.dump(data, f, indent=4)
 
     def get_timestamp(self):
-        return strftime("%Y-%m-%d %H:%M:%S", gmtime())
+        return strftime("%Y-%m-%d %H:%M:%S", localtime())
 
     def get_openai_key_from_env(self):
         # Get api_key (saved locally)
         api_key = os.getenv("OPENAI_KEY")
         openai.api_key = api_key
 
-    def log_overpass_query(self, prompt, query, data_str):
+    def log_overpass_query(self, human_prompt, generated_query, data_str):
         # Write Overpass API Call to JSON
         timestamp = self.get_timestamp()
+        this_run_name = f"{timestamp} | {human_prompt}"
         filepath = os.path.join(self.log_path, "overpass_query_log.json")
         success = True if "error" not in data_str else False
         data_dict = json.loads(data_str)
@@ -126,7 +119,7 @@ class ChatBot:
         )
 
         # This gets saved in the chat log
-        self.overpass_queries[query] = {
+        self.overpass_queries[generated_query] = {
             "valid_query": success,
             "returned_something": returned_something,
             "data": data_str,
@@ -135,10 +128,9 @@ class ChatBot:
         # This gets saved in a separate log for overpass ueries
         self.save_to_json(
             file_path=filepath,
-            timestamp=timestamp,
-            prompt=prompt,
+            this_run_name=this_run_name,
             log={
-                "overpassql_query": query,
+                "overpassql_query": generated_query,
                 "overpass_response": data_str,
                 "valid_query": success,
                 "returned_something": returned_something,
@@ -169,6 +161,16 @@ class ChatBot:
 
     def add_user_message(self, content):
         self.messages.append({"role": "user", "content": content})
+        self.add_system_message(
+            content="""Let's first understand the problem and devise a plan to solve the problem."
+            " Please output the plan starting with the header 'Plan:' "
+            "and then followed by a numbered list of steps. "
+            "Please make the plan the minimum number of steps required "
+            "to accurately complete the task. If the task is a question, "
+            "the final step should almost always be 'Given the above steps taken, "
+            "please respond to the users original question'. "
+            "At the end of your plan, say '<END_OF_PLAN>'"""
+        )
 
     def add_function_message(self, function_name, content):
         self.messages.append(
@@ -293,10 +295,10 @@ class ChatBot:
         large language model back into the conversation history, so that the next response has
         all the previous responses as context.
         """
-        print(
-            "newest question:",
-            [m["content"] for m in self.messages if m["role"] == "user"][-1],
-        )
+        self.latest_question = [
+            m["content"] for m in self.messages if m["role"] == "user"
+        ][-1]
+        print(f"Latest question:{self.latest_question}")
 
         # Increase n to 3 if this is the first user message, to increase chances of a working query
         user_messages = [m for m in self.messages if m["role"] == "user"]
@@ -319,6 +321,7 @@ class ChatBot:
             # Process messages
             response_messages, invalid_messages = self.process_messages(n)
             self.messages += response_messages
+            self.invalid_messages += invalid_messages
 
             # Check if response includes a function call, and if yes, run it.
             for response_message in response_messages:
@@ -327,22 +330,22 @@ class ChatBot:
                         continue  # skips running the next API calls
                     self.execute_function(response_message)
 
-            response_message, invalid_messages = self.process_messages()
-
             # if self.is_goal_achieved(response_message):
             #    break
             counter += 1
 
-        # Save the processed response
-        print(response_message, invalid_messages)
-        timestamp = self.get_timestamp()
+            # Save the processed response
+            print(response_message, invalid_messages)
+
+        filename = f"{self.id} | {self.latest_question}"
+        filepath = os.path.join(self.log_path, filename)
+
         self.save_to_json(
-            file_path=save_path,
-            timestamp=timestamp,
-            prompt=None,
+            file_path=filepath,
+            this_run_name="some_metadata",
             log={
                 "valid_messages": self.messages,
-                "invalid_messages": invalid_messages,
+                "invalid_messages": self.invalid_messages,
                 "overpass_queries": self.overpass_queries,
             },
         )
