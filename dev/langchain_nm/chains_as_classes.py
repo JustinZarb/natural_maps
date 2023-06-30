@@ -51,6 +51,7 @@ class OverpassQuery:
             template="""Answer the user's message {user_text_input} based on the result of an overpass QL query contained in {overpass_answer}.""",
         )
         self.chain_to_user = LLMChain(llm=self.llm, prompt=self.chain_to_user_prompt)
+
         self.overpass_sequential_chain = SequentialChain(
             chains=[
                 self.chain_to_overpass,
