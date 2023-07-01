@@ -84,7 +84,8 @@ if prompt := st.chat_input("What is up?"):
 
     with st.chat_message("assistant"):
         # message_placeholder = st.empty()
-        response = overpass_query.process_user_input(prompt)
+        chatbot.add_user_message(prompt)
+        response = chatbot.run_conversation()
         st.markdown(response)
         # Add assistant response to chat history
         st.session_state.messages.append({"role": "assistant", "content": response})
