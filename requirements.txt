@@ -127,6 +127,7 @@ six==1.16.0
 smmap==5.0.0
 snuggs==1.4.7
 SQLAlchemy==2.0.17
+st-files-connection @ git+https://github.com/streamlit/files-connection@38ebf70a95d23d5731b0ecbdeb7531afa301feca
 stack-data==0.6.2
 streamlit==1.24.0
 streamlit-chat==0.1.1
