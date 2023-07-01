@@ -1,9 +1,9 @@
 import streamlit as st
 import dev.streamlit_functions as st_functions
 from dev.st_explore_with_wordcloud import explore_data
-import folium
+from dev.function_calls.naturalmaps_bot import ChatBot
 from streamlit_folium import st_folium
-import pydeck as pdk
+
 
 st.set_page_config(
     page_title="Naturalmaps",
@@ -12,6 +12,30 @@ st.set_page_config(
 )
 
 st.title("Natural Maps")
+st.markdown(
+    """a portfolio project by J. Adam Hughes,
+Justin Zarb and Pasquale Zito, 
+developed as part of Data Science Retreat."""
+)
+# Talk to the map!
+st.subheader("Ask the map!")
+
+
+bot_left, bot_right = st.columns((1, 2), gap="small")
+with bot_left:
+    m = st_functions.map_location(
+        st_functions.name_to_gdf("berlin"), highlight_location=True
+    )
+    st_folium(m, key="bot_map")
+
+with bot_right:
+    bot = ChatBot()
+    assistant_message = st.chat_message("assistant", avatar="🗺️")
+    user_message = st.chat_message("user", avatar="🧑‍💻")
+    planner_message = st.chat_message("planner", avatar="📝")
+    assistant_message.write("Hello human")
+    user_message.write("this is the message")
+    planner_message.write("this is the plan")
 
 # Explore the data manually
 with st.expander("Manually explore a map area"):
@@ -39,22 +63,6 @@ with st.expander("Manually explore a map area"):
     # Right: Chat/Explore
     with explore_right:
         explore_data(st_data)
-
-# Talk to the map!
-st.subheader("Natural language input")
-
-
-bot_left, bot_right = st.columns((1, 2), gap="small")
-with bot_left:
-    m = st_functions.map_location()
-    st_folium(m)
-
-with bot_right:
-    import numpy as np
-
-    message = st.chat_message("assistant")
-    message.write("Hello human")
-    message.bar_chart(np.random.randn(30, 3))
 
 
 st.markdown(
