@@ -19,6 +19,62 @@ from pyproj import Transformer
 import hashlib
 
 
+def name_to_gdf(place_name):
+    """Return a Pandas.GeoDataframe object for a name if Nominatim can find it
+
+    Args:
+        place_name (str): eg. "Berlin"
+
+    Returns:
+        gdf: a geodataframe
+    """
+    # Use OSMnx to geocode the location (OSMnx uses some other libraries)
+    gdf = ox.geocode_to_gdf(place_name)
+    return gdf
+
+
+def map_location(gdf=None, feature_group=None):
+    """Create a map object given an optional gdf and feature group
+
+    Args:
+        gdf (_type_, optional): _description_. Defaults to None.
+        feature_group (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        map object: _description_
+    """
+    # Initialize the map
+    m = folium.Map(height="50%")
+
+    # Add the gdf to the map
+    if gdf is not None:
+        folium.GeoJson(gdf).add_to(m)
+
+    # Add the feature group(s) to the map and update the bounds
+    if feature_group is not None:
+        features = feature_group if isinstance(feature_group, list) else [feature_group]
+        for feature in features:
+           feature.add_to(m)
+
+    # Fit the map to the bounds of all features
+    m.fit_bounds(m.get_bounds())
+    return m
+
+
+def update_map():
+    # Create a folium map, adding
+    if "gdf" in st.session_state:
+        gdf = st.session_state.gdf
+    else:
+        gdf = None
+    if "circles" in st.session_state:
+        circles = st.session_state.circles
+    else:
+        circles = None
+    m = map_location(gdf, circles)
+    return m
+
+
 def word_to_color(word):
     # Use MD5 hash to convert the word into a hexadecimal number
     hash_object = hashlib.md5(word.encode())
@@ -52,45 +108,6 @@ def bbox_from_st_data(bounds):
         bounds["_northEast"]["lng"],
     ]
     return bbox
-
-
-def name_to_gdf(place_name):
-    # Use OSMnx to geocode the location
-    return ox.geocode_to_gdf(place_name)
-
-
-def map_location(gdf=None, feature_group=None):
-    # Initialize the map
-    m = folium.Map(height="50%")
-
-    # Add the gdf to the map
-    if gdf is not None:
-        folium.GeoJson(gdf).add_to(m)
-
-    # Add the feature group(s) to the map and update the bounds
-    if feature_group is not None:
-        features = feature_group if isinstance(feature_group, list) else [feature_group]
-        for feature in features:
-            feature.add_to(m)
-
-    # Fit the map to the bounds of all features
-    m.fit_bounds(m.get_bounds())
-
-    return m
-
-
-def update_map():
-    # Create a folium map, adding
-    if "gdf" in st.session_state:
-        gdf = st.session_state.gdf
-    else:
-        gdf = None
-    if "circles" in st.session_state:
-        circles = st.session_state.circles
-    else:
-        circles = None
-    m = map_location(gdf, circles)
-    return m
 
 
 def gdf_to_layer(gdf):
