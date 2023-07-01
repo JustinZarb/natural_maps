@@ -2,9 +2,13 @@ import openai
 import os
 import json
 import pandas as pd
+import geopandas as gpd
 import requests
 from time import localtime, strftime
 import osmnx as ox
+import utm
+from pyproj import CRS
+from shapely.geometry import Polygon, Point
 
 
 class ChatBot:
@@ -61,6 +65,26 @@ class ChatBot:
                     "required": ["prompt", "query"],
                 },
             },
+            {
+                "name": "name_to_gdf",
+                "description": """Use OSMnx to retrieve place(s) by name 
+                from the Nominatim API as a GeoDataFrame. To make it more useful to a LLM, 
+                the function returns the centroid, search radius, area and bounding box in
+                addition to the GDF (geopandas.GeoDataframe).      
+
+                Returns              
+                    """,
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "place_names_list": {
+                            "type": "list",
+                            "description": "A list of place names (strings)",
+                        },
+                    },
+                    "required": ["place_names_list"],
+                },
+            },
         ]
 
         # Logging parameters
@@ -70,15 +94,90 @@ class ChatBot:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
 
-    def name_to_gdf(self, place_name):
-        # Use OSMnx to geocode the location
-        return ox.geocode_to_gdf(place_name)
+    def gdf_data(self, gdf):
+        """Get the area of a polygon
+        This method is not directly callable by the LLM"""
+        utm_zone = utm.latlon_to_zone_number(gdf.loc[0, "lat"], gdf.loc[0, "lon"])
+        south = gdf.loc[0, "lat"] < 0
+        crs = CRS.from_dict({"proj": "utm", "zone": utm_zone, "south": south})
+        epsg_code = crs.to_authority()[1]
+        unit = {ai.unit_name for ai in crs.axis_info}
+        gdf_projected = gdf.to_crs(epsg_code)
+        area = gdf_projected.area[0]
+        return epsg_code, gdf_projected, unit, area
+
+    def longest_distance_to_vertex(self, polygon):
+        """Calculate the radius between the polygon centroid and its furthest point.
+        Not callable by the LLM
+        Args:
+            polygon (shapely.geometry.Polygon): _description_
+        Returns:
+            max_distance (float): _description_
+        """
+        # Get the centroid of the polygon
+        centroid = polygon.centroid
+        # Calculate the distance from the centroid to each vertex
+        distances = [
+            centroid.distance(Point(vertex)) for vertex in polygon.exterior.coords
+        ]
+        # Return the maximum distance
+        return max(distances)
+
+    def name_to_gdf(self, place_names: list):
+        """Get GDF and area from a place name.
+        Can be called by the LLM
+
+        Args:
+            place_names (List[str]): A list of place names.
+
+        Returns:
+            data (str): A JSON string containing a dictionary. Each key in the dictionary is a place name from the input list.
+                        The value is another dictionary with keys 'gdf', 'area', and 'area_unit'. 'gdf' is a GeoDataFrame representing the place,
+                        'area' is the area of the place, and 'area_unit' is the unit of the area.
+        """
+        place_dict = {}
+        for place in place_names:
+            # Use OSMnx to geocode the location
+            gdf = ox.geocode_to_gdf(place)  # geodataframe
+            epsg_code, gdf_projected, unit, area = self.gdf_data(gdf)
+            # Add a column for each geometry
+            gdf["longest_distance_to_vertex"] = gdf["geometry"].apply(
+                self.longest_distance_to_vertex
+            )
+
+            place_dict[place] = {
+                "gdf": gdf,
+                "area": area,
+                "area_unit": unit,
+            }
+
+        data = json.dumps(place_dict)
+        return data
+
+    def distance_calc(self, gdf, lat, lon):
+        """Not yet properly implemented
+
+        Args:
+            gdf (_type_): _description_
+            lat (_type_): _description_
+            lon (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        # Calculate the distance between two points
+        gdf["distance"] = gdf.apply(
+            lambda row: ox.distance.great_circle_vec(
+                lat, lon, row["geometry"].y, row["geometry"].x
+            ),
+            axis=1,
+        )
+        return gdf
 
     def save_to_json(self, file_path: str, this_run_name: str, log: dict):
         json_file_path = (
             file_path if file_path.endswith(".json") else file_path + ".json"
         )
-
         # Check if the folder exists and if not, create it.
         folder_path = os.path.dirname(json_file_path)
         if not os.path.exists(folder_path):
@@ -168,7 +267,6 @@ class ChatBot:
 
     def add_user_message(self, content):
         self.messages.append({"role": "user", "content": content})
-
         self.add_system_message(
             content="""Let's first understand the problem and devise a plan to solve the problem."
             " Please output the plan starting with the header 'Plan:' "
@@ -318,7 +416,6 @@ class ChatBot:
         In its current form, the calls are built into a loop which feed each response from the
         large language model back into the conversation history, so that the next response has
         all the previous responses as context.
-
         ### UNDER CONSTRUCTION ###
         Change the code below to enable the language model
         to act as an agent and repeat actions until the goal is achieved
@@ -385,8 +482,6 @@ class ChatBot:
 
 if __name__ == "__main__":
     chatbot = ChatBot()
-    chatbot.add_user_message(
-        "are there any table tennis tables in Monbijoupark? Are there any nearby toilets around? which ping pong table is closest to a toilet?"
-    )
+    chatbot.add_user_message("Which is larger, Schöneberg or Wedding?")
 
     print(chatbot.run_conversation())
