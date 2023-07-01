@@ -355,8 +355,8 @@ class ChatBot:
                             response_message.get("content").split("Step ")[1][0]
                         )
                     except:
-                        print(response_message.get("content"))
                         self.current_step += 1
+                    print(response_message.get("content"))
 
                 if response_message.get("function_call"):
                     if self.function_status_pass:
@@ -383,9 +383,10 @@ class ChatBot:
         return response_message
 
 
-chatbot = ChatBot()
-chatbot.add_user_message(
-    "are there any table tennis tables in Monbijoupark? Are there any nearby toilets around? which ping pong table is closest to a toilet?"
-)
+if __name__ == "__main__":
+    chatbot = ChatBot()
+    chatbot.add_user_message(
+        "are there any table tennis tables in Monbijoupark? Are there any nearby toilets around? which ping pong table is closest to a toilet?"
+    )
 
-print(chatbot.run_conversation())
+    print(chatbot.run_conversation())
