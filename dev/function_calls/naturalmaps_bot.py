@@ -2,9 +2,13 @@ import openai
 import os
 import json
 import pandas as pd
+import geopandas as gpd
 import requests
 from time import localtime, strftime
 import osmnx as ox
+import utm
+from pyproj import CRS
+from shapely.geometry import Polygon, Point, MultiPolygon
 
 
 class ChatBot:
@@ -21,20 +25,23 @@ class ChatBot:
 
         # Initialize Functions
         self.functions = {
-            "" "overpass_query": self.overpass_query,
+            "overpass_query": self.overpass_query,
+            "get_geodata_and_area": self.get_geodata_and_area,
         }
         self.function_status_pass = False  # Used to indicate function success
         self.function_metadata = [
             {
                 "name": "overpass_query",
-                "description": """Run an overpass query
-                    To improve chances of success, keep the queries simple.
-                    You might have an idea where places are, but you sometimes guess wrong, so always use geocodeArea, which gives a more accurate location.
-                    
+                "description": """Run an overpass QL query.
+                    Instructions:
+                    - Keep the queries simple and specific.
+                    - Always use Overpass built-in geocodeArea for locations like this /{/{geocodeArea:charlottenburg}}->.searchArea; 
+                    - Do not exceed size to 100 unless a previous attempt was unsuccessful.
+                    - If running broad searches such as [node[~'^(amenity|leisure)$'~'.'](\{\{bbox}});], stick to only nodes. 
                     eg. prompt: "Find toilets in Charlottenburg"
                     
                     [out:json][timeout:25];
-                    /{/{geocodeArea:charlottenburg}}->.searchArea;
+                    {{geocodeArea:charlottenburg}}->.searchArea;
                     (
                     node["amenity"="toilets"](area.searchArea);
                     way["amenity"="toilets"](area.searchArea);
@@ -59,22 +66,138 @@ class ChatBot:
                     "required": ["prompt", "query"],
                 },
             },
+            {
+                "name": "get_geodata_and_area",
+                "description": """Gets the area of a place. If this doesn't work, it could be that the place was typed 
+                wrong by the user. In this case, take a best guess at correcting the name of the place.
+                The GDF (geopandas.GeoDataframe) is stored within the class but not returned as it is often too large.      
+                Returns area, unit of the area (may differ depending on the location).              
+                    """,
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "place_name": {
+                            "type": "string",
+                            "description": "The name of a place",
+                        },
+                    },
+                    "required": ["place_name"],
+                },
+            },
         ]
 
-        # Logging parameters
+        # Store overpass queries in the class
         self.overpass_queries = {}
+        # Store gdf files in the class
+        self.gdf = {}
+        # Store transformed gdf files
+
+        # Logging parameters
         self.id = self.get_timestamp()
         if log_path is None:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
 
-    def name_to_gdf(self, place_name):
+    def gdf_data(self, gdf):
+        """Get the area of a polygon
+        This method is not directly callable by the LLM"""
+        utm_zone = utm.latlon_to_zone_number(gdf.loc[0, "lat"], gdf.loc[0, "lon"])
+        south = gdf.loc[0, "lat"] < 0
+        crs = CRS.from_dict({"proj": "utm", "zone": utm_zone, "south": south})
+        epsg_code = crs.to_authority()[1]
+        unit = list({ai.unit_name for ai in crs.axis_info})[0]
+        gdf_projected = gdf.to_crs(epsg_code)
+        area = gdf_projected.area[0]
+        return epsg_code, gdf_projected, unit, area
+
+    def longest_distance_to_vertex(self, geometry):
+        """Calculate the radius between the polygon centroid and its furthest point.
+        Not callable by the LLM
+        Args:
+            polygon (shapely.geometry.Polygon): _description_
+        Returns:
+            max_distance (float): _description_
+        """
+        # Check if the geometry is a MultiPolygon
+        if isinstance(geometry, MultiPolygon):
+            # If it is, iterate over the individual polygons
+            polygons = list(geometry)
+        else:
+            # If it's not a MultiPolygon, assume it's a single Polygon and put it in a list
+            polygons = [geometry]
+
+        max_distance = 0
+        for polygon in polygons:
+            centroid = polygon.centroid
+            # Calculate the distance from the centroid to each vertex
+            distances = [
+                centroid.distance(Point(vertex)) for vertex in polygon.exterior.coords
+            ]
+            # Update max_distance if the maximum distance for this polygon is greater
+            max_distance = max(max_distance, max(distances))
+
+        # Return the maximum distance
+        return max_distance
+
+    def get_geodata_and_area(self, place_name: str):
+        """Get GDF and area from a place name.
+        Can be called by the LLM
+
+        Args:
+            place_names (List[str]): A list of place names.
+
+        Returns:
+            data (str): A JSON string containing a dictionary. Each key in the dictionary is a place name from the input list.
+                        The value is another dictionary with keys 'gdf', 'area', and 'area_unit'. 'gdf' is a GeoDataFrame representing the place,
+                        'area' is the area of the place, and 'area_unit' is the unit of the area.
+        """
         # Use OSMnx to geocode the location
-        return ox.geocode_to_gdf(place_name)
+        try:
+            gdf = ox.geocode_to_gdf(place_name)  # geodataframe
+        except ValueError as e:
+            return f"Nominatim Nominatim geocoder returned 0 results for {place_name}"
+
+        epsg_code, gdf_projected, unit, area = self.gdf_data(gdf)
+        # Add a column for each geometry
+        gdf["longest_distance_to_vertex"] = gdf["geometry"].apply(
+            self.longest_distance_to_vertex
+        )
+        # Convert the GeoDataFrame to GeoJSON
+        gdf_json = json.loads(gdf.to_json())
+
+        place_dict = {
+            "name": place_name,
+            "area": area,
+            "area_unit": unit,
+        }
+
+        data = json.dumps(place_dict)
+        return data
+
+    def distance_calc(self, gdf, lat, lon):
+        """Not yet properly implemented
+
+        Args:
+            gdf (_type_): _description_
+            lat (_type_): _description_
+            lon (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        # Calculate the distance between two points
+        gdf["distance"] = gdf.apply(
+            lambda row: ox.distance.great_circle_vec(
+                lat, lon, row["geometry"].y, row["geometry"].x
+            ),
+            axis=1,
+        )
+        return gdf
 
     def save_to_json(self, file_path: str, this_run_name: str, log: dict):
-        json_file_path = file_path
-
+        json_file_path = (
+            file_path if file_path.endswith(".json") else file_path + ".json"
+        )
         # Check if the folder exists and if not, create it.
         folder_path = os.path.dirname(json_file_path)
         if not os.path.exists(folder_path):
@@ -159,6 +282,9 @@ class ChatBot:
         self.log_overpass_query(human_prompt, generated_query, data_str)
         return data_str
 
+    def add_system_message(self, content):
+        self.messages.append({"role": "system", "content": content})
+
     def add_user_message(self, content):
         self.messages.append({"role": "user", "content": content})
         self.add_system_message(
@@ -176,9 +302,6 @@ class ChatBot:
         self.messages.append(
             {"role": "function", "name": function_name, "content": content}
         )
-
-    def add_system_message(self, content):
-        self.messages.append({"role": "system", "content": content})
 
     def execute_function(self, response_message):
         """Execute a function from self.functions
@@ -206,25 +329,41 @@ class ChatBot:
                 }
 
             if not json_failed:
+                try:
+                    function_response = function_to_call(**function_args_dict)
+                except TypeError as e:
+                    function_response = {
+                        "invalid args": str(e),
+                        "input": function_args,
+                    }
+
                 # Specific checks for self.overpass_query()
                 if function_name == "overpass_query":
-                    function_response = function_to_call(**function_args_dict)
                     data = json.loads(function_response)
+                    if len(function_response) > 4096:
+                        function_response = "Overpass query returned too many results."
                     if "elements" in data:
                         elements = data["elements"]
                         if elements == []:
-                            function_response = "Overpass query returned no results"
+                            function_response += (
+                                "-> Overpass query returned no results."
+                            )
                         else:
                             # Overpass query worked! Passed!
                             self.function_status_pass = True
-                    else:
-                        function_response = (
-                            "Overpass Query does not contain any elements"
-                        )
 
-            self.add_function_message(function_name, function_response)
         else:
-            print("Function not found:", function_name)
+            function_response = f"{function_name} not found"
+
+        self.add_function_message(function_name, function_response)
+        self.add_system_message(
+            content=f"Does the function response contain enough information to answer step {self.current_step}? "
+            "If not, state what you would do next (eg. 'trying again with a larger search area')."
+            f"If it does, move on to the next step and respond with 'Step {self.current_step+1}'."
+            "If you do not have an adequate function to run the next step or if some steps failed,"
+            "skip to the final step. Provide a response explaining what worked and what didn't, and"
+            "any useful information from partial results. End your final message with <final_response>"
+        )
 
     def is_valid_message(self, message):
         """Check if the message content is a valid JSON string"""
@@ -280,6 +419,11 @@ class ChatBot:
 
         return valid_response_messages, invalid_response_messages
 
+    def read_plan(self, plan):
+        lines = plan.split("\n")
+        lines = [l for l in lines if l != ""][1:-1]
+        return lines
+
     def run_conversation(self):
         """Run this after every user message
         originally had the following structure:
@@ -294,68 +438,77 @@ class ChatBot:
         In its current form, the calls are built into a loop which feed each response from the
         large language model back into the conversation history, so that the next response has
         all the previous responses as context.
-        """
-        self.latest_question = [
-            m["content"] for m in self.messages if m["role"] == "user"
-        ][-1]
-        print(f"Latest question:{self.latest_question}")
-
-        # Increase n to 3 if this is the first user message, to increase chances of a working query
-        user_messages = [m for m in self.messages if m["role"] == "user"]
-        num_user_messages = len(user_messages)
-        if num_user_messages == 1:
-            n = 1  # increase the number of initial responses to increase chances of success
-            # the chat id is {timestamp}_{first question}
-            self.id = self.id + "_" + user_messages[0]["content"]
-        else:
-            n = 1
-        save_path = os.path.expanduser(f"./naturalmaps_logs/{self.id}.json")
-
-        """
         ### UNDER CONSTRUCTION ###
         Change the code below to enable the language model
         to act as an agent and repeat actions until the goal is achieved
         """
-        counter = 0
-        while counter < 5:
-            # Process messages
-            response_messages, invalid_messages = self.process_messages(n)
-            self.messages += response_messages
-            self.invalid_messages += invalid_messages
-
-            # Check if response includes a function call, and if yes, run it.
-            for response_message in response_messages:
-                if response_message.get("function_call"):
-                    if self.function_status_pass:
-                        continue  # skips running the next API calls
-                    self.execute_function(response_message)
-
-            # if self.is_goal_achieved(response_message):
-            #    break
-            counter += 1
-
-            # Save the processed response
-            print(response_message, invalid_messages)
+        self.latest_question = [
+            m["content"] for m in self.messages if m["role"] == "user"
+        ][-1]
 
         filename = f"{self.id} | {self.latest_question}"
         filepath = os.path.join(self.log_path, filename)
 
-        self.save_to_json(
-            file_path=filepath,
-            this_run_name="some_metadata",
-            log={
-                "valid_messages": self.messages,
-                "invalid_messages": self.invalid_messages,
-                "overpass_queries": self.overpass_queries,
-            },
-        )
+        print(f"Latest question:{self.latest_question}")
+
+        counter = 0
+        final_response = False
+
+        while (counter < 6) and (not (final_response)):
+            # Process messages
+            response_messages, invalid_messages = self.process_messages(1)
+            self.messages += response_messages
+            self.invalid_messages += invalid_messages
+            self.plan = []
+            self.current_step = 1
+
+            # Check if response includes a function call, and if yes, run it.
+            for response_message in response_messages:
+                # Check for a plan (should only happen in the first response)
+                if (response_message.get("content")) and (
+                    response_message.get("content").startswith("Plan:")
+                ):
+                    self.plan = self.read_plan(response_message.get("content"))
+
+                # Check progress
+                if (response_message.get("content")) and (
+                    "step" in str.lower(response_message.get("content"))
+                ):
+                    try:
+                        self.current_step = int(
+                            response_message.get("content").split("Step ")[1][0]
+                        )
+                    except:
+                        self.current_step += 1
+                    print(response_message.get("content"))
+
+                if response_message.get("function_call"):
+                    self.execute_function(response_message)
+
+                # Check if <End of Response>
+                if (response_message.get("content")) and (
+                    "<final_response>" in response_message.get("content")
+                ):
+                    final_response = True
+
+            counter += 1
+
+            # If everything works, just save once at the end
+            self.save_to_json(
+                file_path=filepath,
+                this_run_name=f"iteration {counter} step {self.current_step}",
+                log={
+                    "valid_messages": self.messages,
+                    "invalid_messages": self.invalid_messages,
+                    "overpass_queries": self.overpass_queries,
+                },
+            )
 
         return response_message
 
 
-chatbot = ChatBot()
-chatbot.add_user_message(
-    "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
-)
+if __name__ == "__main__":
+    chatbot = ChatBot()
+    chatbot.add_user_message("which is larger, Schöneberg or Moabit?")
 
-print(chatbot.run_conversation())
+    print(chatbot.run_conversation())
