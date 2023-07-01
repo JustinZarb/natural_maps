@@ -271,6 +271,7 @@ class ChatBot:
         # This breaks if the messages are not valid
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
+            # model="gpt-4-0613",
             messages=self.messages,
             functions=self.function_metadata,
             function_call="auto",
@@ -364,8 +365,11 @@ class ChatBot:
 
 
 chatbot = ChatBot()
-chatbot.add_user_message(
-    "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
-)
+# chatbot.add_user_message(
+#     "are there any ping pong tables in Monbijoupark? which one is closest to a toilet?"
+# )
 
+chatbot.add_user_message(
+    "are there any ping pong tables in charlottenburg? which one is closest to a toilet?"
+)
 print(chatbot.run_conversation())
