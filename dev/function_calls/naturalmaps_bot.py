@@ -8,7 +8,7 @@ from time import localtime, strftime
 import osmnx as ox
 import utm
 from pyproj import CRS
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon, Point, MultiPolygon
 
 
 class ChatBot:
@@ -25,7 +25,8 @@ class ChatBot:
 
         # Initialize Functions
         self.functions = {
-            "" "overpass_query": self.overpass_query,
+            "overpass_query": self.overpass_query,
+            "get_geodata_and_area": self.get_geodata_and_area,
         }
         self.function_status_pass = False  # Used to indicate function success
         self.function_metadata = [
@@ -40,7 +41,7 @@ class ChatBot:
                     eg. prompt: "Find toilets in Charlottenburg"
                     
                     [out:json][timeout:25];
-                    /{/{geocodeArea:charlottenburg}}->.searchArea;
+                    {{geocodeArea:charlottenburg}}->.searchArea;
                     (
                     node["amenity"="toilets"](area.searchArea);
                     way["amenity"="toilets"](area.searchArea);
@@ -66,29 +67,32 @@ class ChatBot:
                 },
             },
             {
-                "name": "name_to_gdf",
-                "description": """Use OSMnx to retrieve place(s) by name 
-                from the Nominatim API as a GeoDataFrame. To make it more useful to a LLM, 
-                the function returns the centroid, search radius, area and bounding box in
-                addition to the GDF (geopandas.GeoDataframe).      
-
-                Returns              
+                "name": "get_geodata_and_area",
+                "description": """Gets the area of a place. If this doesn't work, it could be that the place was typed 
+                wrong by the user. In this case, take a best guess at correcting the name of the place.
+                The GDF (geopandas.GeoDataframe) is stored within the class but not returned as it is often too large.      
+                Returns area, unit of the area (may differ depending on the location).              
                     """,
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "place_names_list": {
-                            "type": "list",
-                            "description": "A list of place names (strings)",
+                        "place_name": {
+                            "type": "string",
+                            "description": "The name of a place",
                         },
                     },
-                    "required": ["place_names_list"],
+                    "required": ["place_name"],
                 },
             },
         ]
 
-        # Logging parameters
+        # Store overpass queries in the class
         self.overpass_queries = {}
+        # Store gdf files in the class
+        self.gdf = {}
+        # Store transformed gdf files
+
+        # Logging parameters
         self.id = self.get_timestamp()
         if log_path is None:
             log_path = "~/naturalmaps_logs"
@@ -101,12 +105,12 @@ class ChatBot:
         south = gdf.loc[0, "lat"] < 0
         crs = CRS.from_dict({"proj": "utm", "zone": utm_zone, "south": south})
         epsg_code = crs.to_authority()[1]
-        unit = {ai.unit_name for ai in crs.axis_info}
+        unit = list({ai.unit_name for ai in crs.axis_info})[0]
         gdf_projected = gdf.to_crs(epsg_code)
         area = gdf_projected.area[0]
         return epsg_code, gdf_projected, unit, area
 
-    def longest_distance_to_vertex(self, polygon):
+    def longest_distance_to_vertex(self, geometry):
         """Calculate the radius between the polygon centroid and its furthest point.
         Not callable by the LLM
         Args:
@@ -114,16 +118,28 @@ class ChatBot:
         Returns:
             max_distance (float): _description_
         """
-        # Get the centroid of the polygon
-        centroid = polygon.centroid
-        # Calculate the distance from the centroid to each vertex
-        distances = [
-            centroid.distance(Point(vertex)) for vertex in polygon.exterior.coords
-        ]
-        # Return the maximum distance
-        return max(distances)
+        # Check if the geometry is a MultiPolygon
+        if isinstance(geometry, MultiPolygon):
+            # If it is, iterate over the individual polygons
+            polygons = list(geometry)
+        else:
+            # If it's not a MultiPolygon, assume it's a single Polygon and put it in a list
+            polygons = [geometry]
 
-    def name_to_gdf(self, place_names: list):
+        max_distance = 0
+        for polygon in polygons:
+            centroid = polygon.centroid
+            # Calculate the distance from the centroid to each vertex
+            distances = [
+                centroid.distance(Point(vertex)) for vertex in polygon.exterior.coords
+            ]
+            # Update max_distance if the maximum distance for this polygon is greater
+            max_distance = max(max_distance, max(distances))
+
+        # Return the maximum distance
+        return max_distance
+
+    def get_geodata_and_area(self, place_name: str):
         """Get GDF and area from a place name.
         Can be called by the LLM
 
@@ -135,21 +151,25 @@ class ChatBot:
                         The value is another dictionary with keys 'gdf', 'area', and 'area_unit'. 'gdf' is a GeoDataFrame representing the place,
                         'area' is the area of the place, and 'area_unit' is the unit of the area.
         """
-        place_dict = {}
-        for place in place_names:
-            # Use OSMnx to geocode the location
-            gdf = ox.geocode_to_gdf(place)  # geodataframe
-            epsg_code, gdf_projected, unit, area = self.gdf_data(gdf)
-            # Add a column for each geometry
-            gdf["longest_distance_to_vertex"] = gdf["geometry"].apply(
-                self.longest_distance_to_vertex
-            )
+        # Use OSMnx to geocode the location
+        try:
+            gdf = ox.geocode_to_gdf(place_name)  # geodataframe
+        except ValueError as e:
+            return f"Nominatim Nominatim geocoder returned 0 results for {place_name}"
 
-            place_dict[place] = {
-                "gdf": gdf,
-                "area": area,
-                "area_unit": unit,
-            }
+        epsg_code, gdf_projected, unit, area = self.gdf_data(gdf)
+        # Add a column for each geometry
+        gdf["longest_distance_to_vertex"] = gdf["geometry"].apply(
+            self.longest_distance_to_vertex
+        )
+        # Convert the GeoDataFrame to GeoJSON
+        gdf_json = json.loads(gdf.to_json())
+
+        place_dict = {
+            "name": place_name,
+            "area": area,
+            "area_unit": unit,
+        }
 
         data = json.dumps(place_dict)
         return data
@@ -316,6 +336,7 @@ class ChatBot:
                         "invalid args": str(e),
                         "input": function_args,
                     }
+
                 # Specific checks for self.overpass_query()
                 if function_name == "overpass_query":
                     data = json.loads(function_response)
@@ -339,8 +360,9 @@ class ChatBot:
             content=f"Does the function response contain enough information to answer step {self.current_step}? "
             "If not, state what you would do next (eg. 'trying again with a larger search area')."
             f"If it does, move on to the next step and respond with 'Step {self.current_step+1}'."
-            "If you do not have an adequate function to run the next step, give an appropriate message and skip to the final step."
-            "If some steps failed, provide a response explaining what worked and what didn't. Provide any useful information from partial results."
+            "If you do not have an adequate function to run the next step or if some steps failed,"
+            "skip to the final step. Provide a response explaining what worked and what didn't, and"
+            "any useful information from partial results. End your final message with <final_response>"
         )
 
     def is_valid_message(self, message):
@@ -423,10 +445,16 @@ class ChatBot:
         self.latest_question = [
             m["content"] for m in self.messages if m["role"] == "user"
         ][-1]
+
+        filename = f"{self.id} | {self.latest_question}"
+        filepath = os.path.join(self.log_path, filename)
+
         print(f"Latest question:{self.latest_question}")
 
         counter = 0
-        while counter < 5:
+        final_response = False
+
+        while (counter < 6) and (not (final_response)):
             # Process messages
             response_messages, invalid_messages = self.process_messages(1)
             self.messages += response_messages
@@ -441,7 +469,6 @@ class ChatBot:
                     response_message.get("content").startswith("Plan:")
                 ):
                     self.plan = self.read_plan(response_message.get("content"))
-                    print(f"plan: {self.plan}")
 
                 # Check progress
                 if (response_message.get("content")) and (
@@ -456,17 +483,17 @@ class ChatBot:
                     print(response_message.get("content"))
 
                 if response_message.get("function_call"):
-                    if self.function_status_pass:
-                        continue  # skips running the next API calls
                     self.execute_function(response_message)
 
-            # if self.is_goal_achieved(response_message):
-            #    break
+                # Check if <End of Response>
+                if (response_message.get("content")) and (
+                    "<final_response>" in response_message.get("content")
+                ):
+                    final_response = True
+
             counter += 1
 
-            filename = f"{self.id} | {self.latest_question}"
-            filepath = os.path.join(self.log_path, filename)
-
+            # If everything works, just save once at the end
             self.save_to_json(
                 file_path=filepath,
                 this_run_name=f"iteration {counter} step {self.current_step}",
@@ -482,6 +509,6 @@ class ChatBot:
 
 if __name__ == "__main__":
     chatbot = ChatBot()
-    chatbot.add_user_message("Which is larger, Schöneberg or Wedding?")
+    chatbot.add_user_message("which is larger, Schöneberg or Moabit?")
 
     print(chatbot.run_conversation())

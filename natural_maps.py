@@ -28,7 +28,13 @@ with st.expander("Manually explore a map area"):
     # Left: Map
     with explore_left:
         m = st_functions.update_map()
+        if "circles" in st.session_state:
+            circles = st.session_state.circles
+            st.markdown(circles)
+        else:
+            circles = None
         st_data = st_folium(m)
+        st.markdown(st_data)
 
     # Right: Chat/Explore
     with explore_right:
