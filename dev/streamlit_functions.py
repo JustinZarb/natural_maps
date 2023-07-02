@@ -54,7 +54,7 @@ def map_location(gdf=None, feature_group=None):
     if feature_group is not None:
         features = feature_group if isinstance(feature_group, list) else [feature_group]
         for feature in features:
-           feature.add_to(m)
+            feature.add_to(m)
 
     # Fit the map to the bounds of all features
     m.fit_bounds(m.get_bounds())
@@ -94,6 +94,15 @@ def overpass_query(query):
     response = requests.get(overpass_url, params={"data": query})
     data = response.json()
     return data
+
+
+# def bounds_to_st_data(gdf):
+#     """
+#     Return a tuple of coordinates for the "bounds" needed by streamlit_folium
+#     """
+
+#     bounds = {'_southWest': {'lat': gdf.bbox_west.values[0], 'lng': gdf.bbox_south.values[0], '_northEast': {'lat': 52.50338318818063, 'lng': 13.344976902008058}}
+#     return bounds
 
 
 def bbox_from_st_data(bounds):
@@ -155,7 +164,7 @@ def gdf_to_layer(gdf):
     return layer
 
 
-def calculate_zoom_level(gdf):
+def calculate_zoom_level(bounds):
     """Calculate zoom level for PYDECK
 
     Args:
@@ -165,7 +174,7 @@ def calculate_zoom_level(gdf):
         _type_: _description_
     """
     # Get the bounds of the geometry
-    minx, miny, maxx, maxy = gdf["geometry"].iloc[0].bounds
+    minx, miny, maxx, maxy = bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]
 
     # Calculate the diagonal length of the bounding box
     diagonal_length = sqrt((maxx - minx) ** 2 + (maxy - miny) ** 2)
@@ -405,6 +414,11 @@ def map_with_geotiff(filename):
 
     # Show the map in the Streamlit app
     folium_static(m)
+
+
+def calculate_center(bounds):
+    center = ((bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2)
+    return center
 
 
 def folium_circles_from_bbox_tags(bbox: list, tags: dict):
