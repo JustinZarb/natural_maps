@@ -2,11 +2,11 @@ import requests
 import json
 import streamlit as st
 import folium
-import rasterio
 from streamlit_folium import st_folium, folium_static
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
-
+import utm
+from pyproj import CRS
 import pandas as pd
 import plotly.express as px
 import osmnx as ox
@@ -111,29 +111,28 @@ def bbox_from_st_data(bounds):
     return bbox
 
 
-def calculate_zoom_level(gdf):
-    """Calculate zoom level for PYDECK
+def gdf_data(gdf):
+    """Get the area of a polygon
+    can take a gdf with multiple rows"""
+    places_dict = {}
+    for index, row in gdf.iterrows():
+        print(index)
+        utm_zone = utm.latlon_to_zone_number(
+            gdf.loc[[index], "lat"].values[0], gdf.loc[[index], "lon"].values[0]
+        )
+        south = gdf.loc[[index], "lat"].values[0] < 0
+        crs = CRS.from_dict({"proj": "utm", "zone": utm_zone, "south": south})
+        epsg_code = crs.to_authority()[1]
+        unit = list({ai.unit_name for ai in crs.axis_info})[0]
+        gdf_projected = gdf.loc[[index], :].to_crs(epsg_code)
+        area = gdf_projected.area.values[0]
+        places_dict[row["display_name"]] = {
+            "epsg": epsg_code,
+            "area": area,
+            "unit": unit,
+        }
 
-    Args:
-        gdf (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    # Get the bounds of the geometry
-    minx, miny, maxx, maxy = gdf["geometry"].iloc[0].bounds
-
-    # Calculate the diagonal length of the bounding box
-    diagonal_length = sqrt((maxx - minx) ** 2 + (maxy - miny) ** 2)
-
-    # Calculate a base zoom level based on the diagonal length
-    # This is a rough estimate and may need to be adjusted to fit your specific needs
-    base_zoom = 9 - log(maxx - minx)
-
-    # Make sure the zoom level is within the valid range (0-22)
-    zoom_level = max(0, min(base_zoom, 22))
-
-    return zoom_level
+    return places_dict
 
 
 def count_tag_frequency(data, tag=None):
@@ -142,6 +141,9 @@ def count_tag_frequency(data, tag=None):
     for element in data["elements"]:
         if "tags" in element:
             for t, v in element["tags"].items():
+                # Split the tag on the first separator
+                t = t.split(":")[0]
+
                 if tag is None:
                     # Counting tag frequency
                     if t in tag_frequency:
@@ -187,7 +189,6 @@ def get_nodes_with_tags_in_bbox(bbox: list):
     returns:
         data: the query response in json format
     """
-
     overpass_url = "http://overpass-api.de/api/interpreter"
     overpass_query = f"""
     [out:json];
@@ -210,11 +211,6 @@ def get_tag_keys():
     return data["data"]
 
 
-def get_tags(place_name, tags_keys):
-    objects = ox.geometries.geometries_from_place(place_name, tags_keys)
-    return objects
-
-
 def get_points_from_bbox_and_tags(bbox: list, tags: dict):
     """Run a Overpass query given bbox and tags"""
     # bbox = [S, W, N, E]
@@ -228,7 +224,6 @@ def get_points_from_bbox_and_tags(bbox: list, tags: dict):
     )
 
     geometries = ox.geometries_from_polygon(poly_from_bbox, tags)
-
     return geometries
 
 
@@ -284,198 +279,3 @@ def create_circles_from_nodes(json_obj):
             )
 
     return circles
-
-
-#### Older functions
-
-
-def gdf_to_layer(gdf):
-    """Create layer to visualize in PYDECK
-
-    Args:
-        gdf (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    # Get the geometry type of the location
-    geometry_type = gdf["geometry"].iloc[0].geom_type
-    # Convert the GeoDataFrame to a DataFrame
-    df = gdf.drop(columns=["geometry"])
-
-    if geometry_type == "Point":
-        df["lat"] = gdf["geometry"].y
-        df["lon"] = gdf["geometry"].x
-        # Create a scatterplot layer
-        layer = pdk.Layer(
-            "ScatterplotLayer",
-            df,
-            get_position=["lon", "lat"],
-            get_radius=100,
-            get_fill_color=[255, 0, 0],
-        )
-    else:
-        df["geometry"] = gdf["geometry"].apply(
-            lambda geom: mapping(geom)["coordinates"]
-        )
-        # Create a GeoJsonLayer
-        layer = pdk.Layer(
-            "PolygonLayer",
-            df,
-            get_polygon="geometry",
-            get_fill_color=[255, 0, 0, 20],  # Set a static color
-            get_line_color=[255, 0, 0],
-            get_line_width="zoom_level",
-            stroked=True,
-            # filled=True,
-            extruded=False,
-        )
-
-    return layer
-
-
-def pydeck_scatter_from_points(chart_data):
-    """Generate a scatterplot layer from a list of points
-
-    Args:
-        geometries (_type_): _description_
-    """
-
-    scatterplot_layer = pdk.Layer(
-        "ScatterplotLayer",
-        data=chart_data,
-        get_position="[lon, lat]",
-        get_color="[200, 30, 0, 160]",
-        get_radius=200,
-    )
-    return
-
-
-def plot_network(place_name):
-    G = ox.graph_from_place(place_name, network_type="drive")
-    fig, ax = ox.plot_graph(ox.project_graph(G), show=False, close=False)
-    st.pyplot(fig)
-
-
-def query_pharmacies_in_bbox(bbox):
-    # Overpass query
-    query = f"""
-    [out:json];
-    node[amenity=pharmacy]{bbox};
-    out;
-    """
-    return overpass_query(query)
-
-
-def query_outdoor_seating_in_bbox(bbox):
-    query = f"""[out:json][timeout:25];
-      // gather results
-      (
-        // query part for: “outdoor_seating=yes”
-        node["outdoor_seating"="yes"]({bbox});
-        way["outdoor_seating"="yes"]({bbox});
-        relation["outdoor_seating"="yes"]({bbox});
-      );
-      // print results
-      out body;
-      >;
-      out skel qt;"""
-    return overpass_query(query)
-
-
-def map_with_geotiff(filename):
-    # Open the GeoTIFF file with rasterio
-    with rasterio.open(filename) as ds:
-        # Get the GeoTIFF's bounds and transform
-        data = ds.read(1)
-        bounds = ds.bounds
-        transform = ds.transform
-        plt.imsave("hillshade.png", data, cmap="gray")
-    # Calculate the center of the map
-    center = ((bounds.top + bounds.bottom) / 2, (bounds.left + bounds.right) / 2)
-
-    # Create a new folium map centered on the GeoTIFF
-    m = folium.Map(location=center, zoom_start=16)
-
-    # Add the GeoTIFF as a TileLayer (requires a local server or publicly accessible URL)
-    folium.raster_layers.ImageOverlay(
-        image="hillshade.png",
-        bounds=[[bounds.bottom, bounds.left], [bounds.top, bounds.right]],
-        opacity=0.4,
-    ).add_to(m)
-
-    # Show the map in the Streamlit app
-    folium_static(m)
-
-
-def folium_circles_from_bbox_tags(bbox: list, tags: dict):
-    """Create folium circle markers for nodes on map.
-
-    Args:
-        m (folium.map): st.folium map to modify
-        bbox (list): bounding box returned by streamlit folium
-        tags (dict): a dictionary of tags to add to the map
-
-    Returns:
-
-    """
-    geometries = get_points_from_bbox_and_tags(bbox, tags)
-
-    points = []
-    # Add geometries to m
-    for _, row in geometries.iterrows():
-        for tag in tags:
-            if tag in row and row[tag]:
-                # If the geometry is a point, add a CircleMarker
-                if isinstance(row["geometry"], Point):
-                    x, y = list(row["geometry"].coords)[0]
-                    points.append(
-                        folium.CircleMarker(
-                            location=[y, x],
-                            radius=5,
-                            fill=True,
-                            fill_color="red",
-                            fill_opacity=1.0,
-                            popup=tag,
-                        )
-                    )
-
-    return points
-
-
-def map_location_pydeck(gdf, layers=[]):
-    # Get the geometry type of the location
-    geometry_type = gdf["geometry"].iloc[0].geom_type
-
-    # If the geometry is a point, create a map centered around the point
-    if geometry_type == "Point":
-        center_lat = gdf["geometry"].iloc[0].y
-        center_lon = gdf["geometry"].iloc[0].x
-        zoom_level = 14
-
-    # If the geometry is not a point, calculate the center and zoom level
-    else:
-        minx, miny, maxx, maxy = gdf["geometry"].iloc[0].bounds
-        center_lat = (miny + maxy) / 2
-        center_lon = (minx + maxx) / 2
-
-        # Make sure the zoom level is within the valid range (0-22)
-        zoom_level = calculate_zoom_level(gdf)
-
-    # Create the initial view state
-    view_state = pdk.ViewState(
-        latitude=center_lat, longitude=center_lon, zoom=zoom_level, pitch=0, bearing=0
-    )
-
-    # Create layer from gdf
-    location_layer = gdf_to_layer(gdf)
-    layers.append(location_layer)
-
-    # Create the deck
-    deck = pdk.Deck(
-        map_style="mapbox://styles/mapbox/outdoors-v11",
-        layers=layers,  # Add your layers here
-        initial_view_state=view_state,
-    )
-
-    return deck
