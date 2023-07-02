@@ -7,9 +7,10 @@ from streamlit_folium import st_folium
 from config import OPENAI_API_KEY
 
 import streamlit as st
-from streamlit_chat import message
-from streamlit_extras.colored_header import colored_header
-from streamlit_extras.add_vertical_space import add_vertical_space
+
+# from streamlit_chat import message
+# from streamlit_extras.colored_header import colored_header
+# from streamlit_extras.add_vertical_space import add_vertical_space
 
 st.set_page_config(
     page_title="Naturalmaps",
@@ -36,7 +37,7 @@ with bot_left:
 with bot_right:
     # Layout of input/response containers
     input_container = st.container()
-    colored_header(label="", description="", color_name="green-30")
+    # colored_header(label="", description="", color_name="green-30")
     response_container = st.container()
 
     def get_text():
