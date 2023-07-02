@@ -39,9 +39,8 @@ class ChatBot:
                 "description": """Execute an Overpass QL query.
                     Instructions:
                     - Keep queries simple and specific.
-                    - Use `geocodeArea` for locations. E.g., to search in Charlottenburg, use `{{geocodeArea:Charlottenburg}}->.searchArea;`.
+                    - Use `geocodeArea` for locations.
                     - Limit the size to 100 unless a previous query failed due to size.
-                    - For broad searches like `[node[~'^(amenity|leisure)$'~'.']({{bbox}});]`, stick to nodes.
                     - Avoid overly broad or unspecific queries.
 
                     Example: "Find toilets in Charlottenburg"
@@ -49,14 +48,11 @@ class ChatBot:
                     [out:json][timeout:25];
                     {{geocodeArea:charlottenburg}}->.searchArea;
                     (
-                    node"amenity"="toilets";
-                    way"amenity"="toilets";
-                    relation"amenity"="toilets";
-                    );
-                    out body;
-
-                    ;
-                    out skel qt;""",
+                    node["amenity"="toilets"](area.searchArea);
+                    way["amenity"="toilets"](area.searchArea);
+                    relation["amenity"="toilets"](area.searchArea);
+                    );out body;>;out skel qt;
+                    """,
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -254,22 +250,17 @@ class ChatBot:
 
         # This gets saved in the chat log
         self.overpass_queries[human_prompt] = {
-            "generated_query": generated_query,
-            "valid_query": success,
-            "returned_something": returned_something,
-            "data": data_str,
+                "overpassql_query": generated_query,
+                "overpass_response": data_str,
+                "valid_query": success,
+                "returned_something": returned_something,
         }
 
         # This gets saved in a separate log for overpass ueries
         self.save_to_json(
             file_path=filepath,
             this_run_name=this_run_name,
-            log={
-                "overpassql_query": generated_query,
-                "overpass_response": data_str,
-                "valid_query": success,
-                "returned_something": returned_something,
-            },
+            log=self.overpass_queries[human_prompt],
         )
 
     def overpass_query(self, human_prompt, generated_query):
