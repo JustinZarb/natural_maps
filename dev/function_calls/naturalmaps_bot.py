@@ -39,7 +39,7 @@ class ChatBot:
                 "description": """Execute an Overpass QL query.
                     Instructions:
                     - Keep queries simple and specific.
-                    - Use `geocodeArea` for locations. E.g., `{{geocodeArea:charlottenburg}}->.searchArea;`.
+                    - Use `geocodeArea` for locations. E.g., to search in Charlottenburg, use `{{geocodeArea:Charlottenburg}}->.searchArea;`.
                     - Limit the size to 100 unless a previous query failed due to size.
                     - For broad searches like `[node[~'^(amenity|leisure)$'~'.']({{bbox}});]`, stick to nodes.
                     - Avoid overly broad or unspecific queries.
