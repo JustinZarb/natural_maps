@@ -1,9 +1,15 @@
 import streamlit as st
+
 import dev.streamlit_functions as st_functions
 from dev.st_explore_with_wordcloud import explore_data
 from dev.function_calls.naturalmaps_bot import ChatBot
 from streamlit_folium import st_folium
+from config import OPENAI_API_KEY
 
+import streamlit as st
+from streamlit_chat import message
+from streamlit_extras.colored_header import colored_header
+from streamlit_extras.add_vertical_space import add_vertical_space
 
 st.set_page_config(
     page_title="Naturalmaps",
@@ -17,25 +23,56 @@ st.markdown(
 Justin Zarb and Pasquale Zito, 
 developed as part of Data Science Retreat."""
 )
+
 # Talk to the map!
 st.subheader("Ask the map!")
 
 
 bot_left, bot_right = st.columns((1, 2), gap="small")
 with bot_left:
-    m = st_functions.map_location(
-        st_functions.name_to_gdf("berlin"), highlight_location=True
-    )
+    m = st_functions.map_location(st_functions.name_to_gdf("berlin"))
     st_folium(m, key="bot_map")
 
 with bot_right:
-    bot = ChatBot()
-    assistant_message = st.chat_message("assistant", avatar="🗺️")
-    user_message = st.chat_message("user", avatar="🧑‍💻")
-    planner_message = st.chat_message("planner", avatar="📝")
-    assistant_message.write("Hello human")
-    user_message.write("this is the message")
-    planner_message.write("this is the plan")
+    # Layout of input/response containers
+    input_container = st.container()
+    colored_header(label="", description="", color_name="blue-30")
+    response_container = st.container()
+
+    def get_text():
+        autofill = st.button(label="autofill")
+        if autofill:
+            input = "Find all the ping pong tables in Monbijoupark"
+        else:
+            input = ""
+        input_text = st.text_input("You: ", value=input, key="human_prompt")
+
+        return input_text
+
+    ## Applying the user input box
+    with input_container:
+        user_input = get_text()
+
+    bot = ChatBot(openai_api_key=OPENAI_API_KEY)
+
+    with response_container:
+        if user_input:
+            user_message = st.chat_message("user", avatar="👤")
+            user_message.write(st.session_state.human_prompt)
+
+            bot.add_user_message(st.session_state.human_prompt)
+            bot.run_conversation()
+            try:
+                assistant_message = st.chat_message("assistant", avatar="🗺️")
+                assistant_message.write(bot.latest_message)
+            except:
+                pass
+
+        plan = False
+        if plan:
+            planner_message = st.chat_message("planner", avatar="📝")
+            planner_message.write(bot.plan)
+
 
 # Explore the data manually
 with st.expander("Manually explore a map area"):
