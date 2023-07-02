@@ -19,6 +19,29 @@ from pyproj import Transformer
 import hashlib
 
 
+def overpass_to_feature_group(data_str=""):
+    """Takes the  result of an overpass query in string form as input.
+    Selects 'elements' as nodes. Creates a folium.FeatureGroup.
+    Adds a Marker for each node,  with coordinates and a tags dictionary."""
+
+    # need to convert the string into a dictionary first.
+    data = folium.GeoJson(data_str).data
+    # these are the nodes we want
+    nodes = data["elements"]
+    node_data = [(node["lat"], node["lon"], node["tags"]) for node in nodes]
+    fg = folium.FeatureGroup(name="Elements from overpass")
+    # the tags content needs to be reformatted
+    for lat, lon, tags in node_data:
+        tags_content = "<br>".join([f"<b>{k}</b>: {v}" for k, v in tags.items()])
+        fg.add_child(folium.Marker(location=[lat, lon], popup=tags_content))
+    return fg
+
+
+def calculate_center(bounds):
+    center = ((bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2)
+    return center
+
+
 def name_to_gdf(place_name):
     """Return a Pandas.GeoDataframe object for a name if Nominatim can find it
 
@@ -414,11 +437,6 @@ def map_with_geotiff(filename):
 
     # Show the map in the Streamlit app
     folium_static(m)
-
-
-def calculate_center(bounds):
-    center = ((bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2)
-    return center
 
 
 def folium_circles_from_bbox_tags(bbox: list, tags: dict):

@@ -6,6 +6,45 @@ from streamlit_folium import st_folium
 import pydeck as pdk
 import osmnx as ox
 import random
+import numpy as np
+
+import os
+import json
+import pandas as pd
+import requests
+from time import gmtime, strftime
+from langchain.prompts import PromptTemplate
+from langchain.llms import OpenAI
+from langchain.chat_models import ChatOpenAI
+from langchain.chains import LLMChain
+from langchain.chains import (
+    TransformChain,
+    LLMChain,
+    SimpleSequentialChain,
+    SequentialChain,
+)
+import streamlit as st
+import openai
+
+from dev.langchain.chains_as_classes_with_json import OverpassQuery
+from dev.prompts.naturalmaps_bot import ChatBot
+
+api_key = os.getenv("OPENAI_KEY")
+# overpass_query = OverpassQuery(api_key)
+# user_input = "Find bike parking near tech parks in Kreuzberg, Berlin."
+# result = overpass_query.process_user_input(user_input)
+
+# Set OpenAI API key from Streamlit secrets
+openai.api_key = api_key  # st.secrets["OPENAI_API_KEY"]
+
+# We've got to bots at our disposal, for the moment
+overpass_query = OverpassQuery(api_key)
+chatbot = ChatBot()
+
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
 
 st.set_page_config(
     page_title="Naturalmaps",
@@ -13,51 +52,19 @@ st.set_page_config(
     layout="wide",
 )
 
-
-data_str = '{"version": 0.6, "generator": "Overpass API 0.7.60.6 e2dc3e5b", "osm3s": {"timestamp_osm_base": "2023-06-29T15:35:14Z", "timestamp_areas_base": "2023-06-29T12:13:45Z", "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."}, "elements": [{"type": "node", "id": 3690386818, "lat": 46.9418135, "lon": 7.4350152, "tags": {"leisure": "pitch", "sport": "table_tennis"}}, {"type": "node", "id": 6835150496, "lat": 52.5226885, "lon": 13.3979877, "tags": {"leisure": "pitch", "sport": "table_tennis", "wheelchair": "yes"}}, {"type": "node", "id": 6835150497, "lat": 52.5227083, "lon": 13.3978939, "tags": {"leisure": "pitch", "sport": "table_tennis", "wheelchair": "yes"}}, {"type": "node", "id": 6835150598, "lat": 52.5229822, "lon": 13.3965893, "tags": {"access": "customers", "leisure": "pitch", "sport": "table_tennis"}}, {"type": "node", "id": 6835150599, "lat": 52.5229863, "lon": 13.3964894, "tags": {"access": "customers", "leisure": "pitch", "sport": "table_tennis"}}]}'
-
-data = folium.GeoJson(data_str).data
-
-nodes = data["elements"]
-node_data = [(node["lat"], node["lon"], node["tags"]) for node in nodes]
-
-
-# for coords in node_coordinates:
-#     folium.Marker(location=coords).add_to(m)
-
-fg = folium.FeatureGroup(name="Elements from overpass")
-# fg.add_child(folium.features.GeoJson(bounds))
-
-
-# for capital in capitals.itertuples():
-#     fg.add_child(
-#         folium.Marker(
-#             location=[capital.latitude, capital.longitude],
-#             popup=f"{capital.capital}, {capital.state}",
-#             tooltip=f"{capital.capital}, {capital.state}",
-#             icon=folium.Icon(color="green")
-#             if capital.state == st.session_state["selected_state"]
-#             else None,
-#         )
-#     )
-for lat, lon, tags in node_data:
-    tags_content = "<br>".join([f"<b>{k}</b>: {v}" for k, v in tags.items()])
-    fg.add_child(folium.Marker(location=[lat, lon], popup=tags_content))
-
-# fg.add_child(bounds = {'_southWest': {'lat': 52.494239118767496, 'lng': 13.329420089721681}, '_northEast': {'lat': 52.50338318818063, 'lng': 13.344976902008058}})
-# place = "Berlin, Germany"
+# This is just some random initialization data
+data_str = '{"version": 0.6, "generator": "Overpass API 0.7.60.6 e2dc3e5b", "osm3s": {"timestamp_osm_base": "2023-06-29T15:35:14Z", "timestamp_areas_base": "2023-06-29T12:13:45Z", "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."}, "elements": [{"type": "node", "id": 6835150496, "lat": 52.5226885, "lon": 13.3979877, "tags": {"leisure": "pitch", "sport": "table_tennis", "wheelchair": "yes"}}, {"type": "node", "id": 6835150497, "lat": 52.5227083, "lon": 13.3978939, "tags": {"leisure": "pitch", "sport": "table_tennis", "wheelchair": "yes"}}, {"type": "node", "id": 6835150598, "lat": 52.5229822, "lon": 13.3965893, "tags": {"access": "customers", "leisure": "pitch", "sport": "table_tennis"}}, {"type": "node", "id": 6835150599, "lat": 52.5229863, "lon": 13.3964894, "tags": {"access": "customers", "leisure": "pitch", "sport": "table_tennis"}}]}'
+fg = st_functions.overpass_to_feature_group(data_str)
+bounds = fg.get_bounds()
 
 if "center" not in st.session_state:
-    st.session_state["center"] = (52.494239118767496, 13.329420089721681)
+    st.session_state.center = st_functions.calculate_center(bounds)
 if "feature_group" not in st.session_state:
     st.session_state["feature_group"] = fg
 if "zoom" not in st.session_state:
-    st.session_state["zoom"] = 10
+    st.session_state["zoom"] = st_functions.calculate_zoom_level(bounds)
 
-# st.session_state.feature_group = fg
-# st.session_state.zoom = 10
-# st.session_state.gdf = ox.geocode_to_gdf(place)
-# st.session_state.center = (52.494239118767496, 13.329420089721681)
+
 st.title("Natural Maps")
 
 # Explore the data manually
@@ -90,21 +97,21 @@ st.subheader("Natural language input")
 
 bot_left, bot_right = st.columns((1, 2), gap="small")
 
-if bot_left.button("Shift center"):
-    random_shift_y = (random.random() - 0.5) * 0.3
-    random_shift_x = (random.random() - 0.5) * 0.3
-    st.session_state["center"] = [
-        st.session_state["center"][0] + random_shift_y,
-        st.session_state["center"][1] + random_shift_x,
-    ]
+# if bot_left.button("Shift center"):
+#     random_shift_y = (random.random() - 0.5) * 0.3
+#     random_shift_x = (random.random() - 0.5) * 0.3
+#     st.session_state["center"] = [
+#         st.session_state["center"][0] + random_shift_y,
+#         st.session_state["center"][1] + random_shift_x,
+#     ]
 
-if bot_left.button("Shift and zoom"):
-    st.session_state["center"] = (49.732399900000004, 10.41650145)
-    st.session_state["zoom"] = 7.280601066479868
-if bot_left.button("remove dots"):
-    st.session_state["feature_group"] = folium.FeatureGroup(
-        name="Elements from overpass"
-    )
+# if bot_left.button("Shift and zoom"):
+#     st.session_state["center"] = (49.732399900000004, 10.41650145)
+#     st.session_state["zoom"] = 7.280601066479868
+# if bot_left.button("remove dots"):
+#     st.session_state["feature_group"] = folium.FeatureGroup(
+#         name="Elements from overpass"
+#     )
 
 
 with bot_left:
@@ -120,11 +127,26 @@ with bot_left:
 
 
 with bot_right:
-    import numpy as np
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-    message = st.chat_message("assistant")
-    message.write("Hello human")
-    message.bar_chart(np.random.randn(30, 3))
+    if prompt := st.chat_input("What is up?"):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        with st.chat_message("assistant"):
+            # message_placeholder = st.empty()
+            chatbot.add_user_message(prompt)
+            response = chatbot.run_conversation()
+            st.markdown(response)
+            # Add assistant response to chat history
+            st.session_state.messages.append({"role": "assistant", "content": response})
+
+    # message = st.chat_message("assistant")
+    # message.write("Hello human")
+    # #message.bar_chart(np.random.randn(30, 3))
 
 # st.session_state.center = (53.494239118767496, 13.329420089721681)
 
@@ -170,9 +192,3 @@ st.markdown(
 
 """
 )
-
-
-test = []
-for lat, lon, tags in node_data:
-    tags_content = "<br>".join([f"<b>{k}</b>: {v}" for k, v in tags.items()])
-    test.append((lat, lon, tags_content))

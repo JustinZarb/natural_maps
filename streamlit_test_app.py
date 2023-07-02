@@ -20,18 +20,17 @@ from langchain.chains import (
     SimpleSequentialChain,
     SequentialChain,
 )
+import streamlit as st
+import openai
 
+from dev.langchain.chains_as_classes_with_json import OverpassQuery
+from dev.prompts.naturalmaps_bot import ChatBot
 
 api_key = os.getenv("OPENAI_KEY")
 # overpass_query = OverpassQuery(api_key)
 # user_input = "Find bike parking near tech parks in Kreuzberg, Berlin."
 # result = overpass_query.process_user_input(user_input)
 
-import streamlit as st
-import openai
-
-from dev.langchain.chains_as_classes_with_json import OverpassQuery
-from dev.prompts.naturalmaps_bot import ChatBot
 
 st.title("ChatGPT-like clone")
 
@@ -42,8 +41,9 @@ overpass_query = OverpassQuery(api_key)
 chatbot = ChatBot()
 
 
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo"
+# if "openai_model" not in st.session_state:
+#    st.session_state["openai_model"] = "gpt-3.5-turbo"
+
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
