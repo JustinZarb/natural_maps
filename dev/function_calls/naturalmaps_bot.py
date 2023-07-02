@@ -225,7 +225,7 @@ class ChatBot:
 
     def get_openai_key_from_env(self):
         # Get api_key (saved locally)
-        api_key = os.getenv("OPENAI_KEY")
+        api_key = os.getenv("OPEN_AI_KEY")
         openai.api_key = api_key
 
     def log_overpass_query(self, human_prompt, generated_query, data_str):
@@ -509,6 +509,6 @@ class ChatBot:
 
 if __name__ == "__main__":
     chatbot = ChatBot()
-    chatbot.add_user_message("which is larger, Schöneberg or Moabit?")
+    # chatbot.add_user_message("which is larger, Schöneberg or Moabit?")
 
-    print(chatbot.run_conversation())
+    # print(chatbot.run_conversation())
