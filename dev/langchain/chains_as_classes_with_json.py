@@ -27,12 +27,15 @@ from langchain.chains import (
 # print(result)
 
 
-class OverpassQuery:
+class OverpassQueryChain:
     def __init__(self, api_key):
         self.api_key = api_key
         self.llm = ChatOpenAI(
-            temperature=0, openai_api_key=self.api_key, model_name="gpt-3.5-turbo-0613"
+            temperature=0.1,
+            openai_api_key=self.api_key,
+            model_name="gpt-3.5-turbo-0613",
         )
+        self.overpass_answer = None
         self.chain_to_overpass_prompt = PromptTemplate(
             input_variables=["user_text_input"],
             template="""Turn the user's message into an overpass QL query.
@@ -48,7 +51,10 @@ class OverpassQuery:
         )
         self.chain_to_user_prompt = PromptTemplate(
             input_variables=["overpass_answer", "user_text_input"],
-            template="""Answer the user's message {user_text_input} based on the result of an overpass QL query contained in {overpass_answer}.""",
+            template="""
+            Answer the user's message {user_text_input} based on the result of an overpass QL query contained in {overpass_answer}.
+            In your answer, don't mention overpass QL. In your answer, don't mention latitude or longitude, but rather use street addresses.
+            """,
         )
         self.chain_to_user = LLMChain(llm=self.llm, prompt=self.chain_to_user_prompt)
         self.overpass_sequential_chain = SequentialChain(
@@ -130,18 +136,19 @@ class OverpassQuery:
     def perform_op_query_func(self, inputs: dict) -> dict:
         query_input = inputs["ql_query"]
         op_answer = self.overpass_query(query_input)
+        self.overpass_answer = op_answer
         return {"overpass_answer": op_answer}
 
     def process_user_input(self, user_text_input):
         return self.overpass_sequential_chain.run({"user_text_input": user_text_input})
 
 
-tests_b = []
+# tests_b = []
 
-inputs = pd.read_csv("./dev/prompts/prompts.csv")
+# inputs = pd.read_csv("./dev/prompts/prompts.csv")
 
 
-def add_to_tests():
-    i = len(tests_b)
-    output = overpass_query.process_user_input(inputs[i])
-    tests_b.append(output)
+# def add_to_tests():
+#     i = len(tests_b)
+#     output = overpass_query.process_user_input(inputs[i])
+#     tests_b.append(output)

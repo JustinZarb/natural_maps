@@ -42,6 +42,47 @@ def calculate_center(bounds):
     return center
 
 
+def calculate_zoom_level(bounds):
+    """Calculate zoom level for PYDECK
+
+    Args:
+        gdf (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # Get the bounds of the geometry
+    minx, miny, maxx, maxy = bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]
+
+    # Calculate the diagonal length of the bounding box
+    diagonal_length = sqrt((maxx - minx) ** 2 + (maxy - miny) ** 2)
+
+    # Calculate a base zoom level based on the diagonal length
+    # This is a rough estimate and may need to be adjusted to fit your specific needs
+    base_zoom = 9 - log(maxx - minx)
+
+    # Make sure the zoom level is within the valid range (0-22)
+    zoom_level = max(0, min(base_zoom, 22))
+
+    return zoom_level
+
+
+def calculate_parameters_for_map(overpass_answer):
+    """
+    takes an overpass answer string
+    and returns:
+    fg, center, zoom
+    """
+    fg = overpass_to_feature_group(overpass_answer)
+    # Nasty hack for empty answers
+    bounds = fg.get_bounds()
+    if bounds == [[None, None], [None, None]]:
+        bounds = [[52.5210821, 13.3942864], [52.525776, 13.4038867]]
+    center = calculate_center(bounds)
+    zoom = calculate_zoom_level(bounds)
+    return fg, center, zoom
+
+
 def name_to_gdf(place_name):
     """Return a Pandas.GeoDataframe object for a name if Nominatim can find it
 
@@ -185,31 +226,6 @@ def gdf_to_layer(gdf):
         )
 
     return layer
-
-
-def calculate_zoom_level(bounds):
-    """Calculate zoom level for PYDECK
-
-    Args:
-        gdf (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    # Get the bounds of the geometry
-    minx, miny, maxx, maxy = bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]
-
-    # Calculate the diagonal length of the bounding box
-    diagonal_length = sqrt((maxx - minx) ** 2 + (maxy - miny) ** 2)
-
-    # Calculate a base zoom level based on the diagonal length
-    # This is a rough estimate and may need to be adjusted to fit your specific needs
-    base_zoom = 9 - log(maxx - minx)
-
-    # Make sure the zoom level is within the valid range (0-22)
-    zoom_level = max(0, min(base_zoom, 22))
-
-    return zoom_level
 
 
 def count_tag_frequency(data, tag=None):

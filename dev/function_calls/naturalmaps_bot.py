@@ -9,12 +9,17 @@ import osmnx as ox
 import utm
 from pyproj import CRS
 from shapely.geometry import Polygon, Point, MultiPolygon
+import streamlit as st
+import re
 
 
 class ChatBot:
-    def __init__(self, log_path: str = None):
+    def __init__(self, log_path: str = None, openai_api_key=None):
         # Get OpenAI Key
-        self.get_openai_key_from_env()
+        if openai_api_key is not None:
+            openai.api_key = openai_api_key
+        else:
+            self.get_openai_key_from_env()
         assert openai.api_key, "Failed to find API keys"
 
         # Initialize Messages
@@ -26,31 +31,32 @@ class ChatBot:
         # Initialize Functions
         self.functions = {
             "overpass_query": self.overpass_query,
-            "get_geodata_and_area": self.get_geodata_and_area,
         }
         self.function_status_pass = False  # Used to indicate function success
         self.function_metadata = [
             {
                 "name": "overpass_query",
-                "description": """Run an overpass QL query.
+                "description": """Execute an Overpass QL query.
                     Instructions:
-                    - Keep the queries simple and specific.
-                    - Always use Overpass built-in geocodeArea for locations like this /{/{geocodeArea:charlottenburg}}->.searchArea; 
-                    - Do not exceed size to 100 unless a previous attempt was unsuccessful.
-                    - If running broad searches such as [node[~'^(amenity|leisure)$'~'.'](\{\{bbox}});], stick to only nodes. 
-                    eg. prompt: "Find toilets in Charlottenburg"
-                    
+                    - Keep queries simple and specific.
+                    - Use `geocodeArea` for locations. E.g., to search in Charlottenburg, use `{{geocodeArea:Charlottenburg}}->.searchArea;`.
+                    - Limit the size to 100 unless a previous query failed due to size.
+                    - For broad searches like `[node[~'^(amenity|leisure)$'~'.']({{bbox}});]`, stick to nodes.
+                    - Avoid overly broad or unspecific queries.
+
+                    Example: "Find toilets in Charlottenburg"
+                    Query:
                     [out:json][timeout:25];
                     {{geocodeArea:charlottenburg}}->.searchArea;
                     (
-                    node["amenity"="toilets"](area.searchArea);
-                    way["amenity"="toilets"](area.searchArea);
-                    relation["amenity"="toilets"](area.searchArea);
+                    node"amenity"="toilets";
+                    way"amenity"="toilets";
+                    relation"amenity"="toilets";
                     );
                     out body;
-                    >;
-                    out skel qt;
-                    """,
+
+                    ;
+                    out skel qt;""",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -60,18 +66,23 @@ class ChatBot:
                         },
                         "generated_query": {
                             "type": "string",
-                            "description": "The overpass QL query to execute. Important: Ensure that this is a properly formatted .json string.",
+                            "description": "The overpass QL query to execute. Important: Ensure that this is machine readable.",
                         },
                     },
                     "required": ["prompt", "query"],
                 },
             },
+        ]
+
+        self.spare_function_metadata = [
             {
-                "name": "get_geodata_and_area",
-                "description": """Gets the area of a place. If this doesn't work, it could be that the place was typed 
-                wrong by the user. In this case, take a best guess at correcting the name of the place.
-                The GDF (geopandas.GeoDataframe) is stored within the class but not returned as it is often too large.      
-                Returns area, unit of the area (may differ depending on the location).              
+                "name": "area_of_a_place",
+                "description": """Important! Do not use this this unless if the user is searching
+                for objects. Use the overpass query function instead.
+                Gets the area of a place using osmnx.geocode_to_gdf. Will fail if the name provided by the 
+                user does not match any places in openStreetMap. If this is the case, try to guess where the user meant.
+                Returns area, unit of the area (may differ depending on the location). Divide by 1000000 to convert from m² to km² 
+                when dealing with large areas.          
                     """,
                 "parameters": {
                     "type": "object",
@@ -97,6 +108,11 @@ class ChatBot:
         if log_path is None:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
+
+    def get_openai_key_from_env(self):
+        # Get api_key (saved locally)
+        api_key = os.getenv("OPENAI_API_KEY")
+        openai.api_key = api_key
 
     def gdf_data(self, gdf):
         """Get the area of a polygon
@@ -139,7 +155,7 @@ class ChatBot:
         # Return the maximum distance
         return max_distance
 
-    def get_geodata_and_area(self, place_name: str):
+    def area_of_a_place(self, place_name: str):
         """Get GDF and area from a place name.
         Can be called by the LLM
 
@@ -223,11 +239,6 @@ class ChatBot:
     def get_timestamp(self):
         return strftime("%Y-%m-%d %H:%M:%S", localtime())
 
-    def get_openai_key_from_env(self):
-        # Get api_key (saved locally)
-        api_key = os.getenv("OPEN_AI_KEY")
-        openai.api_key = api_key
-
     def log_overpass_query(self, human_prompt, generated_query, data_str):
         # Write Overpass API Call to JSON
         timestamp = self.get_timestamp()
@@ -242,7 +253,8 @@ class ChatBot:
         )
 
         # This gets saved in the chat log
-        self.overpass_queries[generated_query] = {
+        self.overpass_queries[human_prompt] = {
+            "generated_query": generated_query,
             "valid_query": success,
             "returned_something": returned_something,
             "data": data_str,
@@ -268,6 +280,9 @@ class ChatBot:
         a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg
         """
         overpass_url = "http://overpass-api.de/api/interpreter"
+
+        # Check that the query is properly formatted
+        generated_query = generated_query.replace("\n", "").replace("_", "")
         response = requests.get(overpass_url, params={"data": generated_query})
         if response.content:
             try:
@@ -287,16 +302,6 @@ class ChatBot:
 
     def add_user_message(self, content):
         self.messages.append({"role": "user", "content": content})
-        self.add_system_message(
-            content="""Let's first understand the problem and devise a plan to solve the problem."
-            " Please output the plan starting with the header 'Plan:' "
-            "and then followed by a numbered list of steps. "
-            "Please make the plan the minimum number of steps required "
-            "to accurately complete the task. If the task is a question, "
-            "the final step should almost always be 'Given the above steps taken, "
-            "please respond to the users original question'. "
-            "At the end of your plan, say '<END_OF_PLAN>'"""
-        )
 
     def add_function_message(self, function_name, content):
         self.messages.append(
@@ -339,7 +344,10 @@ class ChatBot:
 
                 # Specific checks for self.overpass_query()
                 if function_name == "overpass_query":
-                    data = json.loads(function_response)
+                    try:
+                        data = json.loads(function_response)
+                    except TypeError as e:
+                        function_response = e
                     if len(function_response) > 4096:
                         function_response = "Overpass query returned too many results."
                     if "elements" in data:
@@ -357,12 +365,13 @@ class ChatBot:
 
         self.add_function_message(function_name, function_response)
         self.add_system_message(
-            content=f"Does the function response contain enough information to answer step {self.current_step}? "
-            "If not, state what you would do next (eg. 'trying again with a larger search area')."
-            f"If it does, move on to the next step and respond with 'Step {self.current_step+1}'."
-            "If you do not have an adequate function to run the next step or if some steps failed,"
-            "skip to the final step. Provide a response explaining what worked and what didn't, and"
-            "any useful information from partial results. End your final message with <final_response>"
+            content=f"""Does the function response contain enough information to answer step {self.current_step}? 
+            If yes: Return a message describing what you will do in step {self.current_step+1} and if necessarry call the next function.
+            If not: Return a message saying the first attempt at step {self.current_step} failed and the best way to overcome this problem.
+            If you do not have an adequate function to run the next step or if some steps failed,
+            skip to the final step. Provide a response explaining what worked and what didn't, and
+            any useful information from partial results. Start each message with '[step {self.current_step}]'.
+            End your final message with <final_response>"""
         )
 
     def is_valid_message(self, message):
@@ -420,9 +429,18 @@ class ChatBot:
         return valid_response_messages, invalid_response_messages
 
     def read_plan(self, plan):
-        lines = plan.split("\n")
-        lines = [l for l in lines if l != ""][1:-1]
-        return lines
+        # Remove the "Here's the plan:" and "<END_OF_PLAN>" parts
+        plan = plan.replace("Here's the plan:\n", "").strip()
+
+        # Split the string at every number followed by a full stop, but keep the content together
+        split_s = re.split(r"(\d+\.\s)", plan)
+
+        # Combine the number and the following text into one string
+        split_s = [
+            split_s[i] + split_s[i + 1].strip() for i in range(1, len(split_s), 2)
+        ]
+
+        return split_s
 
     def run_conversation(self):
         """Run this after every user message
@@ -438,6 +456,7 @@ class ChatBot:
         In its current form, the calls are built into a loop which feed each response from the
         large language model back into the conversation history, so that the next response has
         all the previous responses as context.
+
         ### UNDER CONSTRUCTION ###
         Change the code below to enable the language model
         to act as an agent and repeat actions until the goal is achieved
@@ -445,6 +464,22 @@ class ChatBot:
         self.latest_question = [
             m["content"] for m in self.messages if m["role"] == "user"
         ][-1]
+
+        self.add_system_message(
+            content=f"""Let's first understand the problem and devise 
+            a plan to solve it. Please output the plan starting with 
+            the header 'Here's the plan:' and then followed by a concise 
+            numbered list of steps. Each step should correspond to a 
+            specific function from the following list: {self.functions.keys()}. 
+            You have {self.remaining_iterations} remaining. Avoid adding any 
+            steps that do not directly involve these functions or include 
+            specific content of the function calls. 
+            If the task is a question, the final step should be 'Given the 
+            above steps taken, please respond to the user's original question'. 
+            Remember, the goal is to complete the task using the minimum 
+            number of steps and functions. Do not repeat or create a new 
+            plan."""
+        )
 
         filename = f"{self.id} | {self.latest_question}"
         filepath = os.path.join(self.log_path, filename)
@@ -457,6 +492,7 @@ class ChatBot:
         while (counter < 6) and (not (final_response)):
             # Process messages
             response_messages, invalid_messages = self.process_messages(1)
+            self.latest_message = response_messages
             self.messages += response_messages
             self.invalid_messages += invalid_messages
             self.plan = []
@@ -493,22 +529,138 @@ class ChatBot:
 
             counter += 1
 
-            # If everything works, just save once at the end
-            self.save_to_json(
-                file_path=filepath,
-                this_run_name=f"iteration {counter} step {self.current_step}",
-                log={
-                    "valid_messages": self.messages,
-                    "invalid_messages": self.invalid_messages,
-                    "overpass_queries": self.overpass_queries,
-                },
-            )
+        print(self.messages)
+        # If everything works, just save once at the end
+        self.save_to_json(
+            file_path=filepath,
+            this_run_name=f"iteration {counter} step {self.current_step}",
+            log={
+                "valid_messages": self.messages,
+                "invalid_messages": self.invalid_messages,
+                "overpass_queries": self.overpass_queries,
+            },
+        )
+
+        return response_message
+
+    def start_planner(self):
+        st.session_state["planner_message"] = st.chat_message("planner", avatar="📝")
+
+    def start_assistant(self):
+        st.session_state["assistant_message"] = st.chat_message(
+            "assistant", avatar="🗺️"
+        )
+
+    def run_conversation_streamlit(self, num_iterations=4):
+        """Same as run_conversation but designed to interactively work with Streamlit.
+        Run this after every user message
+
+        """
+        # Set some logging variables
+        self.latest_question = [
+            m["content"] for m in self.messages if m["role"] == "user"
+        ][-1]
+
+        filename = f"{self.id} | {self.latest_question}"
+        filepath = os.path.join(self.log_path, filename)
+
+        # Set conversation parameters
+        self.remaining_iterations = num_iterations
+        final_response = False
+
+        # Give first instructions.
+        self.add_system_message(
+            content=f"""Let's first understand the problem and devise 
+                a plan to solve it. Please output the plan starting with 
+                the header 'Here's the plan:' and then followed by a concise 
+                numbered list of steps. Each step should correspond to a 
+                specific function from the following list: {self.functions.keys()}. 
+                You have {self.remaining_iterations} remaining. Avoid adding any 
+                steps that do not directly involve these functions or include 
+                specific content of the function calls. Also, avoid mentioning 
+                specific settings or parameters that will be used in the functions. 
+                If the task is a question, the final step should be 'Given the 
+                above steps taken, please respond to the user's original question'. 
+                Remember, the goal is to complete the task using the minimum 
+                number of steps and functions. Do not repeat or create a new 
+                plan."""
+        )
+
+        while (self.remaining_iterations > 0) and (not (final_response)):
+            # Process messages
+            response_messages, invalid_messages = self.process_messages(1)
+            self.messages += response_messages
+            self.invalid_messages += invalid_messages
+            self.plan = []
+            self.current_step = 1
+
+            st.session_state["message_history"] = []
+
+            # Check if response includes a function call, and if yes, run it.
+            for response_message in response_messages:
+                # if the role is "assistant", write the content
+                if response_message.get("role") == "assistant":
+                    if response_message.get("content"):
+                        s = response_message.get("content")
+                        # Check for a plan (should only happen in the first response)
+                        if s.startswith("Here's the plan:"):
+                            # set class attribute
+                            self.plan = self.read_plan(s)
+                            # add to session state in streamlit
+                            st.session_state["plan"] = s
+                            if "planner_message" not in st.session_state:
+                                self.start_planner()
+                            st.session_state.planner_message.write(
+                                st.session_state["plan"]
+                            )
+
+                        # Check if <End of Response>
+                        elif s.endswith("<final_response>"):
+                            final_response = True
+                            st.session_state["message_history"].append(
+                                s.replace("<final_response>", "")
+                            )
+
+                        else:
+                            st.session_state["message_history"].append(s)
+
+                        # Update current step (for the in-between system prompt)
+                        if "step" in s:
+                            match = re.search(r"\[step (\d+)\]", s)
+                            if match:
+                                self.current_step = int(match.group(1))
+
+                    if st.session_state.message_history:
+                        if "assistant_message" not in st.session_state:
+                            self.start_assistant()
+                        if not final_response:
+                            for m in st.session_state["message_history"]:
+                                st.session_state.assistant_message.write(m)
+
+                if response_message.get("function_call"):
+                    self.execute_function(response_message)
+
+            self.remaining_iterations -= 1
+
+        if self.overpass_queries:
+            st.session_state["overpass_queries"] = self.overpass_queries
+
+        # If everything works, just save once at the end
+        self.save_to_json(
+            file_path=filepath,
+            this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
+            log={
+                "valid_messages": self.messages,
+                "invalid_messages": self.invalid_messages,
+                "overpass_queries": self.overpass_queries,
+            },
+        )
 
         return response_message
 
 
-if __name__ == "__main__":
-    chatbot = ChatBot()
-    # chatbot.add_user_message("which is larger, Schöneberg or Moabit?")
+# if __name__ == "__main__":
+#     chatbot = ChatBot()
+#     chatbot.add_user_message("which is larger, Schöneberg or Moabit?")
 
-    # print(chatbot.run_conversation())
+#     print(chatbot.run_conversation())
