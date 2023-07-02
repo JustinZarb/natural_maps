@@ -4,8 +4,6 @@ import dev.streamlit_functions as st_functions
 from dev.st_explore_with_wordcloud import explore_data
 from dev.function_calls.naturalmaps_bot import ChatBot
 from streamlit_folium import st_folium
-from config import OPENAI_API_KEY
-
 import streamlit as st
 from streamlit_chat import message
 from streamlit_extras.colored_header import colored_header
