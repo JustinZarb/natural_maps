@@ -252,22 +252,17 @@ class ChatBot:
 
         # This gets saved in the chat log
         self.overpass_queries[human_prompt] = {
-            "generated_query": generated_query,
+            "overpassql_query": generated_query,
+            "overpass_response": data_str,
             "valid_query": success,
             "returned_something": returned_something,
-            "data": data_str,
         }
 
         # This gets saved in a separate log for overpass ueries
         self.save_to_json(
             file_path=filepath,
             this_run_name=this_run_name,
-            log={
-                "overpassql_query": generated_query,
-                "overpass_response": data_str,
-                "valid_query": success,
-                "returned_something": returned_something,
-            },
+            log=self.overpass_queries[human_prompt],
         )
 
     def overpass_query(self, human_prompt, generated_query):
@@ -344,19 +339,21 @@ class ChatBot:
                 if function_name == "overpass_query":
                     try:
                         data = json.loads(function_response)
+                        if len(function_response) > 4096:
+                            function_response = (
+                                "Overpass query returned too many results."
+                            )
+                        if "elements" in data:
+                            elements = data["elements"]
+                            if elements == []:
+                                function_response += (
+                                    "-> Overpass query returned no results."
+                                )
+                            else:
+                                # Overpass query worked! Passed!
+                                self.function_status_pass = True
                     except TypeError as e:
                         function_response = e
-                    if len(function_response) > 4096:
-                        function_response = "Overpass query returned too many results."
-                    if "elements" in data:
-                        elements = data["elements"]
-                        if elements == []:
-                            function_response += (
-                                "-> Overpass query returned no results."
-                            )
-                        else:
-                            # Overpass query worked! Passed!
-                            self.function_status_pass = True
 
         else:
             function_response = f"{function_name} not found"
@@ -529,9 +526,9 @@ class ChatBot:
                     if st.session_state.message_history:
                         if "assistant_message" not in st.session_state:
                             self.start_assistant()
-                        if not final_response:
-                            for m in st.session_state["message_history"]:
-                                st.session_state.assistant_message.write(m)
+                        # if not final_response:
+                        # for m in st.session_state["message_history"]:
+                        #    st.session_state.assistant_message.write(m)
 
                 if response_message.get("function_call"):
                     self.execute_function(response_message)
