@@ -14,7 +14,7 @@ import re
 
 
 class ChatBot:
-    def __init__(self, log_path: str = None, openai_api_key=None):
+    def __init__(self, log_path: str = None, openai_api_key=None, temperature=0.1):
         # Get OpenAI Key
         if openai_api_key is not None:
             openai.api_key = openai_api_key
@@ -106,7 +106,7 @@ class ChatBot:
             self.log_path = os.path.expanduser(log_path)
 
         # Set the temperature for the language model
-        self.temperature = 0.1
+        self.temperature = temperature
 
     def get_openai_key_from_env(self):
         # Get api_key (saved locally)
@@ -437,107 +437,6 @@ class ChatBot:
         ]
 
         return split_s
-
-    def run_conversation(self):
-        """Run this after every user message
-        originally had the following structure:
-        - create overpass query from user message
-        - do a function call and return the query result
-        - interpret the query result for the user.
-
-        To reduce failures due to hallucinated query formats, three queries are generated in
-        response to the first message and are run sequentially until one of them works.
-
-        As user messages get more complex, this may need to be broken down into smaller steps.
-        In its current form, the calls are built into a loop which feed each response from the
-        large language model back into the conversation history, so that the next response has
-        all the previous responses as context.
-
-        ### UNDER CONSTRUCTION ###
-        Change the code below to enable the language model
-        to act as an agent and repeat actions until the goal is achieved
-        """
-        self.latest_question = [
-            m["content"] for m in self.messages if m["role"] == "user"
-        ][-1]
-
-        self.add_system_message(
-            content=f"""Let's first understand the problem and devise 
-            a plan to solve it. Please output the plan starting with 
-            the header 'Here's the plan:' and then followed by a concise 
-            numbered list of steps. Each step should correspond to a 
-            specific function from the following list: {self.functions.keys()}. 
-            You have {self.remaining_iterations} remaining. Avoid adding any 
-            steps that do not directly involve these functions or include 
-            specific content of the function calls. 
-            If the task is a question, the final step should be 'Given the 
-            above steps taken, please respond to the user's original question'. 
-            Remember, the goal is to complete the task using the minimum 
-            number of steps and functions. Do not repeat or create a new 
-            plan."""
-        )
-
-        filename = f"{self.id} | {self.latest_question}"
-        filepath = os.path.join(self.log_path, filename)
-
-        print(f"Latest question:{self.latest_question}")
-
-        counter = 0
-        final_response = False
-
-        while (counter < 6) and (not (final_response)):
-            # Process messages
-            response_messages, invalid_messages = self.process_messages(1)
-            self.latest_message = response_messages
-            self.messages += response_messages
-            self.invalid_messages += invalid_messages
-            self.plan = []
-            self.current_step = 1
-
-            # Check if response includes a function call, and if yes, run it.
-            for response_message in response_messages:
-                # Check for a plan (should only happen in the first response)
-                if (response_message.get("content")) and (
-                    response_message.get("content").startswith("Plan:")
-                ):
-                    self.plan = self.read_plan(response_message.get("content"))
-
-                # Check progress
-                if (response_message.get("content")) and (
-                    "step" in str.lower(response_message.get("content"))
-                ):
-                    try:
-                        self.current_step = int(
-                            response_message.get("content").split("Step ")[1][0]
-                        )
-                    except:
-                        self.current_step += 1
-                    print(response_message.get("content"))
-
-                if response_message.get("function_call"):
-                    self.execute_function(response_message)
-
-                # Check if <End of Response>
-                if (response_message.get("content")) and (
-                    "<final_response>" in response_message.get("content")
-                ):
-                    final_response = True
-
-            counter += 1
-
-        print(self.messages)
-        # If everything works, just save once at the end
-        self.save_to_json(
-            file_path=filepath,
-            this_run_name=f"iteration {counter} step {self.current_step}",
-            log={
-                "valid_messages": self.messages,
-                "invalid_messages": self.invalid_messages,
-                "overpass_queries": self.overpass_queries,
-            },
-        )
-
-        return response_message
 
     def start_planner(self):
         st.session_state["planner_message"] = st.chat_message("planner", avatar="📝")
