@@ -167,3 +167,8 @@ dev/shadowcalc/data/*
 
 *~
 
+# streamlit secrets
+.streamlit/secrets.toml
+
+# Config
+config.py

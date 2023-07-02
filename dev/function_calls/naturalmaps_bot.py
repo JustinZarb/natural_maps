@@ -36,27 +36,25 @@ class ChatBot:
         self.function_metadata = [
             {
                 "name": "overpass_query",
-                "description": """Execute an Overpass QL query.
+                "description": """Run an overpass QL query.
                     Instructions:
-                    - Keep queries simple and specific.
-                    - Use `geocodeArea` for locations. E.g., to search in Charlottenburg, use `{{geocodeArea:Charlottenburg}}->.searchArea;`.
-                    - Limit the size to 100 unless a previous query failed due to size.
-                    - For broad searches like `[node[~'^(amenity|leisure)$'~'.']({{bbox}});]`, stick to nodes.
-                    - Avoid overly broad or unspecific queries.
-
-                    Example: "Find toilets in Charlottenburg"
-                    Query:
+                    - Keep the queries simple and specific.
+                    - Always use Overpass built-in geocodeArea for locations like this /{/{geocodeArea:charlottenburg}}->.searchArea; 
+                    - Do not exceed size to 100 unless a previous attempt was unsuccessful.
+                    - If running broad searches such as [node[~'^(amenity|leisure)$'~'.'](\{\{bbox}});], stick to only nodes. 
+                    eg. prompt: "Find toilets in Charlottenburg"
+                    
                     [out:json][timeout:25];
                     {{geocodeArea:charlottenburg}}->.searchArea;
                     (
-                    node"amenity"="toilets";
-                    way"amenity"="toilets";
-                    relation"amenity"="toilets";
+                    node["amenity"="toilets"](area.searchArea);
+                    way["amenity"="toilets"](area.searchArea);
+                    relation["amenity"="toilets"](area.searchArea);
                     );
                     out body;
-
-                    ;
-                    out skel qt;""",
+                    >;
+                    out skel qt;
+                    """,
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -66,7 +64,7 @@ class ChatBot:
                         },
                         "generated_query": {
                             "type": "string",
-                            "description": "The overpass QL query to execute. Important: Ensure that this is machine readable.",
+                            "description": "The overpass QL query to execute. Important: Ensure that this is a properly formatted .json string.",
                         },
                     },
                     "required": ["prompt", "query"],
@@ -254,22 +252,17 @@ class ChatBot:
 
         # This gets saved in the chat log
         self.overpass_queries[human_prompt] = {
-            "generated_query": generated_query,
+            "overpassql_query": generated_query,
+            "overpass_response": data_str,
             "valid_query": success,
             "returned_something": returned_something,
-            "data": data_str,
         }
 
         # This gets saved in a separate log for overpass ueries
         self.save_to_json(
             file_path=filepath,
             this_run_name=this_run_name,
-            log={
-                "overpassql_query": generated_query,
-                "overpass_response": data_str,
-                "valid_query": success,
-                "returned_something": returned_something,
-            },
+            log=self.overpass_queries[human_prompt],
         )
 
     def overpass_query(self, human_prompt, generated_query):
@@ -346,19 +339,21 @@ class ChatBot:
                 if function_name == "overpass_query":
                     try:
                         data = json.loads(function_response)
+                        if len(function_response) > 4096:
+                            function_response = (
+                                "Overpass query returned too many results."
+                            )
+                        if "elements" in data:
+                            elements = data["elements"]
+                            if elements == []:
+                                function_response += (
+                                    "-> Overpass query returned no results."
+                                )
+                            else:
+                                # Overpass query worked! Passed!
+                                self.function_status_pass = True
                     except TypeError as e:
                         function_response = e
-                    if len(function_response) > 4096:
-                        function_response = "Overpass query returned too many results."
-                    if "elements" in data:
-                        elements = data["elements"]
-                        if elements == []:
-                            function_response += (
-                                "-> Overpass query returned no results."
-                            )
-                        else:
-                            # Overpass query worked! Passed!
-                            self.function_status_pass = True
 
         else:
             function_response = f"{function_name} not found"
@@ -442,107 +437,6 @@ class ChatBot:
 
         return split_s
 
-    def run_conversation(self):
-        """Run this after every user message
-        originally had the following structure:
-        - create overpass query from user message
-        - do a function call and return the query result
-        - interpret the query result for the user.
-
-        To reduce failures due to hallucinated query formats, three queries are generated in
-        response to the first message and are run sequentially until one of them works.
-
-        As user messages get more complex, this may need to be broken down into smaller steps.
-        In its current form, the calls are built into a loop which feed each response from the
-        large language model back into the conversation history, so that the next response has
-        all the previous responses as context.
-
-        ### UNDER CONSTRUCTION ###
-        Change the code below to enable the language model
-        to act as an agent and repeat actions until the goal is achieved
-        """
-        self.latest_question = [
-            m["content"] for m in self.messages if m["role"] == "user"
-        ][-1]
-
-        self.add_system_message(
-            content=f"""Let's first understand the problem and devise 
-            a plan to solve it. Please output the plan starting with 
-            the header 'Here's the plan:' and then followed by a concise 
-            numbered list of steps. Each step should correspond to a 
-            specific function from the following list: {self.functions.keys()}. 
-            You have {self.remaining_iterations} remaining. Avoid adding any 
-            steps that do not directly involve these functions or include 
-            specific content of the function calls. 
-            If the task is a question, the final step should be 'Given the 
-            above steps taken, please respond to the user's original question'. 
-            Remember, the goal is to complete the task using the minimum 
-            number of steps and functions. Do not repeat or create a new 
-            plan."""
-        )
-
-        filename = f"{self.id} | {self.latest_question}"
-        filepath = os.path.join(self.log_path, filename)
-
-        print(f"Latest question:{self.latest_question}")
-
-        counter = 0
-        final_response = False
-
-        while (counter < 6) and (not (final_response)):
-            # Process messages
-            response_messages, invalid_messages = self.process_messages(1)
-            self.latest_message = response_messages
-            self.messages += response_messages
-            self.invalid_messages += invalid_messages
-            self.plan = []
-            self.current_step = 1
-
-            # Check if response includes a function call, and if yes, run it.
-            for response_message in response_messages:
-                # Check for a plan (should only happen in the first response)
-                if (response_message.get("content")) and (
-                    response_message.get("content").startswith("Plan:")
-                ):
-                    self.plan = self.read_plan(response_message.get("content"))
-
-                # Check progress
-                if (response_message.get("content")) and (
-                    "step" in str.lower(response_message.get("content"))
-                ):
-                    try:
-                        self.current_step = int(
-                            response_message.get("content").split("Step ")[1][0]
-                        )
-                    except:
-                        self.current_step += 1
-                    print(response_message.get("content"))
-
-                if response_message.get("function_call"):
-                    self.execute_function(response_message)
-
-                # Check if <End of Response>
-                if (response_message.get("content")) and (
-                    "<final_response>" in response_message.get("content")
-                ):
-                    final_response = True
-
-            counter += 1
-
-        print(self.messages)
-        # If everything works, just save once at the end
-        self.save_to_json(
-            file_path=filepath,
-            this_run_name=f"iteration {counter} step {self.current_step}",
-            log={
-                "valid_messages": self.messages,
-                "invalid_messages": self.invalid_messages,
-                "overpass_queries": self.overpass_queries,
-            },
-        )
-
-        return response_message
-
     def start_planner(self):
         st.session_state["planner_message"] = st.chat_message("planner", avatar="📝")
 
@@ -579,10 +473,9 @@ class ChatBot:
                 steps that do not directly involve these functions or include 
                 specific content of the function calls. Also, avoid mentioning 
                 specific settings or parameters that will be used in the functions. 
-                If the task is a question, the final step should be 'Given the 
-                above steps taken, please respond to the user's original question'. 
-                Remember, the goal is to complete the task using the minimum 
-                number of steps and functions. Do not repeat or create a new 
+                Remember, the goal is to complete the task using the available functions
+                within the available number of iterations number of steps and 
+                functions. Do not repeat or create a new 
                 plan."""
         )
 
@@ -633,9 +526,9 @@ class ChatBot:
                     if st.session_state.message_history:
                         if "assistant_message" not in st.session_state:
                             self.start_assistant()
-                        if not final_response:
-                            for m in st.session_state["message_history"]:
-                                st.session_state.assistant_message.write(m)
+                        # if not final_response:
+                        # for m in st.session_state["message_history"]:
+                        #    st.session_state.assistant_message.write(m)
 
                 if response_message.get("function_call"):
                     self.execute_function(response_message)
@@ -645,6 +538,12 @@ class ChatBot:
         if self.overpass_queries:
             st.session_state["overpass_queries"] = self.overpass_queries
 
+        self.user_feedback = (
+            st.session_state.user_feedback
+            if "user_feedback" in st.session_state
+            else []
+        )
+
         # If everything works, just save once at the end
         self.save_to_json(
             file_path=filepath,
@@ -653,6 +552,7 @@ class ChatBot:
                 "valid_messages": self.messages,
                 "invalid_messages": self.invalid_messages,
                 "overpass_queries": self.overpass_queries,
+                "user_feedback": self.user_feedback,
             },
         )
 
