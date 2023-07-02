@@ -14,7 +14,7 @@ import pandas as pd
 import numpy as np
 from dev.function_calls.naturalmaps_bot import ChatBot
 from streamlit_folium import st_folium
-
+from config import OPENAI_API_KEY
 
 prompts = pd.read_csv("./dev//prompts/prompts.csv")
 prompt_type = prompts.promptType.unique()
@@ -56,6 +56,7 @@ with bot_right:
         st.text_input(
             "You: ",
             key="human_prompt",
+            value="Are there ping pong tables in Monbijoupark?",
             disabled=st.session_state.autofill,
         )
 
@@ -85,18 +86,19 @@ with bot_right:
                 st.session_state.true_run,
             ]
         )
-        st.session_state.bot = ChatBot()
+
         if (st.session_state.run_checkbox) and (st.session_state.human_prompt):
+            st.session_state.bot = ChatBot(openai_api_key=OPENAI_API_KEY)
             if ("true_run" in st.session_state) and (st.session_state.true_run):
                 # display the user's message in the chat
                 user_message = st.chat_message("user", avatar="👤")
                 user_message.write(st.session_state.human_prompt)
                 # Initialise and run the bot
                 st.session_state.bot.add_user_message(st.session_state.human_prompt)
-                st.session_state.bot.run_conversation_streamlit()
+                st.session_state.bot.run_conversation_streamlit(num_iterations=5)
                 st.session_state.true_run = False
-            for m in st.session_state["message_history"]:
-                st.session_state.assistant_message.write(m)
+            # for m in st.session_state["message_history"]:
+            #   st.session_state.assistant_message.write(m)
 
 
 st.header("Debug")

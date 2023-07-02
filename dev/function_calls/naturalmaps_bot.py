@@ -252,6 +252,7 @@ class ChatBot:
 
         # This gets saved in the chat log
         self.overpass_queries[human_prompt] = {
+            "temperature": self.temperature,
             "overpassql_query": generated_query,
             "overpass_response": data_str,
             "valid_query": success,
@@ -384,7 +385,7 @@ class ChatBot:
         else:
             return True
 
-    def process_messages(self, n=1):
+    def process_messages(self, n=1, temperature=0.1):
         """A general purpose function to prepare an answer based on all the previous messages
 
         Issues: currently modifying the original prompt
@@ -408,6 +409,7 @@ class ChatBot:
             functions=self.function_metadata,
             function_call="auto",
             n=n,
+            temperature=self.temperature,
         )
         response_messages = [choice["message"] for choice in response["choices"]]
 
@@ -445,7 +447,7 @@ class ChatBot:
             "assistant", avatar="🗺️"
         )
 
-    def run_conversation_streamlit(self, num_iterations=4):
+    def run_conversation_streamlit(self, num_iterations=4, temperature=0.1):
         """Same as run_conversation but designed to interactively work with Streamlit.
         Run this after every user message
 
@@ -459,29 +461,30 @@ class ChatBot:
         filepath = os.path.join(self.log_path, filename)
 
         # Set conversation parameters
+        self.temperature = temperature
         self.remaining_iterations = num_iterations
         final_response = False
 
         # Give first instructions.
         self.add_system_message(
             content=f"""Let's first understand the problem and devise 
-                a plan to solve it. Please output the plan starting with 
-                the header 'Here's the plan:' and then followed by a concise 
+                break it down into simple steps. Fore example, if asked "Find child-friendly parks in Pankow, Berlin",
+                first search for parks in Pankow, then check tag keys and values for child-friendliness. 
+                Please output the plan starting with the header 'Here's the plan:' and then followed by a concise 
                 numbered list of steps. Each step should correspond to a 
                 specific function from the following list: {self.functions.keys()}. 
-                You have {self.remaining_iterations} remaining. Avoid adding any 
-                steps that do not directly involve these functions or include 
-                specific content of the function calls. Also, avoid mentioning 
-                specific settings or parameters that will be used in the functions. 
+                You have {self.remaining_iterations} remaining.
+                Avoid adding any steps that do not directly involve these functions or include 
+                specific content of the function calls. 
+                Avoid mentioning specific settings or parameters that will be used in the functions. 
                 Remember, the goal is to complete the task using the available functions
-                within the available number of iterations number of steps and 
-                functions. Do not repeat or create a new 
+                within the available number of iterations. Do not repeat or create a new 
                 plan."""
         )
 
         while (self.remaining_iterations > 0) and (not (final_response)):
             # Process messages
-            response_messages, invalid_messages = self.process_messages(1)
+            response_messages, invalid_messages = self.process_messages(n=1)
             self.messages += response_messages
             self.invalid_messages += invalid_messages
             self.plan = []
@@ -526,9 +529,9 @@ class ChatBot:
                     if st.session_state.message_history:
                         if "assistant_message" not in st.session_state:
                             self.start_assistant()
-                        # if not final_response:
-                        # for m in st.session_state["message_history"]:
-                        #    st.session_state.assistant_message.write(m)
+                        if not final_response:
+                            for m in st.session_state["message_history"]:
+                                st.session_state.assistant_message.write(m)
 
                 if response_message.get("function_call"):
                     self.execute_function(response_message)
@@ -549,6 +552,7 @@ class ChatBot:
             file_path=filepath,
             this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
             log={
+                "temperature": self.temperature,
                 "valid_messages": self.messages,
                 "invalid_messages": self.invalid_messages,
                 "overpass_queries": self.overpass_queries,
