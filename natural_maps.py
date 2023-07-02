@@ -1,9 +1,10 @@
 import streamlit as st
 import dev.streamlit_functions as st_functions
+import pandas as pd
+import numpy as np
 from dev.st_explore_with_wordcloud import explore_data
 from dev.function_calls.naturalmaps_bot import ChatBot
 from streamlit_folium import st_folium
-from config import OPENAI_API_KEY
 
 
 st.set_page_config(
@@ -22,11 +23,17 @@ developed as part of Data Science Retreat."""
 # Talk to the map!
 st.subheader("Ask the map!")
 
+prompts = pd.read_csv("./dev//prompts/prompts.csv")
+prompt_type = prompts.promptType.unique()
+basic_queries = prompts.loc[prompts["promptType"] == "Basic Query", "prompt"]
+
 
 bot_left, bot_right = st.columns((1, 2), gap="small")
 with bot_left:
-    m = st_functions.map_location(st_functions.name_to_gdf("berlin"))
-    st_folium(m, key="bot_map")
+    # m = st_functions.map_location(st_functions.name_to_gdf("berlin"))
+    # st_folium(m, key="bot_map")
+    st.subheader("what failed")
+    st.multiselect(options=["400 error", ""], key="user_feedback")
 
 with bot_right:
     # Layout of input/response containers
@@ -34,9 +41,9 @@ with bot_right:
     response_container = st.container()
 
     def get_text():
-        autofill = st.button(label="autofill")
+        autofill = st.button(label="Run a random basic prompt")
         if autofill:
-            input = "What sports can one do in Mauerpark?"
+            input = basic_queries[np.random.randint(len(basic_queries))]
         else:
             input = ""
         input_text = st.text_input("You: ", value=input, key="human_prompt")
