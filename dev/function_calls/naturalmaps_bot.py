@@ -105,6 +105,9 @@ class ChatBot:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
 
+        # Set the temperature for the language model
+        self.temperature = 0.1
+
     def get_openai_key_from_env(self):
         # Get api_key (saved locally)
         api_key = os.getenv("OPENAI_API_KEY")
@@ -254,6 +257,7 @@ class ChatBot:
                 "overpass_response": data_str,
                 "valid_query": success,
                 "returned_something": returned_something,
+                "temperature": self.temperature,
         }
 
         # This gets saved in a separate log for overpass ueries
@@ -404,6 +408,7 @@ class ChatBot:
             functions=self.function_metadata,
             function_call="auto",
             n=n,
+            temperature=self.temperature,
         )
         response_messages = [choice["message"] for choice in response["choices"]]
 
