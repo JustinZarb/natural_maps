@@ -33,7 +33,7 @@ def name_to_gdf(place_name):
     return gdf
 
 
-def map_location(gdf=None, feature_group=None):
+def map_location(gdf=None, feature_group=None, highlight_location=True):
     """Create a map object given an optional gdf and feature group
 
     Args:
@@ -47,14 +47,15 @@ def map_location(gdf=None, feature_group=None):
     m = folium.Map(height="50%")
 
     # Add the gdf to the map
-    if gdf is not None:
-        folium.GeoJson(gdf).add_to(m)
+    if highlight_location:
+        if gdf is not None:
+            folium.GeoJson(gdf).add_to(m)
 
     # Add the feature group(s) to the map and update the bounds
     if feature_group is not None:
         features = feature_group if isinstance(feature_group, list) else [feature_group]
         for feature in features:
-           feature.add_to(m)
+            feature.add_to(m)
 
     # Fit the map to the bounds of all features
     m.fit_bounds(m.get_bounds())
@@ -108,51 +109,6 @@ def bbox_from_st_data(bounds):
         bounds["_northEast"]["lng"],
     ]
     return bbox
-
-
-def gdf_to_layer(gdf):
-    """Create layer to visualize in PYDECK
-
-    Args:
-        gdf (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    # Get the geometry type of the location
-    geometry_type = gdf["geometry"].iloc[0].geom_type
-    # Convert the GeoDataFrame to a DataFrame
-    df = gdf.drop(columns=["geometry"])
-
-    if geometry_type == "Point":
-        df["lat"] = gdf["geometry"].y
-        df["lon"] = gdf["geometry"].x
-        # Create a scatterplot layer
-        layer = pdk.Layer(
-            "ScatterplotLayer",
-            df,
-            get_position=["lon", "lat"],
-            get_radius=100,
-            get_fill_color=[255, 0, 0],
-        )
-    else:
-        df["geometry"] = gdf["geometry"].apply(
-            lambda geom: mapping(geom)["coordinates"]
-        )
-        # Create a GeoJsonLayer
-        layer = pdk.Layer(
-            "PolygonLayer",
-            df,
-            get_polygon="geometry",
-            get_fill_color=[255, 0, 0, 20],  # Set a static color
-            get_line_color=[255, 0, 0],
-            get_line_width="zoom_level",
-            stroked=True,
-            # filled=True,
-            extruded=False,
-        )
-
-    return layer
 
 
 def calculate_zoom_level(gdf):
@@ -331,6 +287,51 @@ def create_circles_from_nodes(json_obj):
 
 
 #### Older functions
+
+
+def gdf_to_layer(gdf):
+    """Create layer to visualize in PYDECK
+
+    Args:
+        gdf (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # Get the geometry type of the location
+    geometry_type = gdf["geometry"].iloc[0].geom_type
+    # Convert the GeoDataFrame to a DataFrame
+    df = gdf.drop(columns=["geometry"])
+
+    if geometry_type == "Point":
+        df["lat"] = gdf["geometry"].y
+        df["lon"] = gdf["geometry"].x
+        # Create a scatterplot layer
+        layer = pdk.Layer(
+            "ScatterplotLayer",
+            df,
+            get_position=["lon", "lat"],
+            get_radius=100,
+            get_fill_color=[255, 0, 0],
+        )
+    else:
+        df["geometry"] = gdf["geometry"].apply(
+            lambda geom: mapping(geom)["coordinates"]
+        )
+        # Create a GeoJsonLayer
+        layer = pdk.Layer(
+            "PolygonLayer",
+            df,
+            get_polygon="geometry",
+            get_fill_color=[255, 0, 0, 20],  # Set a static color
+            get_line_color=[255, 0, 0],
+            get_line_width="zoom_level",
+            stroked=True,
+            # filled=True,
+            extruded=False,
+        )
+
+    return layer
 
 
 def pydeck_scatter_from_points(chart_data):

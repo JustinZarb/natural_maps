@@ -12,9 +12,12 @@ from shapely.geometry import Polygon, Point, MultiPolygon
 
 
 class ChatBot:
-    def __init__(self, log_path: str = None):
+    def __init__(self, log_path: str = None, openai_api_key=None):
         # Get OpenAI Key
-        self.get_openai_key_from_env()
+        if openai_api_key is not None:
+            openai.api_key = openai_api_key
+        else:
+            self.get_openai_key_from_env()
         assert openai.api_key, "Failed to find API keys"
 
         # Initialize Messages
@@ -97,6 +100,11 @@ class ChatBot:
         if log_path is None:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
+
+    def get_openai_key_from_env(self):
+        # Get api_key (saved locally)
+        api_key = os.getenv("OPENAI_API_KEY")
+        openai.api_key = api_key
 
     def gdf_data(self, gdf):
         """Get the area of a polygon
@@ -222,11 +230,6 @@ class ChatBot:
 
     def get_timestamp(self):
         return strftime("%Y-%m-%d %H:%M:%S", localtime())
-
-    def get_openai_key_from_env(self):
-        # Get api_key (saved locally)
-        api_key = os.getenv("OPENAI_KEY")
-        openai.api_key = api_key
 
     def log_overpass_query(self, human_prompt, generated_query, data_str):
         # Write Overpass API Call to JSON
@@ -457,6 +460,7 @@ class ChatBot:
         while (counter < 6) and (not (final_response)):
             # Process messages
             response_messages, invalid_messages = self.process_messages(1)
+            self.latest_message = response_messages
             self.messages += response_messages
             self.invalid_messages += invalid_messages
             self.plan = []
@@ -493,16 +497,17 @@ class ChatBot:
 
             counter += 1
 
-            # If everything works, just save once at the end
-            self.save_to_json(
-                file_path=filepath,
-                this_run_name=f"iteration {counter} step {self.current_step}",
-                log={
-                    "valid_messages": self.messages,
-                    "invalid_messages": self.invalid_messages,
-                    "overpass_queries": self.overpass_queries,
-                },
-            )
+        print(self.messages)
+        # If everything works, just save once at the end
+        self.save_to_json(
+            file_path=filepath,
+            this_run_name=f"iteration {counter} step {self.current_step}",
+            log={
+                "valid_messages": self.messages,
+                "invalid_messages": self.invalid_messages,
+                "overpass_queries": self.overpass_queries,
+            },
+        )
 
         return response_message
 
