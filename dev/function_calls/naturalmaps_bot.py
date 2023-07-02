@@ -36,25 +36,27 @@ class ChatBot:
         self.function_metadata = [
             {
                 "name": "overpass_query",
-                "description": """Run an overpass QL query.
+                "description": """Execute an Overpass QL query.
                     Instructions:
-                    - Keep the queries simple and specific.
-                    - Always use Overpass built-in geocodeArea for locations like this /{/{geocodeArea:charlottenburg}}->.searchArea; 
-                    - Do not exceed size to 100 unless a previous attempt was unsuccessful.
-                    - If running broad searches such as [node[~'^(amenity|leisure)$'~'.'](\{\{bbox}});], stick to only nodes. 
-                    eg. prompt: "Find toilets in Charlottenburg"
-                    
+                    - Keep queries simple and specific.
+                    - Use `geocodeArea` for locations. E.g., `{{geocodeArea:charlottenburg}}->.searchArea;`.
+                    - Limit the size to 100 unless a previous query failed due to size.
+                    - For broad searches like `[node[~'^(amenity|leisure)$'~'.']({{bbox}});]`, stick to nodes.
+                    - Avoid overly broad or unspecific queries.
+
+                    Example: "Find toilets in Charlottenburg"
+                    Query:
                     [out:json][timeout:25];
                     {{geocodeArea:charlottenburg}}->.searchArea;
                     (
-                    node["amenity"="toilets"](area.searchArea);
-                    way["amenity"="toilets"](area.searchArea);
-                    relation["amenity"="toilets"](area.searchArea);
+                    node"amenity"="toilets";
+                    way"amenity"="toilets";
+                    relation"amenity"="toilets";
                     );
                     out body;
-                    >;
-                    out skel qt;
-                    """,
+
+                    ;
+                    out skel qt;""",
                 "parameters": {
                     "type": "object",
                     "properties": {
@@ -64,7 +66,7 @@ class ChatBot:
                         },
                         "generated_query": {
                             "type": "string",
-                            "description": "The overpass QL query to execute. Important: Ensure that this is a properly formatted .json string.",
+                            "description": "The overpass QL query to execute. Important: Ensure that this is machine readable.",
                         },
                     },
                     "required": ["prompt", "query"],
@@ -251,7 +253,8 @@ class ChatBot:
         )
 
         # This gets saved in the chat log
-        self.overpass_queries[generated_query] = {
+        self.overpass_queries[human_prompt] = {
+            "generated_query": generated_query,
             "valid_query": success,
             "returned_something": returned_something,
             "data": data_str,
@@ -604,16 +607,18 @@ class ChatBot:
                             st.session_state.planner_message.write(
                                 st.session_state["plan"]
                             )
-                        else:
-                            st.session_state["message_history"].append(s)
 
                         # Check if <End of Response>
-                        if s.endswith("<final_response>"):
+                        elif s.endswith("<final_response>"):
                             final_response = True
                             st.session_state["message_history"].append(
                                 s.replace("<final_response>", "")
                             )
 
+                        else:
+                            st.session_state["message_history"].append(s)
+
+                        # Update current step (for the in-between system prompt)
                         if "step" in s:
                             match = re.search(r"\[step (\d+)\]", s)
                             if match:
@@ -630,6 +635,9 @@ class ChatBot:
                     self.execute_function(response_message)
 
             self.remaining_iterations -= 1
+
+        if self.overpass_queries:
+            st.session_state["overpass_queries"] = self.overpass_queries
 
         # If everything works, just save once at the end
         self.save_to_json(

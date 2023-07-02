@@ -6,10 +6,6 @@ from dev.function_calls.naturalmaps_bot import ChatBot
 from streamlit_folium import st_folium
 from config import OPENAI_API_KEY
 
-import streamlit as st
-from streamlit_chat import message
-from streamlit_extras.colored_header import colored_header
-from streamlit_extras.add_vertical_space import add_vertical_space
 
 st.set_page_config(
     page_title="Naturalmaps",
@@ -36,7 +32,6 @@ with bot_left:
 with bot_right:
     # Layout of input/response containers
     input_container = st.container()
-    colored_header(label="", description="", color_name="green-30")
     response_container = st.container()
 
     def get_text():
@@ -46,7 +41,6 @@ with bot_right:
         else:
             input = ""
         input_text = st.text_input("You: ", value=input, key="human_prompt")
-
         return input_text
 
     ## Applying the user input box
@@ -62,16 +56,13 @@ with bot_right:
 
             bot.add_user_message(st.session_state.human_prompt)
             bot.run_conversation_streamlit()
-            try:
-                assistant_message = st.chat_message("assistant", avatar="🗺️")
-                assistant_message.write(bot.latest_message)
-            except:
-                pass
 
-        plan = False
-        if plan:
-            planner_message = st.chat_message("planner", avatar="📝")
-            planner_message.write(bot.plan)
+
+st.header("Debug")
+if "overpass_queries" in st.session_state:
+    for task, query_dict in st.session_state.overpass_queries.items():
+        st.markdown(task)
+        st.markdown(query_dict)
 
 
 # Explore the data manually
@@ -91,11 +82,9 @@ with st.expander("Manually explore a map area"):
         m = st_functions.update_map()
         if "circles" in st.session_state:
             circles = st.session_state.circles
-            st.markdown(circles)
         else:
             circles = None
         st_data = st_folium(m)
-        st.markdown(st_data)
 
     # Right: Chat/Explore
     with explore_right:
