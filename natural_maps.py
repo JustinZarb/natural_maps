@@ -1,5 +1,4 @@
 import streamlit as st
-
 import dev.streamlit_functions as st_functions
 from dev.st_explore_with_wordcloud import explore_data
 from dev.function_calls.naturalmaps_bot import ChatBot
@@ -47,7 +46,7 @@ with bot_right:
     with input_container:
         user_input = get_text()
 
-    bot = ChatBot(openai_api_key=OPENAI_API_KEY)
+    bot = ChatBot()
 
     with response_container:
         if user_input:

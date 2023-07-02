@@ -280,6 +280,9 @@ class ChatBot:
         a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg
         """
         overpass_url = "http://overpass-api.de/api/interpreter"
+
+        # Check that the query is properly formatted
+        generated_query = generated_query.replace("\n", "").replace("_", "")
         response = requests.get(overpass_url, params={"data": generated_query})
         if response.content:
             try:
@@ -341,7 +344,10 @@ class ChatBot:
 
                 # Specific checks for self.overpass_query()
                 if function_name == "overpass_query":
-                    data = json.loads(function_response)
+                    try:
+                        data = json.loads(function_response)
+                    except TypeError as e:
+                        function_response = e
                     if len(function_response) > 4096:
                         function_response = "Overpass query returned too many results."
                     if "elements" in data:
