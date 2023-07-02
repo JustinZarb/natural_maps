@@ -36,13 +36,13 @@ with bot_left:
 with bot_right:
     # Layout of input/response containers
     input_container = st.container()
-    colored_header(label="", description="", color_name="blue-30")
+    colored_header(label="", description="", color_name="green-30")
     response_container = st.container()
 
     def get_text():
         autofill = st.button(label="autofill")
         if autofill:
-            input = "Find all the ping pong tables in Monbijoupark"
+            input = "What sports can one do in Mauerpark?"
         else:
             input = ""
         input_text = st.text_input("You: ", value=input, key="human_prompt")
@@ -61,7 +61,7 @@ with bot_right:
             user_message.write(st.session_state.human_prompt)
 
             bot.add_user_message(st.session_state.human_prompt)
-            bot.run_conversation()
+            bot.run_conversation_streamlit()
             try:
                 assistant_message = st.chat_message("assistant", avatar="🗺️")
                 assistant_message.write(bot.latest_message)
