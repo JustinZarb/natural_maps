@@ -30,7 +30,7 @@ class ChatBot:
         # Initialize Functions
         self.functions = {
             "overpass_query": self.overpass_query,
-            # "get_place_info": self.get_place_info,
+            "get_place_info": self.get_place_info,
         }
         self.function_status_pass = False  # Used to indicate function success
         self.function_metadata = [
@@ -69,8 +69,6 @@ class ChatBot:
                     "required": ["prompt", "query"],
                 },
             },
-        ]
-        self.spare_function_metadata = [
             {
                 "name": "get_place_info",
                 "description": """Gets area and tag keys of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
@@ -81,7 +79,11 @@ class ChatBot:
                     "properties": {
                         "place": {
                             "type": "string",
-                            "description": "The name of a place as it is provided by the user, eg. Berlin",
+                            "description": "The name of a place.",
+                        },
+                        "tag_key": {
+                            "type": "string",
+                            "description": """optional tag key to get the unique values for. eg. unique_tags_dict["dance"] = {'Body Isolation', 'Capoeira', 'Forró', ...} """,
                         },
                     },
                     "required": ["place"],
@@ -101,7 +103,7 @@ class ChatBot:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
 
-    def get_place_info(self, place: str):
+    def get_place_info(self, place: str, tag_key: str = None):
         """Get GDF and area from a place name.
         Can be called by the LLM
         Args:
@@ -113,7 +115,6 @@ class ChatBot:
             keys: a list of unique tag keys (includes all locations fed to the function). Sorted by frequency.
         """
 
-        # Use OSMnx to geocode the location
         try:
             new_gdf = ox.geocode_to_gdf(place)  # geodataframe
             if not hasattr(self, "places_gdf"):
@@ -138,6 +139,7 @@ class ChatBot:
                 "bbox_east",
             ],
         ]
+
         for _, row in bounding_boxes.iterrows():
             nodes.append(get_nodes_with_tags_in_bbox(list(row)))
             # All the unique tags as key:value pairs
@@ -161,8 +163,8 @@ class ChatBot:
             "geometry"
         ].apply(longest_distance_to_vertex)
 
-        # Return something useful to the LLM
-        area = {
+        data = {
+            "unique_tag_keys": num_unique_values,
             "area": dict(
                 zip(self.places_gdf["display_name"], self.places_gdf["projected_area"])
             ),
@@ -170,9 +172,14 @@ class ChatBot:
                 zip(self.places_gdf["display_name"], self.places_gdf["area_unit"])
             ),
         }
+        try:
+            data["amenities"]: self.unique_tags_dict["amenities"]
+        except:
+            pass
+        if tag_key is not None:
+            data[tag_key] = self.unique_tags_dict[tag_key]
 
-        # area = json.dumps(area)
-        tags = json.dumps(self.unique_tags_dict)
+        tags = json.dumps(data)
         return tags
 
     def save_to_json(self, file_path: str, this_run_name: str, log: dict):
