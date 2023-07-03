@@ -17,10 +17,7 @@ from streamlit_functions import (
 class ChatBot:
     def __init__(self, log_path: str = None, openai_api_key=None):
         # Get OpenAI Key
-        if openai_api_key is not None:
-            openai.api_key = openai_api_key
-        else:
-            self.get_openai_key_from_env()
+        openai.api_key = openai_api_key
         assert openai.api_key, "Failed to find API keys"
 
         # Initialize Messages
