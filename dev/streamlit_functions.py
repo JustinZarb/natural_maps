@@ -213,8 +213,23 @@ def count_tag_frequency(datasets, tag=None):
     return tag_frequency
 
 
-def count_tag_frequency_new(datasets):
-    unique_tag_values = {}
+def count_tag_frequency_new(datasets, tag=None):
+    tag_frequency = {}
+
+    def add_value(t, v):
+        if isinstance(v, str):
+            values = v.split(";")
+            for value in values:
+                if t in tag_frequency:
+                    tag_frequency[t].add(value)
+                else:
+                    tag_frequency[t] = {value}
+        else:
+            if t in tag_frequency:
+                tag_frequency[t].add(str(v))
+            else:
+                tag_frequency[t] = {str(v)}
+
     # Combine elements of all datasets into a single list
     elements = [element for data in datasets for element in data["elements"]]
 
@@ -223,24 +238,16 @@ def count_tag_frequency_new(datasets):
             for t, v in element["tags"].items():
                 # Split the tag on the first separator
                 t = t.split(":")[0]
-                # Counting tag frequency
-                if t in unique_tag_values:
-                    if v in unique_tag_values[t]:
-                        pass
-                    else:
-                        unique_tag_values[t].add(v)
+
+                if tag is None:
+                    # Collecting unique values for each tag
+                    add_value(t, v)
                 else:
-                    unique_tag_values[t] = set(v)
+                    # Collecting unique values for a specific tag
+                    if t == tag:
+                        add_value(v, v)
 
-    # Sort the dictionary by its values in descending order
-    unique_tag_values = {
-        k: v
-        for k, v in sorted(
-            unique_tag_values.items(), key=lambda item: item[1], reverse=True
-        )
-    }
-
-    return unique_tag_values
+    return tag_frequency
 
 
 def count_unique_values(datasets, tag=None):
