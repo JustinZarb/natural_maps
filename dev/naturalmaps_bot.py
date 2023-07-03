@@ -72,7 +72,16 @@ class ChatBot:
             {
                 "name": "get_place_info",
                 "description": """Gets area and tag keys of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
-                Do not tell the user the area of the place unles it is relevant to the question. Use the tag keys as hints for better Overpass Queries.    
+                Do not tell the user the area of the place unles it is relevant to the question. Use the tag keys as hints for better Overpass Queries.
+                Args:
+                    places (str(list)): A list of place names.
+                Returns:
+                    data (str): A JSON string containing a dictionary with projected_area, area_unit and keys. 
+                    - projected_area: a dict of display_name:area for each of the locations in places_str
+                    - area_units: a dict of display_name:area_units for each of the locations in places_str
+                    - keys: a list of unique tag keys (includes all locations fed to the function). Sorted by frequency.
+                 
+                Convert from m² to km² when returning information about large areas.          
                     """,
                 "parameters": {
                     "type": "object",
@@ -108,11 +117,11 @@ class ChatBot:
         """Get GDF and area from a place name.
         Can be called by the LLM
         Args:
-            places: A string list of place names.
+            places (str(list)): A list of place names.
         Returns:
             data (str): A JSON string containing a dictionary with projected_area, area_unit and keys.
-            projected_area: a dict of {display_name:area} for each of the locations in places
-            area_units: a dict of {display_name:area_units} for each of the locations in places
+            projected_area: a dict of {display_name:area} for each of the locations in places_str
+            area_units: a dict of {display_name:area_units} for each of the locations in places_str
             keys: a list of unique tag keys (includes all locations fed to the function). Sorted by frequency.
         """
 
@@ -122,9 +131,10 @@ class ChatBot:
                 self.places_gdf = new_gdf
             else:
                 # add rows to self.places_gdf
-                self.places_gdf = pd.concat(
-                    [self.places_gdf, new_gdf], ignore_index=True
-                )
+                self.places_gdf = self.places_gdf.reset_index(drop=True)
+                new_gdf = new_gdf.reset_index(drop=True)
+                self.places_gdf = self.places_gdf.append(new_gdf)
+                self.places_gdf = self.places_gdf.append(new_gdf)
         except ValueError as e:
             return e
 
