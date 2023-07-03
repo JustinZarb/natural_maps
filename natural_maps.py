@@ -12,7 +12,7 @@ st.set_page_config(
 import dev.streamlit_functions as st_functions
 import pandas as pd
 import numpy as np
-from dev.function_calls.naturalmaps_bot import ChatBot
+from dev.naturalmaps_bot import ChatBot
 from streamlit_folium import st_folium
 from config import OPENAI_API_KEY
 

@@ -1,16 +1,17 @@
 import openai
 import os
 import json
-import pandas as pd
-import geopandas as gpd
 import requests
 from time import localtime, strftime
 import osmnx as ox
-import utm
-from pyproj import CRS
-from shapely.geometry import Polygon, Point, MultiPolygon
 import streamlit as st
 import re
+from streamlit_functions import (
+    gdf_data,
+    get_nodes_with_tags_in_bbox,
+    count_tag_frequency,
+    longest_distance_to_vertex,
+)
 
 
 class ChatBot:
@@ -73,22 +74,26 @@ class ChatBot:
             },
             {
                 "name": "get_place_info",
-                "description": """Important! Do not use this this unless if the user is searching
-                for objects. Use the overpass query function instead.
-                Gets the area of a place using osmnx.geocode_to_gdf. Will fail if the name provided by the 
-                user does not match any places in openStreetMap. If this is the case, try to guess where the user meant.
-                Returns area, unit of the area (may differ depending on the location). Divide by 1000000 to convert from m² to km² 
-                when dealing with large areas.          
+                "description": """Gets the area of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
+                Args:
+                    places (str(list)): A list of place names.
+                Returns:
+                    data (str): A JSON string containing a dictionary with projected_area, area_unit and keys. 
+                    - projected_area: a dict of display_name:area for each of the locations in places_str
+                    - area_units: a dict of display_name:area_units for each of the locations in places_str
+                    - keys: a list of unique tag keys (includes all locations fed to the function). Sorted by frequency.
+                 
+                Convert from m² to km² when returning information about large areas.          
                     """,
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "place_name": {
+                        "places_str": {
                             "type": "string",
-                            "description": "The name of a place",
+                            "description": "a place name or a comma-seperated list of place names",
                         },
                     },
-                    "required": ["place_name"],
+                    "required": ["places_str"],
                 },
             },
         ]
@@ -110,78 +115,64 @@ class ChatBot:
         api_key = os.getenv("OPENAI_API_KEY")
         openai.api_key = api_key
 
-    def gdf_data(self, gdf):
-        """Get the area of a polygon
-        This method is not directly callable by the LLM"""
-        utm_zone = utm.latlon_to_zone_number(gdf.loc[0, "lat"], gdf.loc[0, "lon"])
-        south = gdf.loc[0, "lat"] < 0
-        crs = CRS.from_dict({"proj": "utm", "zone": utm_zone, "south": south})
-        epsg_code = crs.to_authority()[1]
-        unit = list({ai.unit_name for ai in crs.axis_info})[0]
-        gdf_projected = gdf.to_crs(epsg_code)
-        area = gdf_projected.area[0]
-        return epsg_code, gdf_projected, unit, area
-
-    def longest_distance_to_vertex(self, geometry):
-        """Calculate the radius between the polygon centroid and its furthest point.
-        Not callable by the LLM
-        Args:
-            polygon (shapely.geometry.Polygon): _description_
-        Returns:
-            max_distance (float): _description_
-        """
-        # Check if the geometry is a MultiPolygon
-        if isinstance(geometry, MultiPolygon):
-            # If it is, iterate over the individual polygons
-            polygons = list(geometry)
-        else:
-            # If it's not a MultiPolygon, assume it's a single Polygon and put it in a list
-            polygons = [geometry]
-
-        max_distance = 0
-        for polygon in polygons:
-            centroid = polygon.centroid
-            # Calculate the distance from the centroid to each vertex
-            distances = [
-                centroid.distance(Point(vertex)) for vertex in polygon.exterior.coords
-            ]
-            # Update max_distance if the maximum distance for this polygon is greater
-            max_distance = max(max_distance, max(distances))
-
-        # Return the maximum distance
-        return max_distance
-
     def get_place_info(self, places_str: str):
         """Get GDF and area from a place name.
         Can be called by the LLM
-
         Args:
             places (str(list)): A list of place names.
-
         Returns:
-            data (str): A JSON string containing a dictionary. Each key in the dictionary is a place name from the input list.
-                        The value is another dictionary with keys 'gdf', 'area', and 'area_unit'. 'gdf' is a GeoDataFrame representing the place,
-                        'area' is the area of the place, and 'area_unit' is the unit of the area.
+            data (str): A JSON string containing a dictionary with projected_area, area_unit and keys.
+            projected_area: a dict of {display_name:area} for each of the locations in places_str
+            area_units: a dict of {display_name:area_units} for each of the locations in places_str
+            keys: a list of unique tag keys (includes all locations fed to the function). Sorted by frequency.
         """
         # Use OSMnx to geocode the location
         places = places_str.split(",").replace("[", "").replace("]", "")
         try:
-            gdf = ox.geocode_to_gdf(places)  # geodataframe
+            new_gdf = ox.geocode_to_gdf(places)  # geodataframe
+            if not hasattr(self, "places_gdf"):
+                self.places_gdf = new_gdf
+            else:
+                # add rows to self.places_gdf
+                self.places_gdf = self.places_gdf.append(new_gdf)
         except ValueError as e:
-            return f"Nominatim Nominatim geocoder returned 0 results for {place_name}"
+            return e
 
-        epsg_code, gdf_projected, unit, area = self.gdf_data(gdf)
-        # Add a column for each geometry
-        gdf["longest_distance_to_vertex"] = gdf["geometry"].apply(
-            self.longest_distance_to_vertex
+        # Get a list of unique keys in all the areas provided, sorted by frequency.
+        keys = []
+        nodes = []
+        bounding_boxes = self.places_gdf.loc[
+            :,
+            [
+                "bbox_south",
+                "bbox_west",
+                "bbox_north",
+                "bbox_east",
+            ],
+        ]
+        for _, row in bounding_boxes.iterrows():
+            nodes.append(get_nodes_with_tags_in_bbox(list(row)))
+            keys = list(count_tag_frequency(nodes).keys())
+
+        # add projected area to the gdf
+        self.places_gdf[["projected_area", "area_unit"]] = self.places_gdf.apply(
+            lambda row: gdf_data(row, self.places_gdf.crs), axis=1
         )
-        # Convert the GeoDataFrame to GeoJSON
-        gdf_json = json.loads(gdf.to_json())
 
+        # Add a column for each geometry with the longest distance from the centroid to the boundary
+        self.places_gdf["longest_distance_to_vertex"] = self.places_gdf[
+            "geometry"
+        ].apply(longest_distance_to_vertex)
+
+        # Return something useful to the LLM
         place_dict = {
-            "name": place_name,
-            "area": area,
-            "area_unit": unit,
+            "area": dict(
+                zip(self.places_gdf["display_name"], self.places_gdf["projected_area"])
+            ),
+            "area_unit": dict(
+                zip(self.places_gdf["display_name"], self.places_gdf["area_unit"])
+            ),
+            "tag_keys": keys,
         }
 
         data = json.dumps(place_dict)

@@ -6,16 +6,16 @@ from streamlit_folium import st_folium, folium_static
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 import utm
-from pyproj import CRS
+from pyproj import CRS, Transformer
 import pandas as pd
 import plotly.express as px
 import osmnx as ox
 import folium
 import contextily as cx
-from shapely.geometry import Polygon, Point, LineString, mapping
+from shapely.geometry import Polygon, Point, LineString, mapping, MultiPolygon
 import pydeck as pdk
 from math import sqrt, log
-from pyproj import Transformer
+from geopandas import GeoDataFrame
 import hashlib
 
 
@@ -111,7 +111,7 @@ def bbox_from_st_data(bounds):
     return bbox
 
 
-def gdf_data(gdf):
+def gdf_data_old(gdf):
     """Get the area of a polygon
     can take a gdf with multiple rows"""
     places_dict = {}
@@ -127,18 +127,62 @@ def gdf_data(gdf):
         gdf_projected = gdf.loc[[index], :].to_crs(epsg_code)
         area = gdf_projected.area.values[0]
         places_dict[row["display_name"]] = {
-            "epsg": epsg_code,
             "area": area,
             "unit": unit,
         }
-
     return places_dict
 
 
-def count_tag_frequency(data, tag=None):
+def gdf_data(row, original_crs):
+    """Get the area of a polygon
+    can take a row of a gdf"""
+    utm_zone = utm.latlon_to_zone_number(row["lat"], row["lon"])
+    south = row["lat"] < 0
+    utm_crs = CRS.from_dict({"proj": "utm", "zone": utm_zone, "south": south})
+    epsg_code = utm_crs.to_authority()[1]
+    unit = list({ai.unit_name for ai in utm_crs.axis_info})[0]
+    gdf_projected = GeoDataFrame([row], crs=original_crs).to_crs(epsg_code)
+    area = gdf_projected.area.values[0]
+    return pd.Series({"area": area, "unit": f"square {unit}"})
+
+
+def longest_distance_to_vertex(geometry):
+    """Calculate the radius between the polygon centroid and its furthest point.
+    Not callable by the LLM
+    Args:
+        polygon (shapely.geometry.Polygon): _description_
+    Returns:
+        max_distance (float): _description_
+    """
+    # Check if the geometry is a MultiPolygon
+    if isinstance(geometry, MultiPolygon):
+        # If it is, iterate over the individual polygons
+        polygons = list(geometry)
+    else:
+        # If it's not a MultiPolygon, assume it's a single Polygon and put it in a list
+        polygons = [geometry]
+
+    max_distance = 0
+    for polygon in polygons:
+        centroid = polygon.centroid
+        # Calculate the distance from the centroid to each vertex
+        distances = [
+            centroid.distance(Point(vertex)) for vertex in polygon.exterior.coords
+        ]
+        # Update max_distance if the maximum distance for this polygon is greater
+        max_distance = max(max_distance, max(distances))
+
+    # Return the maximum distance
+    return max_distance
+
+
+def count_tag_frequency(datasets, tag=None):
     tag_frequency = {}
 
-    for element in data["elements"]:
+    # Combine elements of all datasets into a single list
+    elements = [element for data in datasets for element in data["elements"]]
+
+    for element in elements:
         if "tags" in element:
             for t, v in element["tags"].items():
                 # Split the tag on the first separator
@@ -157,6 +201,14 @@ def count_tag_frequency(data, tag=None):
                             tag_frequency[v] += 1
                         else:
                             tag_frequency[v] = 1
+
+    # Sort the dictionary by its values in descending order
+    tag_frequency = {
+        k: v
+        for k, v in sorted(
+            tag_frequency.items(), key=lambda item: item[1], reverse=True
+        )
+    }
 
     return tag_frequency
 
