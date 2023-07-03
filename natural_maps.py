@@ -56,7 +56,7 @@ with bot_right:
         st.text_input(
             "You: ",
             key="human_prompt",
-            value="Are there ping pong tables in Monbijoupark?",
+            # value="Are there ping pong tables in Monbijoupark?",
             disabled=st.session_state.autofill,
         )
 
@@ -78,15 +78,6 @@ with bot_right:
         st.checkbox("Run Model", on_change=toggle_run, key="run_checkbox")
 
     with response_container:
-        st.markdown(
-            [
-                st.session_state.human_prompt,
-                st.session_state.run_checkbox,
-                ("true_run" in st.session_state),
-                st.session_state.true_run,
-            ]
-        )
-
         if (st.session_state.run_checkbox) and (st.session_state.human_prompt):
             st.session_state.bot = ChatBot(openai_api_key=OPENAI_API_KEY)
             if ("true_run" in st.session_state) and (st.session_state.true_run):
@@ -96,7 +87,7 @@ with bot_right:
                 # Initialise and run the bot
                 st.session_state.bot.add_user_message(st.session_state.human_prompt)
                 st.session_state.bot.run_conversation_streamlit(
-                    num_iterations=5, temperature=round(np.random.uniform(0.1, 1.5), 1)
+                    num_iterations=5, temperature=0.2
                 )
                 st.session_state.true_run = False
             # for m in st.session_state["message_history"]:
