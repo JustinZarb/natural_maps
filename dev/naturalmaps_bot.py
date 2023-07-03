@@ -6,7 +6,7 @@ from time import localtime, strftime
 import osmnx as ox
 import streamlit as st
 import re
-from streamlit_functions import (
+from .streamlit_functions import (
     gdf_data,
     get_nodes_with_tags_in_bbox,
     count_tag_frequency,
@@ -41,11 +41,10 @@ class ChatBot:
                 "description": """Run an overpass QL query.
                     Instructions:
                     - Keep the queries simple and specific.
-                    - Always use Overpass built-in geocodeArea for locations like this /{/{geocodeArea:charlottenburg}}->.searchArea; 
-                    - Do not exceed size to 100 unless a previous attempt was unsuccessful.
-                    - If running broad searches such as [node[~'^(amenity|leisure)$'~'.'](\{\{bbox}});], stick to only nodes. 
-                    eg. prompt: "Find toilets in Charlottenburg"
-                    
+                    - Always use Overpass built-in geocodeArea for locations like this {{geocodeArea:charlottenburg}}->.searchArea; 
+                    - If running broad searches such as [node[~'^(amenity|leisure)$'~'.']({{bbox}});], stick to only nodes. 
+                    - remember to use square brackets around nodes.
+                    eg. "Find toilets in Charlottenburg"
                     [out:json][timeout:25];
                     {{geocodeArea:charlottenburg}}->.searchArea;
                     (
@@ -74,7 +73,8 @@ class ChatBot:
             },
             {
                 "name": "get_place_info",
-                "description": """Gets the area of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
+                "description": """Gets area and tag keys of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
+                Do not tell the user the area of the place unles it is relevant to the question. Use the tag keys as hints for better Overpass Queries.
                 Args:
                     places (str(list)): A list of place names.
                 Returns:
@@ -127,13 +127,16 @@ class ChatBot:
             keys: a list of unique tag keys (includes all locations fed to the function). Sorted by frequency.
         """
         # Use OSMnx to geocode the location
-        places = places_str.split(",").replace("[", "").replace("]", "")
+        places = places_str.replace("[", "").replace("]", "").split(",")
         try:
             new_gdf = ox.geocode_to_gdf(places)  # geodataframe
             if not hasattr(self, "places_gdf"):
                 self.places_gdf = new_gdf
             else:
                 # add rows to self.places_gdf
+                self.places_gdf = self.places_gdf.reset_index(drop=True)
+                new_gdf = new_gdf.reset_index(drop=True)
+                self.places_gdf = self.places_gdf.append(new_gdf)
                 self.places_gdf = self.places_gdf.append(new_gdf)
         except ValueError as e:
             return e
@@ -227,7 +230,9 @@ class ChatBot:
     def get_timestamp(self):
         return strftime("%Y-%m-%d %H:%M:%S", localtime())
 
-    def log_overpass_query(self, human_prompt, generated_query, data_str):
+    def log_overpass_query(
+        self, human_prompt, generated_query, cleaned_query, data_str
+    ):
         # Write Overpass API Call to JSON
         timestamp = self.get_timestamp()
         this_run_name = f"{timestamp} | {human_prompt}"
@@ -243,7 +248,8 @@ class ChatBot:
         # This gets saved in the chat log
         self.overpass_queries[human_prompt] = {
             "temperature": self.temperature,
-            "overpassql_query": generated_query,
+            "generated_oQL_query": generated_query,
+            "cleaned_oQL_query": cleaned_query,
             "overpass_response": data_str,
             "valid_query": success,
             "returned_something": returned_something,
@@ -266,8 +272,10 @@ class ChatBot:
         overpass_url = "http://overpass-api.de/api/interpreter"
 
         # Check that the query is properly formatted
-        generated_query = generated_query.replace("\n", "").replace("_", "")
-        response = requests.get(overpass_url, params={"data": generated_query})
+        cleaned_query = (
+            generated_query.replace("\n", "").replace("_", "").replace("\\", "")
+        )
+        response = requests.get(overpass_url, params={"data": cleaned_query})
         if response.content:
             try:
                 data = response.json()
@@ -278,7 +286,7 @@ class ChatBot:
                 "warning": "received an empty response from Overpass API. Tell the user."
             }
         data_str = json.dumps(data)
-        self.log_overpass_query(human_prompt, generated_query, data_str)
+        self.log_overpass_query(human_prompt, generated_query, cleaned_query, data_str)
         return data_str
 
     def add_system_message(self, content):

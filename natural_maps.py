@@ -95,7 +95,9 @@ with bot_right:
                 user_message.write(st.session_state.human_prompt)
                 # Initialise and run the bot
                 st.session_state.bot.add_user_message(st.session_state.human_prompt)
-                st.session_state.bot.run_conversation_streamlit(num_iterations=5)
+                st.session_state.bot.run_conversation_streamlit(
+                    num_iterations=5, temperature=round(np.random.uniform(0.1, 1.5), 1)
+                )
                 st.session_state.true_run = False
             # for m in st.session_state["message_history"]:
             #   st.session_state.assistant_message.write(m)
