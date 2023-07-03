@@ -213,6 +213,80 @@ def count_tag_frequency(datasets, tag=None):
     return tag_frequency
 
 
+def count_tag_frequency_new(datasets):
+    unique_tag_values = {}
+    # Combine elements of all datasets into a single list
+    elements = [element for data in datasets for element in data["elements"]]
+
+    for element in elements:
+        if "tags" in element:
+            for t, v in element["tags"].items():
+                # Split the tag on the first separator
+                t = t.split(":")[0]
+                # Counting tag frequency
+                if t in unique_tag_values:
+                    if v in unique_tag_values[t]:
+                        pass
+                    else:
+                        unique_tag_values[t].add(v)
+                else:
+                    unique_tag_values[t] = set(v)
+
+    # Sort the dictionary by its values in descending order
+    unique_tag_values = {
+        k: v
+        for k, v in sorted(
+            unique_tag_values.items(), key=lambda item: item[1], reverse=True
+        )
+    }
+
+    return unique_tag_values
+
+
+def count_unique_values(datasets, tag=None):
+    unique_values = set()
+
+    # Combine elements of all datasets into a single list
+    elements = [element for data in datasets for element in data["elements"]]
+
+    for element in elements:
+        if "tags" in element:
+            for t, v in element["tags"].items():
+                # Split the tag on the first separator
+                t = t.split(":")[0]
+
+                if t == tag:
+                    unique_values.add(v)
+
+    return {tag: len(unique_values)}
+
+
+def count_value_frequency(datasets):
+    value_frequency = {}
+
+    # Combine elements of all datasets into a single list
+    elements = [element for data in datasets for element in data["elements"]]
+
+    for element in elements:
+        if "tags" in element:
+            for _, v in element["tags"].items():
+                # Counting value frequency
+                if v in value_frequency:
+                    value_frequency[v] += 1
+                else:
+                    value_frequency[v] = 1
+
+    # Sort the dictionary by its values in descending order
+    value_frequency = {
+        k: v
+        for k, v in sorted(
+            value_frequency.items(), key=lambda item: item[1], reverse=True
+        )
+    }
+
+    return value_frequency
+
+
 def generate_wordcloud(frequency_dict):
     tags_freq = [(tag, freq) for tag, freq in frequency_dict.items()]
     tags_freq.sort(key=lambda x: x[1], reverse=True)  # Sort tags by frequency
