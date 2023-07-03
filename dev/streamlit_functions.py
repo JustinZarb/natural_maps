@@ -184,14 +184,20 @@ def count_tag_frequency(datasets, tag=None):
             values = v.split(";")
             for value in values:
                 if t in tag_frequency:
-                    tag_frequency[t].add(value)
+                    if (
+                        value not in tag_frequency[t]
+                    ):  # Check if value is not already in the list
+                        tag_frequency[t].append(value)
                 else:
-                    tag_frequency[t] = {value}
+                    tag_frequency[t] = [value]
         else:
             if t in tag_frequency:
-                tag_frequency[t].add(str(v))
+                if (
+                    str(v) not in tag_frequency[t]
+                ):  # Check if value is not already in the list
+                    tag_frequency[t].append(str(v))
             else:
-                tag_frequency[t] = {str(v)}
+                tag_frequency[t] = [str(v)]
 
     # Combine elements of all datasets into a single list
     elements = [element for data in datasets for element in data["elements"]]

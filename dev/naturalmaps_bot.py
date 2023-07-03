@@ -42,17 +42,7 @@ class ChatBot:
                     - Always use Overpass built-in geocodeArea for locations like this {{geocodeArea:charlottenburg}}->.searchArea; 
                     - If running broad searches such as [node[~'^(amenity|leisure)$'~'.']({{bbox}});], stick to only nodes. 
                     - remember to use square brackets around nodes.
-                    eg. "Find toilets in Charlottenburg"
-                    [out:json][timeout:25];
-                    {{geocodeArea:charlottenburg}}->.searchArea;
-                    (
-                    node["amenity"="toilets"](area.searchArea);
-                    way["amenity"="toilets"](area.searchArea);
-                    relation["amenity"="toilets"](area.searchArea);
-                    );
-                    out body;
-                    >;
-                    out skel qt;
+                    - if a previous attempt failed, try using synonyms or checking a few different tag keys using get_place_info. 
                     """,
                 "parameters": {
                     "type": "object",
@@ -130,11 +120,9 @@ class ChatBot:
             if not hasattr(self, "places_gdf"):
                 self.places_gdf = new_gdf
             else:
-                # add rows to self.places_gdf
-                self.places_gdf = self.places_gdf.reset_index(drop=True)
-                new_gdf = new_gdf.reset_index(drop=True)
-                self.places_gdf = self.places_gdf.append(new_gdf)
-                self.places_gdf = self.places_gdf.append(new_gdf)
+                self.places_gdf = pd.concat(
+                    [self.places_gdf, new_gdf], ignore_index=True
+                )
         except ValueError as e:
             return e
 
@@ -175,7 +163,7 @@ class ChatBot:
         ].apply(longest_distance_to_vertex)
 
         data = {
-            "unique_tag_keys": num_unique_values,
+            "unique_tag_keys": list(num_unique_values.keys()),
             "area": dict(
                 zip(self.places_gdf["display_name"], self.places_gdf["projected_area"])
             ),
@@ -359,7 +347,7 @@ class ChatBot:
             If you do not have an adequate function to run the next step or if some steps failed,
             skip to the final step. Provide a response explaining what worked and what didn't, and
             any useful information from partial results. Start each message with '[step {self.current_step}]'.
-            End your final message with <final_response>"""
+            Your final message should end with <final_response>"""
         )
 
     def is_valid_message(self, message):
@@ -439,19 +427,32 @@ class ChatBot:
             "assistant", avatar="🗺️"
         )
 
+    def log(self, num_iterations):
+        # Set some logging variables
+        self.latest_question = [
+            m["content"] for m in self.messages if m["role"] == "user"
+        ][-1]
+        # If everything works, just save once at the end
+        filename = f"{self.id} | {self.latest_question}"
+        filepath = os.path.join(self.log_path, filename)
+        self.user_feedback = st.session_state.user_feedback
+        self.save_to_json(
+            file_path=filepath,
+            this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
+            log={
+                "temperature": self.temperature,
+                "valid_messages": self.messages,
+                "invalid_messages": self.invalid_messages,
+                "overpass_queries": self.overpass_queries,
+                "user_feedback": self.user_feedback,
+            },
+        )
+
     def run_conversation_streamlit(self, num_iterations=4, temperature=0.1):
         """Same as run_conversation but designed to interactively work with Streamlit.
         Run this after every user message
 
         """
-        # Set some logging variables
-        self.latest_question = [
-            m["content"] for m in self.messages if m["role"] == "user"
-        ][-1]
-
-        filename = f"{self.id} | {self.latest_question}"
-        filepath = os.path.join(self.log_path, filename)
-
         # Set conversation parameters
         self.temperature = temperature
         self.remaining_iterations = num_iterations
@@ -528,29 +529,11 @@ class ChatBot:
                 if response_message.get("function_call"):
                     self.execute_function(response_message)
 
+                self.log(num_iterations)
             self.remaining_iterations -= 1
 
         if self.overpass_queries:
             st.session_state["overpass_queries"] = self.overpass_queries
-
-        self.user_feedback = (
-            st.session_state.user_feedback
-            if "user_feedback" in st.session_state
-            else []
-        )
-
-        # If everything works, just save once at the end
-        self.save_to_json(
-            file_path=filepath,
-            this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
-            log={
-                "temperature": self.temperature,
-                "valid_messages": self.messages,
-                "invalid_messages": self.invalid_messages,
-                "overpass_queries": self.overpass_queries,
-                "user_feedback": self.user_feedback,
-            },
-        )
 
         return response_message
 
@@ -614,7 +597,7 @@ class ChatBot:
                             self.plan = self.read_plan(s)
 
                         # Check if <End of Response>
-                        elif s.endswith("<final_response>"):
+                        elif "<final_response>" in s:
                             final_response = True
 
                         # Update current step (for the in-between system prompt)
@@ -635,7 +618,6 @@ class ChatBot:
                         # "user_feedback": self.user_feedback,
                     },
                 )
-                print(response_message)
 
                 if response_message.get("function_call"):
                     self.execute_function(response_message)
@@ -658,5 +640,5 @@ class ChatBot:
 
 if __name__ == "__main__":
     chatbot = ChatBot(openai_api_key=os.getenv("OPENAI_API_KEY"))
-    chatbot.add_user_message("Can I play table tennis around Monbijoupark?")
-    print(chatbot.run_conversation_vanilla(temperature=0.9))
+    chatbot.add_user_message("Can I play table tennis around Monbijoupark, Berlin?")
+    chatbot.run_conversation_vanilla(temperature=0.1)
