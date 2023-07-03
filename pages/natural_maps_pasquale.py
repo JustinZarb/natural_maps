@@ -1,46 +1,30 @@
+import os
 import streamlit as st
-
-import dev.streamlit_functions as st_functions
-from dev.st_explore_with_wordcloud import explore_data
 import folium
 from streamlit_folium import st_folium
 
-import os
+import openai
 
-# import json
-# import pandas as pd
-# import requests
-# from time import gmtime, strftime
-# from langchain.prompts import PromptTemplate
-# from langchain.llms import OpenAI
-# from langchain.chat_models import ChatOpenAI
-# from langchain.chains import LLMChain
-# from langchain.chains import (
-#     TransformChain,
-#     LLMChain,
-#     SimpleSequentialChain,
-#     SequentialChain,
-# )
-# import streamlit as st
-# import openai
+import dev.streamlit_functions as st_functions
+from dev.st_explore_with_wordcloud import explore_data
+from dev.langchain.chains_as_classes_with_json import OverpassQueryChain
+from dev.naturalmaps_bot import ChatBot
+import sys
 
-from dev.langchain.chains_as_classes_with_json import OverpassQuery
-from dev.prompts.naturalmaps_bot import ChatBot
+sys.path.append("../")
+from config import OPENAI_API_KEY
 
-# from config import OPENAI_API_KEY
-api_key = os.getenv("OPENAI_KEY")
 
 # overpass_query = OverpassQuery(api_key)
 # user_input = "Find bike parking near tech parks in Kreuzberg, Berlin."
 # result = overpass_query.process_user_input(user_input)
 
 # Set OpenAI API key from Streamlit secrets
-openai.api_key = api_key  # st.secrets["OPENAI_API_KEY"]
+openai.api_key = OPENAI_API_KEY  # st.secrets["OPENAI_API_KEY"]
 
 # We've got two bots at our disposal, for the moment
-overpass_query = OverpassQuery(api_key)
-chatbot = ChatBot()
-
+overpass_query = OverpassQueryChain(api_key=OPENAI_API_KEY)
+chatbot = ChatBot(openai_api_key=OPENAI_API_KEY)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []

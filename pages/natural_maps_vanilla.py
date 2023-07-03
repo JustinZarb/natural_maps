@@ -11,7 +11,12 @@ import pandas as pd
 import openai
 
 from dev.langchain.chains_as_classes_with_json import OverpassQueryChain
-from dev.prompts.naturalmaps_bot import ChatBot
+from dev.naturalmaps_bot import ChatBot
+
+import sys
+
+sys.path.append("../")
+from config import OPENAI_API_KEY
 
 api_key = os.getenv("OPENAI_KEY")
 
@@ -49,7 +54,7 @@ st.title("Natural Maps")
 if model_choice == "Simple chain, gpt-3.5":
     model = OverpassQueryChain(api_key)
 else:
-    model = ChatBot()
+    model = ChatBot(openai_api_key=OPENAI_API_KEY)
 
 # Setting up the chat
 if "messages" not in st.session_state:

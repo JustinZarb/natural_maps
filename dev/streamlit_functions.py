@@ -19,6 +19,126 @@ from geopandas import GeoDataFrame
 import hashlib
 
 
+def overpass_to_feature_group(data_str=""):
+    """Takes the  result of an overpass query in string form as input.
+    Selects 'elements' as nodes. Creates a folium.FeatureGroup.
+    Adds a Marker for each node,  with coordinates and a tags dictionary."""
+
+    # need to convert the string into a dictionary first.
+    data = folium.GeoJson(data_str).data
+    # these are the nodes we want
+    nodes = data["elements"]
+    node_data = [(node["lat"], node["lon"], node["tags"]) for node in nodes]
+    fg = folium.FeatureGroup(name="Elements from overpass")
+    # the tags content needs to be reformatted
+    for lat, lon, tags in node_data:
+        tags_content = "<br>".join([f"<b>{k}</b>: {v}" for k, v in tags.items()])
+        fg.add_child(folium.Marker(location=[lat, lon], popup=tags_content))
+    return fg
+
+
+def calculate_center(bounds):
+    center = ((bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2)
+    return center
+
+
+def calculate_zoom_level(bounds):
+    """Calculate zoom level for PYDECK
+
+    Args:
+        gdf (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # Get the bounds of the geometry
+    minx, miny, maxx, maxy = bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]
+
+    # Calculate the diagonal length of the bounding box
+    diagonal_length = sqrt((maxx - minx) ** 2 + (maxy - miny) ** 2)
+
+    # Calculate a base zoom level based on the diagonal length
+    # This is a rough estimate and may need to be adjusted to fit your specific needs
+    base_zoom = 9 - log(maxx - minx)
+
+    # Make sure the zoom level is within the valid range (0-22)
+    zoom_level = max(0, min(base_zoom, 22))
+
+    return zoom_level
+
+
+def calculate_parameters_for_map(overpass_answer):
+    """
+    takes an overpass answer string
+    and returns:
+    fg, center, zoom
+    """
+    fg = overpass_to_feature_group(overpass_answer)
+    # Nasty hack for empty answers
+    bounds = fg.get_bounds()
+    if bounds == [[None, None], [None, None]]:
+        bounds = [[52.5210821, 13.3942864], [52.525776, 13.4038867]]
+    center = calculate_center(bounds)
+    zoom = calculate_zoom_level(bounds)
+    return fg, center, zoom
+
+
+def name_to_gdf(place_name):
+    """Return a Pandas.GeoDataframe object for a name if Nominatim can find it
+
+    Args:
+        place_name (str): eg. "Berlin"
+
+    Returns:
+        gdf: a geodataframe
+    """
+    # Use OSMnx to geocode the location (OSMnx uses some other libraries)
+    gdf = ox.geocode_to_gdf(place_name)
+    return gdf
+
+
+def map_location(gdf=None, feature_group=None):
+    """Create a map object given an optional gdf and feature group
+
+    Args:
+        gdf (_type_, optional): _description_. Defaults to None.
+        feature_group (_type_, optional): _description_. Defaults to None.
+
+    Returns:
+        map object: _description_
+    """
+    # Initialize the map
+    m = folium.Map(height="50%")
+
+    # Add the gdf to the map
+    if gdf is not None:
+        folium.GeoJson(gdf).add_to(m)
+
+    # Add the feature group(s) to the map and update the bounds
+    if feature_group is not None:
+        features = feature_group if isinstance(feature_group, list) else [feature_group]
+        for feature in features:
+            feature.add_to(m)
+
+    # Fit the map to the bounds of all features
+    m.fit_bounds(m.get_bounds())
+    return m
+
+
+def update_map():
+    # Create a folium map, adding
+    if "gdf" in st.session_state:
+        gdf = st.session_state.gdf
+    else:
+        gdf = None
+    if "circles" in st.session_state:
+        circles = st.session_state.circles
+    else:
+        circles = None
+    m = map_location(gdf, circles)
+    return m
+
+
 def word_to_color(word):
     # Use MD5 hash to convert the word into a hexadecimal number
     hash_object = hashlib.md5(word.encode())
@@ -38,15 +158,6 @@ def overpass_query(query):
     response = requests.get(overpass_url, params={"data": query})
     data = response.json()
     return data
-
-
-# def bounds_to_st_data(gdf):
-#     """
-#     Return a tuple of coordinates for the "bounds" needed by streamlit_folium
-#     """
-
-#     bounds = {'_southWest': {'lat': gdf.bbox_west.values[0], 'lng': gdf.bbox_south.values[0], '_northEast': {'lat': 52.50338318818063, 'lng': 13.344976902008058}}
-#     return bounds
 
 
 def bbox_from_st_data(bounds):

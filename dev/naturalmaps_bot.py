@@ -60,8 +60,8 @@ class ChatBot:
             },
             {
                 "name": "get_place_info",
-                "description": """Gets area and tag keys of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
-                Do not tell the user the area of the place unles it is relevant to the question. Use the tag keys as hints for better Overpass Queries.
+                "description": """Your best friend. Gets area and tag keys of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
+                Use tag_key generously to get hints for better Overpass Queries.
                 Args:
                     places (str(list)): A list of place names.
                 Returns:
@@ -81,10 +81,12 @@ class ChatBot:
                         },
                         "tag_key": {
                             "type": "string",
-                            "description": """optional tag key to get the unique values for. eg. unique_tags_dict["dance"] = {'Body Isolation', 'Capoeira', 'Forró', ...} """,
+                            "description": """a string of comma separated words to search within the tags. Use this to look for synonyms or parts 
+                            of words which might improve your search. eg. given "fire, table" it will return {'emergency': ['fire_hydrant'],
+                            'fire_hydrant': ['200', 'sidewalk', 'underground'], 'sport': ['table_tennis']}}""",
                         },
                     },
-                    "required": ["place"],
+                    "required": ["place", "tag_key"],
                 },
             },
         ]
@@ -101,6 +103,24 @@ class ChatBot:
         if log_path is None:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
+
+    def search_dict(self, d, substring):
+        search_words = [s.strip() for s in substring.split(",")]
+        print(search_words)
+        matches = {}
+        for s in search_words:
+            # Add key value pairs if a substring appears in either key or value. Value is a list of strings. return only the matching string
+            for key, value in d.items():
+                if s in key:
+                    matches[key] = value
+                else:
+                    for v in value:
+                        if s in v:
+                            if key in matches:
+                                matches[key].append(v)
+                            else:
+                                matches[key] = [v]
+        return matches
 
     def get_place_info(self, place: str, tag_key: str = None):
         """Get GDF and area from a place name.
@@ -126,7 +146,6 @@ class ChatBot:
             return e
 
         # Get a list of unique keys in all the areas provided, sorted by frequency.
-        keys = []
         nodes = []
         bounding_boxes = self.places_gdf.loc[
             :,
@@ -175,15 +194,8 @@ class ChatBot:
         except:
             pass
 
-        def search_dict(d, tag_key):
-            matches = {}
-            for key, value in d.items():
-                if tag_key in key:
-                    matches[key] = value
-            return matches
-
         if tag_key is not None:
-            data[tag_key] = search_dict(self.unique_tags_dict, tag_key)
+            data["tag_matches"] = self.search_dict(self.unique_tags_dict, tag_key)
 
         tags = json.dumps(data)
         return tags
@@ -206,13 +218,15 @@ class ChatBot:
             # If it doesn't exist, create an empty dictionary
             data = {}
 
-        # Add data for this run
         data[this_run_name] = {
             "log": log,
         }
-
-        with open(json_file_path, "w") as f:
-            json.dump(data, f, indent=4)
+        try:
+            with open(json_file_path, "w") as f:
+                json.dump(data, f, indent=4)
+        except TypeError as e:
+            with open("error.txt", "w") as error_file:
+                error_file.write(str(e))
 
     def get_timestamp(self):
         return strftime("%Y-%m-%d %H:%M:%S", localtime())
@@ -249,6 +263,29 @@ class ChatBot:
             log=self.overpass_queries[human_prompt],
         )
 
+    def process_osm_data(data, features):
+        """#ToDo: Use this to summarize a big OSM result.
+        # Replace 'data' with your actual JSON data
+        # Replace 'features' with a list of features you're interested in
+        metadata = process_osm_data(data, ['gluten_free', 'vegan'])
+        print(metadata)"""
+        items = json.loads(data)
+        num_elements = len(items)
+        unique_names = set()
+        special_features = {feature: 0 for feature in features}
+
+        for item in items:
+            unique_names.add(item["tags"]["name"])
+            for feature in features:
+                if feature in item["tags"] and item["tags"][feature] == "yes":
+                    special_features[feature] += 1
+
+        return {
+            "num_elements": num_elements,
+            "num_unique_names": len(unique_names),
+            "special_features": special_features,
+        }
+
     def overpass_query(self, human_prompt, generated_query):
         """Run an overpass query
         To improve chances of success, run this multiple times for simpler queries.
@@ -271,9 +308,14 @@ class ChatBot:
             data = {
                 "warning": "received an empty response from Overpass API. Tell the user."
             }
+
         data_str = json.dumps(data)
         self.log_overpass_query(human_prompt, generated_query, cleaned_query, data_str)
-        return data_str
+
+        if len(data_str) < 1000:
+            return data_str
+        else:
+            return "The string is too long to return, but it will show up on a map next to the chat."
 
     def add_system_message(self, content):
         self.messages.append({"role": "system", "content": content})
@@ -345,9 +387,10 @@ class ChatBot:
 
         self.add_function_message(function_name, function_response)
         self.add_system_message(
-            content=f"""Does the function response contain enough information to answer step {self.current_step}? 
-            If yes: Return a message describing what you will do in step {self.current_step+1} and if necessarry call the next function.
-            If not: Return a message saying the first attempt at step {self.current_step} failed and the best way to overcome this problem.
+            content=f"""Ask yourself whether function response contain enough information to answer step {self.current_step}? 
+            If yes: Mention that your next step is [step {self.current_step+1}] and if necessarry call the next function. If necessary, 
+            perform some simple arithmetic but always show your calculations.
+            If not: Return a message saying the first attempt at step {self.current_step} failed and how you will try to overcome this problem.
             If you do not have an adequate function to run the next step or if some steps failed,
             skip to the final step. Provide a response explaining what worked and what didn't, and
             any useful information from partial results. Start each message with '[step {self.current_step}]'.

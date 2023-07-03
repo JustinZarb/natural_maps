@@ -1,3 +1,1 @@
-import os
-OPENAI_API_KEY=os.getenv("OPENAI_KEY")
-
+OPENAI_API_KEY = "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"
