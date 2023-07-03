@@ -6,7 +6,7 @@ from time import localtime, strftime
 import osmnx as ox
 import streamlit as st
 import re
-from .streamlit_functions import (
+from streamlit_functions import (
     gdf_data,
     get_nodes_with_tags_in_bbox,
     count_tag_frequency,
@@ -560,9 +560,98 @@ class ChatBot:
 
         return response_message
 
+    def run_conversation_vanilla(self, num_iterations=4, temperature=0.1):
+        """Designed to run in the terminal
+        Run this after every user message
+
+        """
+        # Set some logging variables
+        self.latest_question = [
+            m["content"] for m in self.messages if m["role"] == "user"
+        ][-1]
+
+        filename = f"{self.id} | {self.latest_question}"
+        filepath = os.path.join(self.log_path, filename)
+
+        # Set conversation parameters
+        self.temperature = temperature
+        self.remaining_iterations = num_iterations
+        final_response = False
+
+        # Give first instructions.
+        self.add_system_message(
+            content=f"""Let's first understand the problem and devise 
+                break it down into simple steps. Fore example, if asked "Find child-friendly parks in Pankow, Berlin",
+                first search for parks in Pankow, then check tag keys and values for child-friendliness. 
+                Please output the plan starting with the header 'Here's the plan:' and then followed by a concise 
+                numbered list of steps. Each step should correspond to a 
+                specific function from the following list: {self.functions.keys()}. 
+                You have {self.remaining_iterations} remaining.
+                Avoid adding any steps that do not directly involve these functions or include 
+                specific content of the function calls. 
+                Avoid mentioning specific settings or parameters that will be used in the functions. 
+                Remember, the goal is to complete the task using the available functions
+                within the available number of iterations. Do not repeat or create a new 
+                plan."""
+        )
+
+        while (self.remaining_iterations > 0) and (not (final_response)):
+            # Process messages
+            response_messages, invalid_messages = self.process_messages(n=1)
+            self.messages += response_messages
+            self.invalid_messages += invalid_messages
+            self.plan = []
+            self.current_step = 1
+
+            # st.session_state["message_history"] = []
+
+            # Check if response includes a function call, and if yes, run it.
+            for response_message in response_messages:
+                # if the role is "assistant", write the content
+                if response_message.get("role") == "assistant":
+                    if response_message.get("content"):
+                        s = response_message.get("content")
+                        # Check for a plan (should only happen in the first response)
+                        if s.startswith("Here's the plan:"):
+                            # set class attribute
+                            self.plan = self.read_plan(s)
+                            print(s)
+
+                        # Check if <End of Response>
+                        elif s.endswith("<final_response>"):
+                            final_response = True
+                            print(s.replace("<final_response>", ""))
+
+                        else:
+                            print(s)
+
+                        # Update current step (for the in-between system prompt)
+                        if "step" in s:
+                            match = re.search(r"\[step (\d+)\]", s)
+                            if match:
+                                self.current_step = int(match.group(1))
+
+                if response_message.get("function_call"):
+                    self.execute_function(response_message)
+
+            self.remaining_iterations -= 1
+
+        # If everything works, just save once at the end
+        self.save_to_json(
+            file_path=filepath,
+            this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
+            log={
+                "temperature": self.temperature,
+                "valid_messages": self.messages,
+                "invalid_messages": self.invalid_messages,
+                "overpass_queries": self.overpass_queries,
+                # "user_feedback": self.user_feedback,
+            },
+        )
+
 
 if __name__ == "__main__":
     chatbot = ChatBot()
     chatbot.add_user_message("which is larger, Schöneberg or Moabit?")
 
-    print(chatbot.run_conversation())
+    print(chatbot.run_conversation_vanilla())
