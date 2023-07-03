@@ -59,7 +59,7 @@ def calculate_zoom_level(bounds):
 
     # Calculate a base zoom level based on the diagonal length
     # This is a rough estimate and may need to be adjusted to fit your specific needs
-    base_zoom = 9 - log(maxx - minx)
+    base_zoom = 9 - log(maxx - minx + 0.001)
 
     # Make sure the zoom level is within the valid range (0-22)
     zoom_level = max(0, min(base_zoom, 22))

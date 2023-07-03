@@ -49,7 +49,7 @@ st.title("Natural Maps")
 if model_choice == "Simple chain, gpt-3.5":
     model = OverpassQueryChain(api_key)
 else:
-    model = ChatBot()
+    model = ChatBot(openai_api_key=api_key)
 
 # Setting up the chat
 if "messages" not in st.session_state:
@@ -67,6 +67,7 @@ if prompt := st.chat_input("What is up?"):
     with st.chat_message("assistant"):
         response = model.process_user_input(prompt)
         st.markdown(response)
+        st.markdown(model.overpass_answer)
         # Add assistant response to chat history
         st.session_state.messages.append({"role": "assistant", "content": response})
         # Here the image parameters get updated
