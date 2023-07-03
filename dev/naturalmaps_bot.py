@@ -7,7 +7,7 @@ import osmnx as ox
 import streamlit as st
 import re
 import pandas as pd
-from streamlit_functions import (
+from .streamlit_functions import (
     gdf_data,
     get_nodes_with_tags_in_bbox,
     count_tag_frequency,
@@ -40,8 +40,7 @@ class ChatBot:
                     Instructions:
                     - Keep the queries simple and specific.
                     - Always use Overpass built-in geocodeArea for locations like this {{geocodeArea:charlottenburg}}->.searchArea; 
-                    - If running broad searches such as [node[~'^(amenity|leisure)$'~'.']({{bbox}});], stick to only nodes. 
-                    - remember to use square brackets around nodes.
+                    - Use correct formatting, like using square brackets around nodes.
                     - if a previous attempt failed, try using synonyms or checking a few different tag keys using get_place_info. 
                     """,
                 "parameters": {
@@ -176,8 +175,15 @@ class ChatBot:
         except:
             pass
 
+        def search_dict(d, tag_key):
+            matches = {}
+            for key, value in d.items():
+                if tag_key in key:
+                    matches[key] = value
+            return matches
+
         if tag_key is not None:
-            data[tag_key] = self.unique_tags_dict[tag_key]
+            data[tag_key] = search_dict(self.unique_tags_dict, tag_key)
 
         tags = json.dumps(data)
         return tags
@@ -253,9 +259,7 @@ class ChatBot:
         overpass_url = "http://overpass-api.de/api/interpreter"
 
         # Check that the query is properly formatted
-        cleaned_query = (
-            generated_query.replace("\n", "").replace("_", "").replace("\\", "")
-        )
+        cleaned_query = generated_query.replace("\n", "").replace("\\", "")
         response = requests.get(overpass_url, params={"data": cleaned_query})
         if response.content:
             try:
@@ -435,7 +439,10 @@ class ChatBot:
         # If everything works, just save once at the end
         filename = f"{self.id} | {self.latest_question}"
         filepath = os.path.join(self.log_path, filename)
-        self.user_feedback = st.session_state.user_feedback
+        if "user_feedback" in st.session_state:
+            self.user_feedback = st.session_state.user_feedback
+        else:
+            self.user_feedback = ""
         self.save_to_json(
             file_path=filepath,
             this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
@@ -641,4 +648,4 @@ class ChatBot:
 if __name__ == "__main__":
     chatbot = ChatBot(openai_api_key=os.getenv("OPENAI_API_KEY"))
     chatbot.add_user_message("Can I play table tennis around Monbijoupark, Berlin?")
-    chatbot.run_conversation_vanilla(temperature=0.1)
+    chatbot.run_conversation_vanilla(temperature=0.1, num_iterations=10)
