@@ -19,63 +19,6 @@ from geopandas import GeoDataFrame
 import hashlib
 
 
-def name_to_gdf(place_name):
-    """Return a Pandas.GeoDataframe object for a name if Nominatim can find it
-
-    Args:
-        place_name (str): eg. "Berlin"
-
-    Returns:
-        gdf: a geodataframe
-    """
-    # Use OSMnx to geocode the location (OSMnx uses some other libraries)
-    gdf = ox.geocode_to_gdf(place_name)
-    return gdf
-
-
-def map_location(gdf=None, feature_group=None, highlight_location=True):
-    """Create a map object given an optional gdf and feature group
-
-    Args:
-        gdf (_type_, optional): _description_. Defaults to None.
-        feature_group (_type_, optional): _description_. Defaults to None.
-
-    Returns:
-        map object: _description_
-    """
-    # Initialize the map
-    m = folium.Map(height="50%")
-
-    # Add the gdf to the map
-    if highlight_location:
-        if gdf is not None:
-            folium.GeoJson(gdf).add_to(m)
-
-    # Add the feature group(s) to the map and update the bounds
-    if feature_group is not None:
-        features = feature_group if isinstance(feature_group, list) else [feature_group]
-        for feature in features:
-            feature.add_to(m)
-
-    # Fit the map to the bounds of all features
-    m.fit_bounds(m.get_bounds())
-    return m
-
-
-def update_map():
-    # Create a folium map, adding
-    if "gdf" in st.session_state:
-        gdf = st.session_state.gdf
-    else:
-        gdf = None
-    if "circles" in st.session_state:
-        circles = st.session_state.circles
-    else:
-        circles = None
-    m = map_location(gdf, circles)
-    return m
-
-
 def word_to_color(word):
     # Use MD5 hash to convert the word into a hexadecimal number
     hash_object = hashlib.md5(word.encode())
@@ -97,6 +40,15 @@ def overpass_query(query):
     return data
 
 
+# def bounds_to_st_data(gdf):
+#     """
+#     Return a tuple of coordinates for the "bounds" needed by streamlit_folium
+#     """
+
+#     bounds = {'_southWest': {'lat': gdf.bbox_west.values[0], 'lng': gdf.bbox_south.values[0], '_northEast': {'lat': 52.50338318818063, 'lng': 13.344976902008058}}
+#     return bounds
+
+
 def bbox_from_st_data(bounds):
     """
     Return a tuple of coordinates from the "bounds" object returned by streamlit_folium
@@ -109,28 +61,6 @@ def bbox_from_st_data(bounds):
         bounds["_northEast"]["lng"],
     ]
     return bbox
-
-
-def gdf_data_old(gdf):
-    """Get the area of a polygon
-    can take a gdf with multiple rows"""
-    places_dict = {}
-    for index, row in gdf.iterrows():
-        print(index)
-        utm_zone = utm.latlon_to_zone_number(
-            gdf.loc[[index], "lat"].values[0], gdf.loc[[index], "lon"].values[0]
-        )
-        south = gdf.loc[[index], "lat"].values[0] < 0
-        crs = CRS.from_dict({"proj": "utm", "zone": utm_zone, "south": south})
-        epsg_code = crs.to_authority()[1]
-        unit = list({ai.unit_name for ai in crs.axis_info})[0]
-        gdf_projected = gdf.loc[[index], :].to_crs(epsg_code)
-        area = gdf_projected.area.values[0]
-        places_dict[row["display_name"]] = {
-            "area": area,
-            "unit": unit,
-        }
-    return places_dict
 
 
 def gdf_data(row, original_crs):
