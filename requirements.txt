@@ -6,6 +6,7 @@ asttokens==2.2.1
 async-timeout==4.0.2
 attrs==23.1.0
 backcall==0.2.0
+beautifulsoup4==4.12.2
 blinker==1.6.2
 branca==0.6.0
 cachetools==5.3.1
@@ -21,8 +22,11 @@ cycler==0.11.0
 dataclasses-json==0.5.8
 debugpy==1.6.7
 decorator==5.1.1
+dotenv==0.0.5
 earthpy==0.9.4
 executing==1.2.0
+Faker==18.11.2
+favicon==0.7.0
 Fiona==1.9.4.post1
 folium==0.14.0
 fonttools==4.40.0
@@ -46,6 +50,8 @@ google-search-results==2.4.2
 googleapis-common-protos==1.59.1
 greenlet==2.0.2
 h5py==3.8.0
+htbuilder==0.6.1
+hugchat==0.0.8
 idna==3.4
 imageio==2.31.1
 importlib-metadata==6.6.0
@@ -64,8 +70,11 @@ kiwisolver==1.4.4
 langchain==0.0.219
 langchainplus-sdk==0.0.17
 lazy_loader==0.2
+lxml==4.9.2
 mapclassify==2.5.0
+Markdown==3.4.3
 markdown-it-py==2.2.0
+markdownlit==0.0.7
 MarkupSafe==2.1.3
 marshmallow==3.19.0
 marshmallow-enum==1.5.1
@@ -73,6 +82,7 @@ matplotlib==3.7.1
 matplotlib-inline==0.1.6
 mdurl==0.1.2
 mercantile==1.2.1
+more-itertools==9.1.0
 multidict==6.0.4
 mypy-extensions==1.0.0
 nest-asyncio==1.5.6
@@ -104,11 +114,13 @@ pyasn1-modules==0.3.0
 pydantic==1.10.9
 pydeck==0.8.1b0
 Pygments==2.15.1
+pymdown-extensions==10.0.1
 Pympler==1.0.1
 pyparsing==3.0.9
 pyproj==3.6.0
 pyrsistent==0.19.3
 python-dateutil==2.8.2
+python-dotenv==1.0.0
 pytz==2023.3
 pytz-deprecation-shim==0.1.0.post0
 PyWavelets==1.4.1
@@ -117,6 +129,7 @@ pyzmq==25.1.0
 rasterio==1.3.7
 requests==2.31.0
 requests-oauthlib==1.3.1
+requests-toolbelt==1.0.0
 rich==13.4.1
 rsa==4.9
 scikit-image==0.21.0
@@ -126,12 +139,23 @@ shapely==2.0.1
 six==1.16.0
 smmap==5.0.0
 snuggs==1.4.7
+soupsieve==2.4.1
 SQLAlchemy==2.0.17
+st-annotated-text==4.0.0
 st-files-connection @ git+https://github.com/streamlit/files-connection@38ebf70a95d23d5731b0ecbdeb7531afa301feca
 stack-data==0.6.2
 streamlit==1.24.0
+streamlit-camera-input-live==0.2.0
+streamlit-card==0.0.61
 streamlit-chat==0.1.1
+streamlit-embedcode==0.1.2
+streamlit-extras==0.2.7
+streamlit-faker==0.0.2
 streamlit-folium==0.12.0
+streamlit-image-coordinates==0.1.5
+streamlit-keyup==0.2.0
+streamlit-toggle-switch==1.0.2
+streamlit-vertical-slider==1.0.2
 tenacity==8.2.2
 threadpoolctl==3.1.0
 tifffile==2023.4.12

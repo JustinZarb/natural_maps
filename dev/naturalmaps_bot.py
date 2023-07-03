@@ -107,11 +107,6 @@ class ChatBot:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
 
-    def get_openai_key_from_env(self):
-        # Get api_key (saved locally)
-        api_key = os.getenv("OPENAI_API_KEY")
-        openai.api_key = api_key
-
     def get_place_info(self, places_str: str):
         """Get GDF and area from a place name.
         Can be called by the LLM
@@ -131,10 +126,9 @@ class ChatBot:
                 self.places_gdf = new_gdf
             else:
                 # add rows to self.places_gdf
-                self.places_gdf = self.places_gdf.reset_index(drop=True)
-                new_gdf = new_gdf.reset_index(drop=True)
-                self.places_gdf = self.places_gdf.append(new_gdf)
-                self.places_gdf = self.places_gdf.append(new_gdf)
+                self.places_gdf = pd.concat(
+                    [self.places_gdf, new_gdf], ignore_index=True
+                )
         except ValueError as e:
             return e
 
@@ -601,26 +595,24 @@ class ChatBot:
             self.current_step = 1
 
             # st.session_state["message_history"] = []
-
+            print(
+                f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}"
+            )
             # Check if response includes a function call, and if yes, run it.
             for response_message in response_messages:
                 # if the role is "assistant", write the content
                 if response_message.get("role") == "assistant":
                     if response_message.get("content"):
                         s = response_message.get("content")
+                        print(s)
                         # Check for a plan (should only happen in the first response)
                         if s.startswith("Here's the plan:"):
                             # set class attribute
                             self.plan = self.read_plan(s)
-                            print(s)
 
                         # Check if <End of Response>
                         elif s.endswith("<final_response>"):
                             final_response = True
-                            print(s.replace("<final_response>", ""))
-
-                        else:
-                            print(s)
 
                         # Update current step (for the in-between system prompt)
                         if "step" in s:
@@ -648,7 +640,7 @@ class ChatBot:
 
 
 if __name__ == "__main__":
-    chatbot = ChatBot()
-    chatbot.add_user_message("which is larger, Schöneberg or Moabit?")
+    chatbot = ChatBot(openai_api_key=os.getenv("OPENAI_API_KEY"))
+    chatbot.add_user_message("Can I play table tennis around Monbijoupark?")
 
-    print(chatbot.run_conversation_vanilla())
+    print(chatbot.run_conversation_vanilla(temperature=0.9))
