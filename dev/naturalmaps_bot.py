@@ -29,7 +29,7 @@ class ChatBot:
         # Initialize Functions
         self.functions = {
             "overpass_query": self.overpass_query,
-            "get_place_info": self.get_place_info,
+            # "get_place_info": self.get_place_info,
         }
         self.function_status_pass = False  # Used to indicate function success
         self.function_metadata = [
@@ -68,6 +68,8 @@ class ChatBot:
                     "required": ["prompt", "query"],
                 },
             },
+        ]
+        self.spare_function_metadata = [
             {
                 "name": "get_place_info",
                 "description": """Gets area and tag keys of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
