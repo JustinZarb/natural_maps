@@ -179,43 +179,6 @@ def longest_distance_to_vertex(geometry):
 def count_tag_frequency(datasets, tag=None):
     tag_frequency = {}
 
-    # Combine elements of all datasets into a single list
-    elements = [element for data in datasets for element in data["elements"]]
-
-    for element in elements:
-        if "tags" in element:
-            for t, v in element["tags"].items():
-                # Split the tag on the first separator
-                t = t.split(":")[0]
-
-                if tag is None:
-                    # Counting tag frequency
-                    if t in tag_frequency:
-                        tag_frequency[t] += 1
-                    else:
-                        tag_frequency[t] = 1
-                else:
-                    # Counting value frequency for a specific tag
-                    if t == tag:
-                        if v in tag_frequency:
-                            tag_frequency[v] += 1
-                        else:
-                            tag_frequency[v] = 1
-
-    # Sort the dictionary by its values in descending order
-    tag_frequency = {
-        k: v
-        for k, v in sorted(
-            tag_frequency.items(), key=lambda item: item[1], reverse=True
-        )
-    }
-
-    return tag_frequency
-
-
-def count_tag_frequency_new(datasets, tag=None):
-    tag_frequency = {}
-
     def add_value(t, v):
         if isinstance(v, str):
             values = v.split(";")

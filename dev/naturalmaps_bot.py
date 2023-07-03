@@ -6,7 +6,8 @@ from time import localtime, strftime
 import osmnx as ox
 import streamlit as st
 import re
-from .streamlit_functions import (
+import pandas as pd
+from streamlit_functions import (
     gdf_data,
     get_nodes_with_tags_in_bbox,
     count_tag_frequency,
@@ -17,10 +18,7 @@ from .streamlit_functions import (
 class ChatBot:
     def __init__(self, log_path: str = None, openai_api_key=None):
         # Get OpenAI Key
-        if openai_api_key is not None:
-            openai.api_key = openai_api_key
-        else:
-            self.get_openai_key_from_env()
+        openai.api_key = openai_api_key
         assert openai.api_key, "Failed to find API keys"
 
         # Initialize Messages
@@ -32,7 +30,7 @@ class ChatBot:
         # Initialize Functions
         self.functions = {
             "overpass_query": self.overpass_query,
-            "get_place_info": self.get_place_info,
+            # "get_place_info": self.get_place_info,
         }
         self.function_status_pass = False  # Used to indicate function success
         self.function_metadata = [
@@ -71,29 +69,22 @@ class ChatBot:
                     "required": ["prompt", "query"],
                 },
             },
+        ]
+        self.spare_function_metadata = [
             {
                 "name": "get_place_info",
                 "description": """Gets area and tag keys of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
-                Do not tell the user the area of the place unles it is relevant to the question. Use the tag keys as hints for better Overpass Queries.
-                Args:
-                    places (str(list)): A list of place names.
-                Returns:
-                    data (str): A JSON string containing a dictionary with projected_area, area_unit and keys. 
-                    - projected_area: a dict of display_name:area for each of the locations in places_str
-                    - area_units: a dict of display_name:area_units for each of the locations in places_str
-                    - keys: a list of unique tag keys (includes all locations fed to the function). Sorted by frequency.
-                 
-                Convert from m² to km² when returning information about large areas.          
+                Do not tell the user the area of the place unles it is relevant to the question. Use the tag keys as hints for better Overpass Queries.    
                     """,
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "places_str": {
+                        "place": {
                             "type": "string",
-                            "description": "a place name or a comma-seperated list of place names",
+                            "description": "The name of a place as it is provided by the user, eg. Berlin",
                         },
                     },
-                    "required": ["places_str"],
+                    "required": ["place"],
                 },
             },
         ]
@@ -110,34 +101,28 @@ class ChatBot:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
 
-    def get_openai_key_from_env(self):
-        # Get api_key (saved locally)
-        api_key = os.getenv("OPENAI_API_KEY")
-        openai.api_key = api_key
-
-    def get_place_info(self, places_str: str):
+    def get_place_info(self, place: str):
         """Get GDF and area from a place name.
         Can be called by the LLM
         Args:
-            places (str(list)): A list of place names.
+            places: A string list of place names.
         Returns:
             data (str): A JSON string containing a dictionary with projected_area, area_unit and keys.
-            projected_area: a dict of {display_name:area} for each of the locations in places_str
-            area_units: a dict of {display_name:area_units} for each of the locations in places_str
+            projected_area: a dict of {display_name:area} for each of the locations in places
+            area_units: a dict of {display_name:area_units} for each of the locations in places
             keys: a list of unique tag keys (includes all locations fed to the function). Sorted by frequency.
         """
+
         # Use OSMnx to geocode the location
-        places = places_str.replace("[", "").replace("]", "").split(",")
         try:
-            new_gdf = ox.geocode_to_gdf(places)  # geodataframe
+            new_gdf = ox.geocode_to_gdf(place)  # geodataframe
             if not hasattr(self, "places_gdf"):
                 self.places_gdf = new_gdf
             else:
                 # add rows to self.places_gdf
-                self.places_gdf = self.places_gdf.reset_index(drop=True)
-                new_gdf = new_gdf.reset_index(drop=True)
-                self.places_gdf = self.places_gdf.append(new_gdf)
-                self.places_gdf = self.places_gdf.append(new_gdf)
+                self.places_gdf = pd.concat(
+                    [self.places_gdf, new_gdf], ignore_index=True
+                )
         except ValueError as e:
             return e
 
@@ -155,7 +140,16 @@ class ChatBot:
         ]
         for _, row in bounding_boxes.iterrows():
             nodes.append(get_nodes_with_tags_in_bbox(list(row)))
-            keys = list(count_tag_frequency(nodes).keys())
+            # All the unique tags as key:value pairs
+            # eg. unique_tags_dict["dance"] = {'Body Isolation', 'Capoeira', 'Forró', ...}
+            self.unique_tags_dict = count_tag_frequency(nodes)
+            num_unique_values = {k: len(v) for k, v in self.unique_tags_dict.items()}
+            num_unique_values = {
+                k: v
+                for k, v in sorted(
+                    num_unique_values.items(), key=lambda item: item[1], reverse=True
+                )
+            }
 
         # add projected area to the gdf
         self.places_gdf[["projected_area", "area_unit"]] = self.places_gdf.apply(
@@ -168,38 +162,18 @@ class ChatBot:
         ].apply(longest_distance_to_vertex)
 
         # Return something useful to the LLM
-        place_dict = {
+        area = {
             "area": dict(
                 zip(self.places_gdf["display_name"], self.places_gdf["projected_area"])
             ),
             "area_unit": dict(
                 zip(self.places_gdf["display_name"], self.places_gdf["area_unit"])
             ),
-            "tag_keys": keys,
         }
 
-        data = json.dumps(place_dict)
-        return data
-
-    def distance_calc(self, gdf, lat, lon):
-        """Not yet properly implemented
-
-        Args:
-            gdf (_type_): _description_
-            lat (_type_): _description_
-            lon (_type_): _description_
-
-        Returns:
-            _type_: _description_
-        """
-        # Calculate the distance between two points
-        gdf["distance"] = gdf.apply(
-            lambda row: ox.distance.great_circle_vec(
-                lat, lon, row["geometry"].y, row["geometry"].x
-            ),
-            axis=1,
-        )
-        return gdf
+        # area = json.dumps(area)
+        tags = json.dumps(self.unique_tags_dict)
+        return tags
 
     def save_to_json(self, file_path: str, this_run_name: str, log: dict):
         json_file_path = (
@@ -560,9 +534,109 @@ class ChatBot:
 
         return response_message
 
+    def run_conversation_vanilla(self, num_iterations=4, temperature=0.1):
+        """Designed to run in the terminal
+        Run this after every user message
+
+        """
+        # Set some logging variables
+        self.latest_question = [
+            m["content"] for m in self.messages if m["role"] == "user"
+        ][-1]
+
+        filename = f"{self.id} | {self.latest_question}"
+        filepath = os.path.join(self.log_path, filename)
+
+        # Set conversation parameters
+        self.temperature = temperature
+        self.remaining_iterations = num_iterations
+        final_response = False
+
+        # Give first instructions.
+        self.add_system_message(
+            content=f"""Let's first understand the problem and devise 
+                break it down into simple steps. Fore example, if asked "Find child-friendly parks in Pankow, Berlin",
+                first search for parks in Pankow, then check tag keys and values for child-friendliness. 
+                Please output the plan starting with the header 'Here's the plan:' and then followed by a concise 
+                numbered list of steps. Each step should correspond to a 
+                specific function from the following list: {self.functions.keys()}. 
+                You have {self.remaining_iterations} remaining.
+                Avoid adding any steps that do not directly involve these functions or include 
+                specific content of the function calls. 
+                Avoid mentioning specific settings or parameters that will be used in the functions. 
+                Remember, the goal is to complete the task using the available functions
+                within the available number of iterations. Do not repeat or create a new 
+                plan."""
+        )
+
+        while (self.remaining_iterations > 0) and (not (final_response)):
+            # Process messages
+            response_messages, invalid_messages = self.process_messages(n=1)
+            self.messages += response_messages
+            self.invalid_messages += invalid_messages
+            self.plan = []
+            self.current_step = 1
+
+            # st.session_state["message_history"] = []
+            print(
+                f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}"
+            )
+            # Check if response includes a function call, and if yes, run it.
+            for response_message in response_messages:
+                # if the role is "assistant", write the content
+                if response_message.get("role") == "assistant":
+                    if response_message.get("content"):
+                        s = response_message.get("content")
+                        print(s)
+                        # Check for a plan (should only happen in the first response)
+                        if s.startswith("Here's the plan:"):
+                            # set class attribute
+                            self.plan = self.read_plan(s)
+
+                        # Check if <End of Response>
+                        elif s.endswith("<final_response>"):
+                            final_response = True
+
+                        # Update current step (for the in-between system prompt)
+                        if "step" in s:
+                            match = re.search(r"\[step (\d+)\]", s)
+                            if match:
+                                self.current_step = int(match.group(1))
+
+                # If everything works, just save once at the end
+                self.save_to_json(
+                    file_path=filepath,
+                    this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
+                    log={
+                        "temperature": self.temperature,
+                        "valid_messages": self.messages,
+                        "invalid_messages": self.invalid_messages,
+                        "overpass_queries": self.overpass_queries,
+                        # "user_feedback": self.user_feedback,
+                    },
+                )
+                print(response_message)
+
+                if response_message.get("function_call"):
+                    self.execute_function(response_message)
+
+            self.remaining_iterations -= 1
+
+            # If everything works, just save once at the end
+            self.save_to_json(
+                file_path=filepath,
+                this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
+                log={
+                    "temperature": self.temperature,
+                    "valid_messages": self.messages,
+                    "invalid_messages": self.invalid_messages,
+                    "overpass_queries": self.overpass_queries,
+                    # "user_feedback": self.user_feedback,
+                },
+            )
+
 
 if __name__ == "__main__":
-    chatbot = ChatBot()
-    chatbot.add_user_message("which is larger, Schöneberg or Moabit?")
-
-    print(chatbot.run_conversation())
+    chatbot = ChatBot(openai_api_key=os.getenv("OPENAI_API_KEY"))
+    chatbot.add_user_message("Can I play table tennis around Monbijoupark?")
+    print(chatbot.run_conversation_vanilla(temperature=0.9))
