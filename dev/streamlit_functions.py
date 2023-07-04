@@ -28,6 +28,7 @@ def overpass_to_feature_group(data_str=""):
     # these are the nodes we want
     if "elements" in data:
         nodes = data["elements"]
+        st.markdown(nodes)
         node_data = [(node["lat"], node["lon"], node["tags"]) for node in nodes]
         fg = folium.FeatureGroup(name="Elements from overpass")
         # the tags content needs to be reformatted
