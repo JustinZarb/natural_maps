@@ -22,8 +22,9 @@ prompt_type = prompts.promptType.unique()
 basic_queries = prompts.loc[prompts["promptType"] == "Basic Query", "prompt"]
 
 # This is just some random initialization data for the default image
-data_str = '{"version": 0.6, "generator": "Overpass API 0.7.60.6 e2dc3e5b", "osm3s": {"timestamp_osm_base": "2023-06-29T15:35:14Z", "timestamp_areas_base": "2023-06-29T12:13:45Z", "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."}, "elements": [{"type": "node", "id": 6835150496, "lat": 52.5226885, "lon": 13.3979877, "tags": {"leisure": "pitch", "sport": "table_tennis", "wheelchair": "yes"}}, {"type": "node", "id": 6835150497, "lat": 52.5227083, "lon": 13.3978939, "tags": {"leisure": "pitch", "sport": "table_tennis", "wheelchair": "yes"}}, {"type": "node", "id": 6835150598, "lat": 52.5229822, "lon": 13.3965893, "tags": {"access": "customers", "leisure": "pitch", "sport": "table_tennis"}}, {"type": "node", "id": 6835150599, "lat": 52.5229863, "lon": 13.3964894, "tags": {"access": "customers", "leisure": "pitch", "sport": "table_tennis"}}]}'
-fg = st_functions.overpass_to_feature_group(data_str)
+pingpong = '{"version": 0.6, "generator": "Overpass API 0.7.60.6 e2dc3e5b", "osm3s": {"timestamp_osm_base": "2023-06-29T15:35:14Z", "timestamp_areas_base": "2023-06-29T12:13:45Z", "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."}, "elements": [{"type": "node", "id": 6835150496, "lat": 52.5226885, "lon": 13.3979877, "tags": {"leisure": "pitch", "sport": "table_tennis", "wheelchair": "yes"}}, {"type": "node", "id": 6835150497, "lat": 52.5227083, "lon": 13.3978939, "tags": {"leisure": "pitch", "sport": "table_tennis", "wheelchair": "yes"}}, {"type": "node", "id": 6835150598, "lat": 52.5229822, "lon": 13.3965893, "tags": {"access": "customers", "leisure": "pitch", "sport": "table_tennis"}}, {"type": "node", "id": 6835150599, "lat": 52.5229863, "lon": 13.3964894, "tags": {"access": "customers", "leisure": "pitch", "sport": "table_tennis"}}]}'
+toilets = '{"version": 0.6, "generator": "Overpass API 0.7.60.6 e2dc3e5b", "osm3s": {"timestamp_osm_base": "2023-06-22T13:12:02Z", "timestamp_areas_base": "2023-06-11T03:07:17Z", "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."}, "elements": [{"type": "node", "id": 10811509225, "lat": 46.9422137, "lon": 7.4341902, "tags": {"amenity": "toilets"}}]}'
+fg = st_functions.overpass_to_circles(pingpong)
 bounds = fg.get_bounds()
 
 # Parameters for the default image
@@ -35,30 +36,7 @@ if "zoom" not in st.session_state:
     st.session_state["zoom"] = st_functions.calculate_zoom_level(bounds)
 
 
-## Start of page
-st.title("Natural Maps")
-st.markdown(
-    """a portfolio project by J. Adam Hughes,
-Justin Zarb and Pasquale Zito, 
-developed as part of Data Science Retreat."""
-)
-
-# Talk to the map!
-st.subheader("Ask the map!")
-
-m = folium.Map(height="50%")
-st_folium(
-    m,
-    feature_group_to_add=st.session_state.feature_group,
-    center=st.session_state.center,
-    zoom=st.session_state.zoom,
-)
-
-# Layout of input/response containers
-input_container = st.container()
-response_container = st.container()
-
-
+# Functions
 def generate_prompt():
     if st.session_state.autofill:
         input = basic_queries[np.random.randint(len(basic_queries))]
@@ -68,13 +46,13 @@ def generate_prompt():
 
 
 def get_text():
-    st.checkbox(
-        label="Use a random basic prompt", on_change=generate_prompt, key="autofill"
-    )
     st.text_input(
-        "You: ",
+        "Ask the map! ",
         key="human_prompt",
         # value="Are there ping pong tables in Monbijoupark?",
+    )
+    st.checkbox(
+        label="Use a random basic prompt", on_change=generate_prompt, key="autofill"
     )
 
 
@@ -88,6 +66,30 @@ def toggle_run():
             st.session_state.bot = ChatBot(openai_api_key=OPENAI_API_KEY)
 
 
+# Start of page
+st.title("Natural Maps")
+st.markdown(
+    """J. Adam Hughes,
+Justin Zarb, Pasquale Zito"""
+)
+
+# Layout of input/response containers
+map_container = st.container()
+input_container = st.container()
+response_container = st.container()
+
+with map_container:
+    m = folium.Map()
+    st_data = st_folium(
+        m,
+        feature_group_to_add=st.session_state.feature_group,
+        center=st.session_state.center,
+        zoom=st.session_state.zoom,
+        width=1200,
+        height=500,
+    )
+    st.session_state.bbox = st_functions.bbox_from_st_data(st_data)
+
 ## Applying the user input box
 with input_container:
     input = get_text()
@@ -95,8 +97,12 @@ with input_container:
         pass
     else:
         st.session_state.user_input = input
-    st.markdown([input, st.session_state.user_input])
-    st.checkbox("Run Model", on_change=toggle_run, key="run_checkbox")
+
+    st.checkbox(
+        "Run plan and execute-style agent using GPT 3.5",
+        on_change=toggle_run,
+        key="run_checkbox",
+    )
 
 with response_container:
     if st.session_state.human_prompt:
@@ -108,28 +114,15 @@ with response_container:
             # Initialise and run the bot
             st.session_state.bot.add_user_message(st.session_state.human_prompt)
             st.session_state.bot.run_conversation_streamlit(
-                num_iterations=5, temperature=0.2
+                num_iterations=8, temperature=0.2
             )
 
             # update parameters for map
             st.session_state.true_run = False
 
 
-if ("gdf" in st.session_state) and ("latest_query_result" in st.session_state):
+if "gdf" in st.session_state:
     st.markdown(st.session_state.gdf)
-
-st.header("Debug")
-if "overpass_queries" in st.session_state:
-    for task, query_dict in st.session_state.overpass_queries.items():
-        st.markdown(task)
-        st.markdown(query_dict)
-
-st.multiselect(
-    label="Feedback",
-    options=["400 error", "empty result", "wrong key/value"],
-    key="user_feedback",
-    disabled=not ("true_run" in st.session_state),
-)
 
 
 st.markdown(

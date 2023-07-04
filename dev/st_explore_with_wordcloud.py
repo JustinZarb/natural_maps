@@ -107,6 +107,7 @@ def explore_data(st_data):
                 st.session_state.circles = st_functions.create_circles_from_node_dict(
                     st.session_state.selected_nodes
                 )
+                st.markdown(st.session_state.circles)
                 # Reset the checkbox
                 st.session_state.add_selection = False
                 st_functions.update_map()

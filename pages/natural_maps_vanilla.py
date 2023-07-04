@@ -101,6 +101,7 @@ if prompt := st.chat_input("What is up?"):
 m = folium.Map(
     height="100%",
 )
+
 st_folium(
     m,
     feature_group_to_add=st.session_state.feature_group,

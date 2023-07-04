@@ -54,7 +54,6 @@ class ChatBot:
                     - Always use Overpass built-in geocodeArea for locations like this {{geocodeArea:charlottenburg}}->.searchArea; 
                     - Use correct formatting, like using square brackets around nodes.
                     - If previous attempts fail:
-                        - use key:value pairs from get_place-info eg. for supermarket use ["shop":"supermarket"]
                         - Try a different geocode eg. "Prenzlauer Berg" instead of "Prenzlauer Berg, Berlin"
                     """,
                 "parameters": {
@@ -76,8 +75,9 @@ class ChatBot:
             },
             {
                 "name": "get_place_info",
-                "description": """Gets area and tag keys of a place using osmnx.geocode_to_gdf. 
-                Requires correctly spelt real places as input. make sure to provide tag_key with at least one word. preferably two or three.
+                "description": """Gets area and tag keys of a place. Requires real places as input. 
+                 provide at least one word for search_words. preferably four or five. Try multiple languages
+                - Returns useful key:value pairs which can be used by overpass queries 
                 Args:
                     places (str(list)): A list of place names.
                 Returns:
@@ -95,7 +95,7 @@ class ChatBot:
                             "type": "string",
                             "description": "The name of a place.",
                         },
-                        "tag_key": {
+                        "search_words": {
                             "type": "string",
                             "description": """a string of comma separated words to search within the tags. Use this to look for synonyms or parts 
                             of words which might improve your search. eg. given "fire, table" it will return {'emergency': ['fire_hydrant'],
@@ -129,19 +129,25 @@ class ChatBot:
             try:
                 data = response.json()
                 self.latest_query_result = data
-            except TypeError as e:
-                return {"Error": "Raised a TypeError"}
+            except:
+                self.log_overpass_query(
+                    human_prompt, generated_query, cleaned_query, response
+                )
+                return json.dumps({"error": "Raised an error"})
 
         if len(data) > 1000:
-            data = {
-                "warning": "The string is too long to return, but it will show up on a map next to the chat."
-            }
+            # return a summary of the data and some features
+            return json.dumps(
+                {
+                    "success": "but the data cannot be returned to the llm. it will be displayed."
+                }
+            )
 
         data_str = json.dumps(data)
         self.log_overpass_query(human_prompt, generated_query, cleaned_query, data_str)
         return data_str
 
-    def get_place_info(self, place: str, tag_key: str = None):
+    def get_place_info(self, place: str, search_words: str = None):
         """Get GDF and area from a place name.
         Can be called by the LLM
         Args:
@@ -201,7 +207,7 @@ class ChatBot:
 
         data = {}
         if "tag_key" in data and data["tag_key"].strip() != "":
-            data["tag_matches"] = self.search_dict(self.unique_tags_dict, tag_key)
+            data["tag_matches"] = self.search_dict(self.unique_tags_dict, search_words)
         else:
             data["amenities"] = self.search_dict(self.unique_tags_dict, "amenity")
         data["area"] = dict(
@@ -279,14 +285,24 @@ class ChatBot:
         )
 
         # This gets saved in the chat log
-        self.overpass_queries[human_prompt] = {
-            "temperature": self.temperature,
-            "generated_oQL_query": generated_query,
-            "cleaned_oQL_query": cleaned_query,
-            "overpass_response": data_str,
-            "valid_query": success,
-            "returned_something": returned_something,
-        }
+        try:
+            self.overpass_queries[human_prompt] = {
+                "temperature": self.temperature,
+                "generated_oQL_query": generated_query,
+                "cleaned_oQL_query": cleaned_query,
+                "overpass_response": data_str,
+                "valid_query": success,
+                "returned_something": returned_something,
+            }
+        except:
+            self.overpass_queries[human_prompt] = {
+                "temperature": self.temperature,
+                "generated_oQL_query": "something went wrong",
+                "cleaned_oQL_query": "something went wrong",
+                "overpass_response": "something went wrong",
+                "valid_query": success,
+                "returned_something": returned_something,
+            }
 
         # This gets saved in a separate log for overpass ueries
         self.save_to_json(
@@ -400,18 +416,23 @@ class ChatBot:
 
     def is_valid_message(self, message):
         """Check if the message content is a valid JSON string"""
-        if message.get("function_call"):
-            if message["function_call"].get("arguments"):
-                function_args = message["function_call"]["arguments"]
-                if isinstance(function_args, str):
-                    try:
-                        json.loads(function_args)  # Attempt to parse the JSON string
-                        return True  # Return True if it's a valid JSON string
-                    except json.JSONDecodeError:
-                        return False  # Return False if it's not a valid JSON string
+        try:
+            if message.get("function_call"):
+                if message["function_call"].get("arguments"):
+                    function_args = message["function_call"]["arguments"]
+                    if isinstance(function_args, str):
+                        try:
+                            json.loads(
+                                function_args
+                            )  # Attempt to parse the JSON string
+                            return True  # Return True if it's a valid JSON string
+                        except json.JSONDecodeError:
+                            return False  # Return False if it's not a valid JSON string
+                return False
+            else:
+                return True
+        except:
             return False
-        else:
-            return True
 
     def process_messages(self, n=1, temperature=0.1):
         """A general purpose function to prepare an answer based on all the previous messages
@@ -430,25 +451,33 @@ class ChatBot:
             _type_: _description_
         """
         # This breaks if the messages are not valid
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo-0613",
-            messages=self.messages,
-            functions=self.function_metadata,
-            function_call="auto",
-            n=n,
-            temperature=self.temperature,
-        )
-        response_messages = [choice["message"] for choice in response["choices"]]
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo-0613",
+                messages=self.messages,
+                functions=self.function_metadata,
+                function_call="auto",
+                n=n,
+                temperature=self.temperature,
+            )
+            response_messages = [choice["message"] for choice in response["choices"]]
+            # Filter out invalid messages based on your condition
+            valid_response_messages = [
+                msg for msg in response_messages if self.is_valid_message(msg)
+            ]
+            invalid_response_messages = [
+                "invalid args"
+                for msg in response_messages
+                if not self.is_valid_message(msg)
+            ]
 
-        # Filter out invalid messages based on your condition
-        valid_response_messages = [
-            msg for msg in response_messages if self.is_valid_message(msg)
-        ]
-        invalid_response_messages = [
-            "invalid args"
-            for msg in response_messages
-            if not self.is_valid_message(msg)
-        ]
+        except TypeError as e:
+            valid_response_messages = {
+                "role": "system",
+                "content": "The prompt was invalid and ChatCompletion threw an error",
+            }
+
+            invalid_response_messages = self.messages
 
         return valid_response_messages, invalid_response_messages
 
@@ -482,17 +511,25 @@ class ChatBot:
             self.user_feedback = st.session_state.user_feedback
         else:
             self.user_feedback = ""
-        self.save_to_json(
-            file_path=filepath,
-            this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
-            log={
-                "temperature": self.temperature,
-                "valid_messages": self.messages,
-                "invalid_messages": self.invalid_messages,
-                "overpass_queries": self.overpass_queries,
-                "user_feedback": self.user_feedback,
-            },
-        )
+        log = {
+            "temperature": self.temperature,
+            "valid_messages": self.messages,
+            "invalid_messages": self.invalid_messages,
+            "overpass_queries": self.overpass_queries,
+            "user_feedback": self.user_feedback,
+        }
+
+        try:
+            self.save_to_json(
+                file_path=filepath,
+                this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
+                log=log,
+            )
+
+        except json.JSONDecodeError as e:
+            print(f"JSONDecodeError: {str(e)}")
+            st.markdown(f"JSONDecodeError: {str(e)}")
+            # Perform appropriate error handling or take necessary actions
 
     def run_conversation_streamlit(self, num_iterations=4, temperature=0.1):
         """Same as run_conversation but designed to interactively work with Streamlit.
@@ -502,6 +539,7 @@ class ChatBot:
         self.latest_question = [
             m["content"] for m in self.messages if m["role"] == "user"
         ][-1]
+
         # Set conversation parameters
         self.temperature = temperature
         self.remaining_iterations = num_iterations
@@ -538,9 +576,10 @@ class ChatBot:
             # Check if response includes a function call, and if yes, run it.
             for response_message in response_messages:
                 # if the role is "assistant", write the content
-                if response_message.get("role") == "assistant":
-                    if response_message.get("content"):
-                        s = response_message.get("content")
+                try:
+                    if response_message.get("role") == "assistant":
+                        if response_message.get("content"):
+                            s = response_message.get("content")
                         # Check for a plan (should only happen in the first response)
                         if s.startswith("Here's the plan:"):
                             # set class attribute
@@ -549,9 +588,9 @@ class ChatBot:
                             st.session_state["plan"] = s
                             if "planner_message" not in st.session_state:
                                 self.start_planner()
-                            st.session_state.planner_message.write(
-                                st.session_state["plan"]
-                            )
+                                st.session_state.planner_message.write(
+                                    st.session_state["plan"]
+                                )
 
                         # Check if <End of Response>
                         elif s.endswith("<final_response>"):
@@ -569,15 +608,17 @@ class ChatBot:
                             if match:
                                 self.current_step = int(match.group(1))
 
-                    if st.session_state.message_history:
-                        if "assistant_message" not in st.session_state:
-                            self.start_assistant()
-                        if not final_response:
-                            for m in st.session_state["message_history"]:
-                                st.session_state.assistant_message.write(m)
+                        if response_message.get("function_call"):
+                            self.execute_function(response_message)
+                except:
+                    pass
 
-                if response_message.get("function_call"):
-                    self.execute_function(response_message)
+                if st.session_state.message_history:
+                    if "assistant_message" not in st.session_state:
+                        self.start_assistant()
+                    if not final_response:
+                        for m in st.session_state["message_history"]:
+                            st.session_state.assistant_message.write(m)
 
                 self.log(num_iterations)
 
@@ -586,6 +627,7 @@ class ChatBot:
                 st.session_state.center,
                 st.session_state.zoom,
             ) = calculate_parameters_for_map(overpass_answer=self.latest_query_result)
+
             self.remaining_iterations -= 1
 
         if self.overpass_queries:
@@ -675,7 +717,9 @@ class ChatBot:
                     },
                 )
 
-                if response_message.get("function_call"):
+                if isinstance(response_message, dict) and response_message.get(
+                    "function_call"
+                ):
                     self.execute_function(response_message)
 
             self.remaining_iterations -= 1

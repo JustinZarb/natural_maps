@@ -27,14 +27,17 @@ def overpass_to_feature_group(data_str=""):
     data = folium.GeoJson(data_str).data
     # these are the nodes we want
     if "elements" in data:
-        nodes = data["elements"]
-        st.markdown(nodes)
-        node_data = [(node["lat"], node["lon"], node["tags"]) for node in nodes]
+        elements = data["elements"]
         fg = folium.FeatureGroup(name="Elements from overpass")
-        # the tags content needs to be reformatted
-        for lat, lon, tags in node_data:
-            tags_content = "<br>".join([f"<b>{k}</b>: {v}" for k, v in tags.items()])
-            fg.add_child(folium.Marker(location=[lat, lon], popup=tags_content))
+        for node in elements:
+            st.markdown(node)
+            node_data = [(node["lat"], node["lon"], node["tags"])]
+            # the tags content needs to be reformatted
+            for lat, lon, tags in node_data:
+                tags_content = "<br>".join(
+                    [f"<b>{k}</b>: {v}" for k, v in tags.items()]
+                )
+                fg.add_child(folium.Marker(location=[lat, lon], popup=tags_content))
         return fg
     else:
         return None
@@ -44,8 +47,8 @@ def overpass_to_circles(data_str=""):
     data = folium.GeoJson(data_str).data
     # these are the nodes we want
     if "elements" in data:
-        nodes = data["elements"]
-        circles = create_circles_from_nodes(nodes)
+        elements = data["elements"]
+        circles = create_circles_from_nodes(elements)
         return circles
     else:
         return None
@@ -53,34 +56,30 @@ def overpass_to_circles(data_str=""):
 
 def create_circles_from_nodes(nodes):
     # Create a feature group
-    feature_group = folium.FeatureGroup(name="Nodes")
-
-    # Loop over each node in the 'elements' key of the JSON object
-    for node in nodes:  # Changed this line
-        # Get the latitude and longitude of the node
-        lat = node["lat"]
-        lon = node["lon"]
-
-        # Get the 'tags' dictionary
-        tags = node["tags"]
-
-        # Create a string for the hover text
-        hover_text = f"{tags.get('leisure', 'N/A')}: {tags.get('name', 'N/A')}\n"  # Add more details here
-
-        # Create a circle on the map for this key
-        circle = folium.Circle(
-            location=[lat, lon],
-            radius=5,  # Set the radius as needed
-            color="blue",  # Set a default color or use a function to determine color based on tags
-            fill=True,
-            fill_color="blue",  # Set a default color or use a function to determine color based on tags
-            fill_opacity=0.4,
-            tooltip=hover_text,
-        )
-
-        # Add the circle to the feature group
-        feature_group.add_child(circle)
-
+    feature_group = folium.FeatureGroup(name="circles")
+    for node in nodes:
+        # Loop over each node in the 'elements' key of the JSON object
+        if node["type"] == "node":
+            st.markdown(node)
+            node_data = [(node["lat"], node["lon"], node["tags"])]
+            # the tags content needs to be reformatted
+            for lat, lon, tags in node_data:
+                tags_content = "<br>".join(
+                    [f"<b>{k}</b>: {v}" for k, v in tags.items()]
+                )
+                circle = folium.Circle(
+                    location=[lat, lon],
+                    radius=5,  # Set the radius as needed
+                    color="blue",  # Set a default color or use a function to determine color based on tags
+                    fill=True,
+                    fill_color="blue",  # Set a default color or use a function to determine color based on tags
+                    fill_opacity=0.4,
+                    tooltip=tags_content,
+                )
+                # Add the circle to the feature group
+                feature_group.add_child(circle)
+        elif node["type"] == "area":
+            pass
     return feature_group
 
 
@@ -106,7 +105,7 @@ def create_circles_from_node_dict(nodes):
             circles.append(
                 folium.Circle(
                     location=[lat, lon],
-                    radius=5,  # Set the radius as needed
+                    radius=10,  # Set the radius as needed
                     color=color,
                     fill=True,
                     fill_color=color,
@@ -132,18 +131,22 @@ def calculate_zoom_level(bounds):
         _type_: _description_
     """
     # Get the bounds of the geometry
-    minx, miny, maxx, maxy = bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]
+    try:
+        minx, miny, maxx, maxy = bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]
 
-    # Calculate the diagonal length of the bounding box
-    diagonal_length = sqrt((maxx - minx) ** 2 + (maxy - miny) ** 2)
+        # Calculate the diagonal length of the bounding box
+        diagonal_length = sqrt((maxx - minx) ** 2 + (maxy - miny) ** 2)
 
-    # Calculate a base zoom level based on the diagonal length
-    # This is a rough estimate and may need to be adjusted to fit your specific needs
-    base_zoom = 9 - log(maxx - minx)
+        # Calculate a base zoom level based on the diagonal length
+        # This is a rough estimate and may need to be adjusted to fit your specific needs
+        base_zoom = 9 - log(maxx - minx)
 
-    # Make sure the zoom level is within the valid range (0-22)
-    zoom_level = max(0, min(base_zoom, 22))
+        # Make sure the zoom level is within the valid range (0-22)
+        zoom_level = max(0, min(base_zoom, 22))
 
+    except:
+        # st.markdown(["probably a math error. bounds:",  bounds,])
+        zoom_level = 17
     return zoom_level
 
 
@@ -161,7 +164,7 @@ def calculate_parameters_for_map(
     bounds = default_bounds
 
     if overpass_answer is not None:
-        fg = overpass_to_feature_group(overpass_answer)
+        fg = overpass_to_circles(overpass_answer)
         bounds = fg.get_bounds()
         # Nasty hack for empty answers
         if bounds == [[None, None], [None, None]]:
@@ -229,11 +232,11 @@ def update_map():
         gdf = st.session_state.gdf
     else:
         gdf = None
-    # if "circles" in st.session_state:
-    #    circles = st.session_state.circles
-    # else:
-    #    circles = None
-    m = map_location(gdf)
+    if "circles" in st.session_state:
+        circles = st.session_state.circles
+    else:
+        circles = None
+    m = map_location(gdf, circles)
     return m
 
 
@@ -258,11 +261,12 @@ def overpass_query(query):
     return data
 
 
-def bbox_from_st_data(bounds):
+def bbox_from_st_data(st_data):
     """
-    Return a tuple of coordinates from the "bounds" object returned by streamlit_folium
+    Return a list of coordinates [W, S, N, E]
     bounds = {'_southWest': {'lat': 52.494239118767496, 'lng': 13.329420089721681}, '_northEast': {'lat': 52.50338318818063, 'lng': 13.344976902008058}}
     """
+    bounds = st_data["bounds"]
     bbox = [
         bounds["_southWest"]["lat"],
         bounds["_southWest"]["lng"],
