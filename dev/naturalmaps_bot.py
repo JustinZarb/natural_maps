@@ -27,6 +27,14 @@ class ChatBot:
         # Invalid messages cannot be added to the chat but should be saved For logging
         self.invalid_messages = []
 
+        # Store overpass queries in the class
+        self.overpass_queries = {}
+        self.latest_query_result = None
+        # Store gdf files in the class
+        self.places_gdf = None
+        st.session_state["gdf"] = self.places_gdf
+        # Store transformed gdf files
+
         # Initialize Functions
         self.functions = {
             "overpass_query": self.overpass_query,
@@ -41,7 +49,9 @@ class ChatBot:
                     - Keep the queries simple and specific.
                     - Always use Overpass built-in geocodeArea for locations like this {{geocodeArea:charlottenburg}}->.searchArea; 
                     - Use correct formatting, like using square brackets around nodes.
-                    - if a previous attempt failed, try using synonyms or checking a few different tag keys using get_place_info. 
+                    - If previous attempts fail:
+                        - try using alternative tags from the results of get_place_info. 
+                        - Try a different geocode eg. "Prenzlauer Berg" instead of "Prenzlauer Berg, Berlin"
                     """,
                 "parameters": {
                     "type": "object",
@@ -52,7 +62,9 @@ class ChatBot:
                         },
                         "generated_query": {
                             "type": "string",
-                            "description": "The overpass QL query to execute. Important: Ensure that this is a properly formatted .json string.",
+                            "description": """The overpass QL query to execute.
+                                Starts with '[out:json][timeout:25];'.  Important: Ensure that 
+                                this is a properly formatted .json string.""",
                         },
                     },
                     "required": ["prompt", "query"],
@@ -60,8 +72,9 @@ class ChatBot:
             },
             {
                 "name": "get_place_info",
-                "description": """Your best friend. Gets area and tag keys of a place using osmnx.geocode_to_gdf. Requires correctly spelt real places as input.
-                Use tag_key generously to get hints for better Overpass Queries.
+                "description": """Gets area and tag keys of a place using osmnx.geocode_to_gdf. 
+                Requires correctly spelt real places as input. Provide at least three synonyms for each
+                item you want to search to get more hints for the Overpass Query.
                 Args:
                     places (str(list)): A list of place names.
                 Returns:
@@ -90,13 +103,6 @@ class ChatBot:
                 },
             },
         ]
-
-        # Store overpass queries in the class
-        self.overpass_queries = {}
-        self.latest_query_result = None
-        # Store gdf files in the class
-        self.gdf = {}
-        # Store transformed gdf files
 
         # Logging parameters
         self.id = self.get_timestamp()
@@ -136,7 +142,7 @@ class ChatBot:
 
         try:
             new_gdf = ox.geocode_to_gdf(place)  # geodataframe
-            if not hasattr(self, "places_gdf"):
+            if self.places_gdf is None:
                 self.places_gdf = new_gdf
             else:
                 self.places_gdf = pd.concat(
@@ -181,7 +187,7 @@ class ChatBot:
         ].apply(longest_distance_to_vertex)
 
         data = {
-            "unique_tag_keys": list(num_unique_values.keys()),
+            "tag_matches": self.search_dict(self.unique_tags_dict, tag_key),
             "area": dict(
                 zip(self.places_gdf["display_name"], self.places_gdf["projected_area"])
             ),
@@ -189,13 +195,6 @@ class ChatBot:
                 zip(self.places_gdf["display_name"], self.places_gdf["area_unit"])
             ),
         }
-        try:
-            data["amenities"]: self.unique_tags_dict["amenities"]
-        except:
-            pass
-
-        if tag_key is not None:
-            data["tag_matches"] = self.search_dict(self.unique_tags_dict, tag_key)
 
         tags = json.dumps(data)
         return tags
@@ -302,20 +301,17 @@ class ChatBot:
             try:
                 data = response.json()
                 self.latest_query_result = data
-            except:
-                data = {"error": str(response)}
-        else:  # ToDo: check this.. it might not make sense
+            except Exception as e:
+                data = {"error": str(e)}
+
+        if len(data) > 1000:
             data = {
-                "warning": "received an empty response from Overpass API. Tell the user."
+                "warning": "The string is too long to return, but it will show up on a map next to the chat."
             }
 
         data_str = json.dumps(data)
         self.log_overpass_query(human_prompt, generated_query, cleaned_query, data_str)
-
-        if len(data_str) < 1000:
-            return data_str
-        else:
-            return "The string is too long to return, but it will show up on a map next to the chat."
+        return data_str
 
     def add_system_message(self, content):
         self.messages.append({"role": "system", "content": content})
@@ -507,6 +503,7 @@ class ChatBot:
         self.temperature = temperature
         self.remaining_iterations = num_iterations
         final_response = False
+        st.session_state["gdf"] = self.places_gdf
 
         # Give first instructions.
         self.add_system_message(

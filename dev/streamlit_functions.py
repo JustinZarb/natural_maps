@@ -269,47 +269,75 @@ def longest_distance_to_vertex(geometry):
     return max_distance
 
 
-def count_tag_frequency(datasets, tag=None):
-    tag_frequency = {}
-
-    def add_value(t, v):
-        if isinstance(v, str):
-            values = v.split(";")
-            for value in values:
-                if t in tag_frequency:
-                    if (
-                        value not in tag_frequency[t]
-                    ):  # Check if value is not already in the list
-                        tag_frequency[t].append(value)
-                else:
-                    tag_frequency[t] = [value]
-        else:
+def add_value(tag_frequency, t, v):
+    if isinstance(v, str):
+        values = v.split(";")
+        for value in values:
             if t in tag_frequency:
                 if (
-                    str(v) not in tag_frequency[t]
+                    value not in tag_frequency[t]
                 ):  # Check if value is not already in the list
-                    tag_frequency[t].append(str(v))
+                    tag_frequency[t].append(value)
             else:
-                tag_frequency[t] = [str(v)]
+                tag_frequency[t] = [value]
+    else:
+        if t in tag_frequency:
+            if (
+                str(v) not in tag_frequency[t]
+            ):  # Check if value is not already in the list
+                tag_frequency[t].append(str(v))
+        else:
+            tag_frequency[t] = [str(v)]
+    return tag_frequency
 
-    # Combine elements of all datasets into a single list
-    elements = [element for data in datasets for element in data["elements"]]
 
-    for element in elements:
-        if "tags" in element:
-            for t, v in element["tags"].items():
+def count_tag_frequency_in_nodes(nodes, tag=None):
+    tag_frequency = {}
+
+    for node in nodes:
+        if "tags" in node:
+            for t, v in node["tags"].items():
                 # Split the tag on the first separator
                 t = t.split(":")[0]
 
                 if tag is None:
                     # Collecting unique values for each tag
-                    add_value(t, v)
+                    tag_frequency = add_value(tag_frequency, t, v)
                 else:
                     # Collecting unique values for a specific tag
                     if t == tag:
-                        add_value(v, v)
+                        tag_frequency = add_value(tag_frequency, t, v)
 
     return tag_frequency
+
+
+def count_tag_frequency_old(data, tag=None):
+    tag_frequency = {}
+
+    for element in data["elements"]:
+        if "tags" in element:
+            for t, v in element["tags"].items():
+                if tag is None:
+                    # Counting tag frequency
+                    if t in tag_frequency:
+                        tag_frequency[t] += 1
+                    else:
+                        tag_frequency[t] = 1
+                else:
+                    # Counting value frequency for a specific tag
+                    if t == tag:
+                        if v in tag_frequency:
+                            tag_frequency[v] += 1
+                        else:
+                            tag_frequency[v] = 1
+
+    return tag_frequency
+
+
+def count_tag_frequency(datasets, tag=None):
+    # Combine elements of all datasets into a single list
+    nodes = [element for data in datasets for element in data["elements"]]
+    return count_tag_frequency_in_nodes(nodes, tag)
 
 
 def count_unique_values(datasets, tag=None):

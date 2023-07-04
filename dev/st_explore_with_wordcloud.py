@@ -5,7 +5,6 @@ import pandas as pd
 
 def generate_wordcloud():
     st.subheader("Tags in this area")
-    st.markdown(st.session_state.bbox)
 
     tag_keys = list(st.session_state.tags_in_bbox.keys())
     default_key_index = tag_keys.index("amenity") if "amenity" in tag_keys else 0
@@ -19,7 +18,7 @@ def generate_wordcloud():
     )
 
     # Return a dictionary with the frequency each value appears in the bounding box
-    st.session_state.value_frequency = st_functions.count_tag_frequency(
+    st.session_state.value_frequency = st_functions.count_tag_frequency_old(
         st.session_state.nodes, tag=st.session_state.selected_key
     )
 
@@ -64,7 +63,7 @@ def explore_data(st_data):
                     st.session_state.bbox
                 )
                 # get the tag content as a dictionary
-                st.session_state["tags_in_bbox"] = st_functions.count_tag_frequency(
+                st.session_state["tags_in_bbox"] = st_functions.count_tag_frequency_old(
                     st.session_state.nodes
                 )
 
@@ -94,7 +93,6 @@ def explore_data(st_data):
                 "Add items to map",
                 on_click=add_selection_button,
             )
-            st.markdown(st.session_state.add_selection)
 
             if st.session_state.add_selection:
                 # Dictionary of key:value pairs where the keys are a tag key and the value are different tag values

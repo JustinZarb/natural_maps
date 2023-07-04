@@ -14,6 +14,7 @@ from streamlit_folium import st_folium
 from config import OPENAI_API_KEY
 import pandas as pd
 import numpy as np
+import folium
 from dev.naturalmaps_bot import ChatBot
 
 prompts = pd.read_csv("./dev//prompts/prompts.csv")
@@ -32,23 +33,24 @@ developed as part of Data Science Retreat."""
 st.subheader("Ask the map!")
 
 bot_left, bot_right = st.columns((1, 2), gap="small")
+
 with bot_left:
-    if "gdf" in st.session_state:
+    if "bot" in st.session_state:
         gdf = st.session_state.gdf
     else:
-        gdf = None
+        gdf = st_functions.name_to_gdf("Berlin")
 
+    st.markdown(gdf)
     if "overpass_answer" in st.session_state:
         overpass_answer = st.session_state.overpass_answer
     else:
         overpass_answer = None
 
-    m = st_functions.map_location(gdf)
     fg, center, zoom = st_functions.calculate_parameters_for_map(
         gdf=gdf, overpass_answer=overpass_answer
     )
+    m = folium.Map(height="50%")
 
-    st.markdown([gdf, fg, center, zoom])
     st_folium(
         m,
         feature_group_to_add=fg,
@@ -85,6 +87,8 @@ with bot_right:
             st.session_state.true_run = st.session_state.run_checkbox
         else:
             st.session_state.true_run = True
+            if st.session_state.human_prompt:
+                st.session_state.bot = ChatBot(openai_api_key=OPENAI_API_KEY)
 
     ## Applying the user input box
     with input_container:
@@ -110,10 +114,6 @@ with bot_right:
                     num_iterations=5, temperature=0.2
                 )
                 st.session_state.true_run = False
-
-if "bot" in st.session_state:
-    st.session_state.gdf = st.session_state.bot.places_gdf
-    st.markdown(st.session_state.gdf)
 
 
 st.header("Debug")
