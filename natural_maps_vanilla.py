@@ -11,7 +11,7 @@ import pandas as pd
 import openai
 
 from dev.langchain.chains_as_classes_with_json import OverpassQueryChain
-from dev.prompts.naturalmaps_bot import ChatBot
+from dev.naturalmaps_bot import ChatBot
 
 api_key = os.getenv("OPENAI_KEY")
 

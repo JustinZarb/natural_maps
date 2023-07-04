@@ -12,8 +12,10 @@ import requests
 from time import gmtime, strftime
 from streamlit_folium import st_folium
 
-m = folium.Map()
-m.save("footprint.html")
+st.set_page_config(layout="wide")
+
+# m = folium.Map()
+# m.save("footprint.html")
 
 # center on Liberty Bell, add marker
 m = folium.Map(location=[39.949610, -75.150282], zoom_start=16)
@@ -27,7 +29,7 @@ Draw(export=True).add_to(m)
 
 c1, c2 = st.columns(2)
 with c1:
-    output = st_folium(m, width=700, height=500)
+    output = st_folium(m, width=900, height=300)
 
 with c2:
     st.write(output)
@@ -40,4 +42,14 @@ tooltip = "Liberty Bell"
 folium.Marker([39.949610, -75.150282], popup="Liberty Bell", tooltip=tooltip).add_to(m)
 
 # call to render Folium map in Streamlit
-st_folium(m2, width=2000, height=500, returned_objects=[])
+st_folium(m2, width=1000, height=500, returned_objects=[])
+
+m = folium.Map(location=[39.949610, -75.150282], zoom_start=5)
+Draw(export=True).add_to(m)
+
+c1, c2 = st.columns(2)
+with c1:
+    output = st_folium(m, width=200, height=200)
+
+with c2:
+    st.write(output)
