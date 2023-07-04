@@ -1,0 +1,1 @@
+Object of type TypeError is not JSON serializable

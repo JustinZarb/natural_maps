@@ -12,7 +12,12 @@ from .streamlit_functions import (
     get_nodes_with_tags_in_bbox,
     count_tag_frequency,
     longest_distance_to_vertex,
+    calculate_parameters_for_map,
 )
+import sys
+
+sys.path.append("..")
+from config import OPENAI_API_KEY
 
 
 class ChatBot:
@@ -30,7 +35,6 @@ class ChatBot:
         # Store overpass queries in the class
         self.overpass_queries = {}
         self.latest_query_result = None
-        st.session_state.latest_query_result = self.latest_query_result
         self.places_gdf = None
         st.session_state["gdf"] = self.places_gdf
         # Store transformed gdf files
@@ -73,8 +77,7 @@ class ChatBot:
             {
                 "name": "get_place_info",
                 "description": """Gets area and tag keys of a place using osmnx.geocode_to_gdf. 
-                Requires correctly spelt real places as input. Provide at least three synonyms for each
-                item you want to search to get more hints for the Overpass Query.
+                Requires correctly spelt real places as input. make sure to provide tag_key with at least one word. preferably two or three.
                 Args:
                     places (str(list)): A list of place names.
                 Returns:
@@ -126,9 +129,8 @@ class ChatBot:
             try:
                 data = response.json()
                 self.latest_query_result = data
-                st.session_state.latest_query_result = self.latest_query_result
-            except Exception as e:
-                data = {"error": "Overpass threw an error."}
+            except TypeError as e:
+                return {"Error": "Raised a TypeError"}
 
         if len(data) > 1000:
             data = {
@@ -197,15 +199,17 @@ class ChatBot:
             "geometry"
         ].apply(longest_distance_to_vertex)
 
-        data = {
-            "tag_matches": self.search_dict(self.unique_tags_dict, tag_key),
-            "area": dict(
-                zip(self.places_gdf["display_name"], self.places_gdf["projected_area"])
-            ),
-            "area_unit": dict(
-                zip(self.places_gdf["display_name"], self.places_gdf["area_unit"])
-            ),
-        }
+        data = {}
+        if "tag_key" in data and data["tag_key"].strip() != "":
+            data["tag_matches"] = self.search_dict(self.unique_tags_dict, tag_key)
+        else:
+            data["amenities"] = self.search_dict(self.unique_tags_dict, "amenity")
+        data["area"] = dict(
+            zip(self.places_gdf["display_name"], self.places_gdf["projected_area"])
+        )
+        data["area_unit"] = dict(
+            zip(self.places_gdf["display_name"], self.places_gdf["area_unit"])
+        )
 
         tags = json.dumps(data)
         return tags
@@ -384,13 +388,13 @@ class ChatBot:
 
         self.add_function_message(function_name, function_response)
         self.add_system_message(
-            content=f"""Report on the results from step {self.current_step}. If possible 
-            move on to [step {self.current_step+1}]. State which message you are working on.
+            content=f"""Start each message with '[step {self.current_step}]. State which message you are working on next.
+            Give an answer which is relevant to the original user question.
             If necessary, perform some simple arithmetic but always show your calculations.
-            If not: Return a message saying the first attempt at step {self.current_step} failed and how you will try to overcome this problem.
-            If you do not have an adequate function to run the next step or if some steps failed,
-            skip to the final step. Provide a response explaining what worked and what didn't, and
-            any useful information from partial results. Start each message with '[step {self.current_step}]'.
+            If the previous step failed, return a message saying the first attempt at step {self.current_step} failed 
+            and how you will try to overcome this problem. If you do not have an adequate function 
+            to run the next step or if some steps failed repeatedly, skip to the final step. 
+            Provide a response explaining what worked and what didn't, and any useful information from partial results. '.
             Your final message should end with <final_response>"""
         )
 
@@ -425,7 +429,6 @@ class ChatBot:
         Returns:
             _type_: _description_
         """
-
         # This breaks if the messages are not valid
         response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
@@ -472,10 +475,6 @@ class ChatBot:
         )
 
     def log(self, num_iterations):
-        # Set some logging variables
-        self.latest_question = [
-            m["content"] for m in self.messages if m["role"] == "user"
-        ][-1]
         # If everything works, just save once at the end
         filename = f"{self.id} | {self.latest_question}"
         filepath = os.path.join(self.log_path, filename)
@@ -500,6 +499,9 @@ class ChatBot:
         Run this after every user message
 
         """
+        self.latest_question = [
+            m["content"] for m in self.messages if m["role"] == "user"
+        ][-1]
         # Set conversation parameters
         self.temperature = temperature
         self.remaining_iterations = num_iterations
@@ -579,8 +581,11 @@ class ChatBot:
 
                 self.log(num_iterations)
 
-            st.session_state.gdf = self.places_gdf
-            st.session_state.latest_query_result = self.latest_query_result
+            (
+                st.session_state.feature_group,
+                st.session_state.center,
+                st.session_state.zoom,
+            ) = calculate_parameters_for_map(overpass_answer=self.latest_query_result)
             self.remaining_iterations -= 1
 
         if self.overpass_queries:
@@ -696,6 +701,6 @@ class ChatBot:
 
 
 if __name__ == "__main__":
-    chatbot = ChatBot(openai_api_key=os.getenv("OPENAI_API_KEY"))
-    chatbot.add_user_message("Can I play table tennis around Monbijoupark, Berlin?")
-    chatbot.run_conversation_vanilla(temperature=0.1, num_iterations=10)
+    chatbot = ChatBot(openai_api_key=OPENAI_API_KEY)
+    chatbot.add_user_message("are there ping pong tables in Neukölln? where?")
+    chatbot.run_conversation_vanilla(temperature=0.3, num_iterations=5)

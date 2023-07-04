@@ -23,21 +23,67 @@ def overpass_to_feature_group(data_str=""):
     """Takes the  result of an overpass query in string form as input.
     Selects 'elements' as nodes. Creates a folium.FeatureGroup.
     Adds a Marker for each node,  with coordinates and a tags dictionary."""
-
     # need to convert the string into a dictionary first.
     data = folium.GeoJson(data_str).data
     # these are the nodes we want
-    nodes = data["elements"]
-    node_data = [(node["lat"], node["lon"], node["tags"]) for node in nodes]
-    fg = folium.FeatureGroup(name="Elements from overpass")
-    # the tags content needs to be reformatted
-    for lat, lon, tags in node_data:
-        tags_content = "<br>".join([f"<b>{k}</b>: {v}" for k, v in tags.items()])
-        fg.add_child(folium.Marker(location=[lat, lon], popup=tags_content))
-    return fg
+    if "elements" in data:
+        nodes = data["elements"]
+        node_data = [(node["lat"], node["lon"], node["tags"]) for node in nodes]
+        fg = folium.FeatureGroup(name="Elements from overpass")
+        # the tags content needs to be reformatted
+        for lat, lon, tags in node_data:
+            tags_content = "<br>".join([f"<b>{k}</b>: {v}" for k, v in tags.items()])
+            fg.add_child(folium.Marker(location=[lat, lon], popup=tags_content))
+        return fg
+    else:
+        return None
+
+
+def overpass_to_circles(data_str=""):
+    data = folium.GeoJson(data_str).data
+    # these are the nodes we want
+    if "elements" in data:
+        nodes = data["elements"]
+        circles = create_circles_from_nodes(nodes)
+        return circles
+    else:
+        return None
 
 
 def create_circles_from_nodes(nodes):
+    # Create a feature group
+    feature_group = folium.FeatureGroup(name="Nodes")
+
+    # Loop over each node in the 'elements' key of the JSON object
+    for node in nodes:  # Changed this line
+        # Get the latitude and longitude of the node
+        lat = node["lat"]
+        lon = node["lon"]
+
+        # Get the 'tags' dictionary
+        tags = node["tags"]
+
+        # Create a string for the hover text
+        hover_text = f"{tags.get('leisure', 'N/A')}: {tags.get('name', 'N/A')}\n"  # Add more details here
+
+        # Create a circle on the map for this key
+        circle = folium.Circle(
+            location=[lat, lon],
+            radius=5,  # Set the radius as needed
+            color="blue",  # Set a default color or use a function to determine color based on tags
+            fill=True,
+            fill_color="blue",  # Set a default color or use a function to determine color based on tags
+            fill_opacity=0.4,
+            tooltip=hover_text,
+        )
+
+        # Add the circle to the feature group
+        feature_group.add_child(circle)
+
+    return feature_group
+
+
+def create_circles_from_node_dict(nodes):
     # Loop over each node in the 'bar' key of the JSON object
     circles = []
     for tag_key in nodes.keys():
@@ -100,32 +146,31 @@ def calculate_zoom_level(bounds):
     return zoom_level
 
 
-def calculate_parameters_for_map(gdf=None, overpass_answer=None):
+def calculate_parameters_for_map(
+    overpass_answer=None,
+    gdf=None,
+):
     """
     takes an overpass answer string
     and returns:
     fg, center, zoom
     """
     default_bounds = [[52.5210821, 13.3942864], [52.525776, 13.4038867]]
-    if overpass_answer is None:
-        if gdf is not None:
-            south = gdf.loc[:, "bbox_south"].min()
-            north = gdf.loc[:, "bbox_north"].max()
-            west = gdf.loc[:, "bbox_west"].min()
-            east = gdf.loc[:, "bbox_east"].max()
-            bounds = [[south, west], [north, east]]
-            fg = None
-        else:
-            # default gdf
-            bounds = default_bounds
-            fg = None
+    fg = None
+    bounds = default_bounds
 
-    else:
+    if overpass_answer is not None:
         fg = overpass_to_feature_group(overpass_answer)
         bounds = fg.get_bounds()
         # Nasty hack for empty answers
         if bounds == [[None, None], [None, None]]:
             bounds = default_bounds
+    elif gdf is not None:
+        south = gdf.loc[:, "bbox_south"].min()
+        north = gdf.loc[:, "bbox_north"].max()
+        west = gdf.loc[:, "bbox_west"].min()
+        east = gdf.loc[:, "bbox_east"].max()
+        bounds = [[south, west], [north, east]]
 
     center = calculate_center(bounds)
     zoom = calculate_zoom_level(bounds)
@@ -183,11 +228,11 @@ def update_map():
         gdf = st.session_state.gdf
     else:
         gdf = None
-    if "circles" in st.session_state:
-        circles = st.session_state.circles
-    else:
-        circles = None
-    m = map_location(gdf, circles)
+    # if "circles" in st.session_state:
+    #    circles = st.session_state.circles
+    # else:
+    #    circles = None
+    m = map_location(gdf)
     return m
 
 

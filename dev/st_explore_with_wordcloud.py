@@ -104,7 +104,7 @@ def explore_data(st_data):
                     st.session_state.nodes, st.session_state.mask
                 )
                 ## Create colored circles for each of the above nodes
-                st.session_state.circles = st_functions.create_circles_from_nodes(
+                st.session_state.circles = st_functions.create_circles_from_node_dict(
                     st.session_state.selected_nodes
                 )
                 # Reset the checkbox
