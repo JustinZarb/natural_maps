@@ -35,19 +35,19 @@ st.subheader("Ask the map!")
 bot_left, bot_right = st.columns((1, 2), gap="small")
 
 with bot_left:
-    if "bot" in st.session_state:
-        gdf = st.session_state.gdf
-    else:
+    if "gdf" not in st.session_state:
         gdf = st_functions.name_to_gdf("Berlin")
-
-    st.markdown(gdf)
-    if "overpass_answer" in st.session_state:
-        overpass_answer = st.session_state.overpass_answer
     else:
-        overpass_answer = None
+        gdf = st.session_state.gdf
 
+    if "latest_query_result" in st.session_state:
+        latest_query_result = st.session_state.latest_query_result
+    else:
+        latest_query_result = None
+
+    st.markdown([gdf, latest_query_result])
     fg, center, zoom = st_functions.calculate_parameters_for_map(
-        gdf=gdf, overpass_answer=overpass_answer
+        gdf, overpass_answer=latest_query_result
     )
     m = folium.Map(height="50%")
 
@@ -111,10 +111,12 @@ with bot_right:
                 # Initialise and run the bot
                 st.session_state.bot.add_user_message(st.session_state.human_prompt)
                 st.session_state.bot.run_conversation_streamlit(
-                    num_iterations=5, temperature=0.2
+                    num_iterations=5, temperature=0.8
                 )
                 st.session_state.true_run = False
 
+if ("gdf" in st.session_state) and ("latest_query_result" in st.session_state):
+    st.markdown(st.session_state.gdf, st.session_state.latest_query_result)
 
 st.header("Debug")
 if "overpass_queries" in st.session_state:

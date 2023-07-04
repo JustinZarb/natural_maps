@@ -30,7 +30,7 @@ class ChatBot:
         # Store overpass queries in the class
         self.overpass_queries = {}
         self.latest_query_result = None
-        # Store gdf files in the class
+        st.session_state.latest_query_result = self.latest_query_result
         self.places_gdf = None
         st.session_state["gdf"] = self.places_gdf
         # Store transformed gdf files
@@ -50,7 +50,7 @@ class ChatBot:
                     - Always use Overpass built-in geocodeArea for locations like this {{geocodeArea:charlottenburg}}->.searchArea; 
                     - Use correct formatting, like using square brackets around nodes.
                     - If previous attempts fail:
-                        - try using alternative tags from the results of get_place_info. 
+                        - use key:value pairs from get_place-info eg. for supermarket use ["shop":"supermarket"]
                         - Try a different geocode eg. "Prenzlauer Berg" instead of "Prenzlauer Berg, Berlin"
                     """,
                 "parameters": {
@@ -110,23 +110,34 @@ class ChatBot:
             log_path = "~/naturalmaps_logs"
             self.log_path = os.path.expanduser(log_path)
 
-    def search_dict(self, d, substring):
-        search_words = [s.strip() for s in substring.split(",")]
-        print(search_words)
-        matches = {}
-        for s in search_words:
-            # Add key value pairs if a substring appears in either key or value. Value is a list of strings. return only the matching string
-            for key, value in d.items():
-                if s in key:
-                    matches[key] = value
-                else:
-                    for v in value:
-                        if s in v:
-                            if key in matches:
-                                matches[key].append(v)
-                            else:
-                                matches[key] = [v]
-        return matches
+    def overpass_query(self, human_prompt, generated_query):
+        """Run an overpass query
+        To improve chances of success, run this multiple times for simpler queries.
+        eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
+        in this example, a complex query is likely to fail, so it is better to run
+        a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg
+        """
+        overpass_url = "http://overpass-api.de/api/interpreter"
+
+        # Check that the query is properly formatted
+        cleaned_query = generated_query.replace("\n", "").replace("\\", "")
+        response = requests.get(overpass_url, params={"data": cleaned_query})
+        if response.content:
+            try:
+                data = response.json()
+                self.latest_query_result = data
+                st.session_state.latest_query_result = self.latest_query_result
+            except Exception as e:
+                data = {"error": "Overpass threw an error."}
+
+        if len(data) > 1000:
+            data = {
+                "warning": "The string is too long to return, but it will show up on a map next to the chat."
+            }
+
+        data_str = json.dumps(data)
+        self.log_overpass_query(human_prompt, generated_query, cleaned_query, data_str)
+        return data_str
 
     def get_place_info(self, place: str, tag_key: str = None):
         """Get GDF and area from a place name.
@@ -198,6 +209,24 @@ class ChatBot:
 
         tags = json.dumps(data)
         return tags
+
+    def search_dict(self, d, substring):
+        search_words = [s.strip() for s in substring.split(",")]
+        print(search_words)
+        matches = {}
+        for s in search_words:
+            # Add key value pairs if a substring appears in either key or value. Value is a list of strings. return only the matching string
+            for key, value in d.items():
+                if s in key:
+                    matches[key] = value
+                else:
+                    for v in value:
+                        if s in v:
+                            if key in matches:
+                                matches[key].append(v)
+                            else:
+                                matches[key] = [v]
+        return matches
 
     def save_to_json(self, file_path: str, this_run_name: str, log: dict):
         json_file_path = (
@@ -284,34 +313,6 @@ class ChatBot:
             "num_unique_names": len(unique_names),
             "special_features": special_features,
         }
-
-    def overpass_query(self, human_prompt, generated_query):
-        """Run an overpass query
-        To improve chances of success, run this multiple times for simpler queries.
-        eg. prompt: "Find bike parking near tech parks in Kreuzberg, Berlin"
-        in this example, a complex query is likely to fail, so it is better to run
-        a first query for bike parking in Kreuzberk and a second one for tech parks in Kreuzberg
-        """
-        overpass_url = "http://overpass-api.de/api/interpreter"
-
-        # Check that the query is properly formatted
-        cleaned_query = generated_query.replace("\n", "").replace("\\", "")
-        response = requests.get(overpass_url, params={"data": cleaned_query})
-        if response.content:
-            try:
-                data = response.json()
-                self.latest_query_result = data
-            except Exception as e:
-                data = {"error": str(e)}
-
-        if len(data) > 1000:
-            data = {
-                "warning": "The string is too long to return, but it will show up on a map next to the chat."
-            }
-
-        data_str = json.dumps(data)
-        self.log_overpass_query(human_prompt, generated_query, cleaned_query, data_str)
-        return data_str
 
     def add_system_message(self, content):
         self.messages.append({"role": "system", "content": content})
@@ -577,6 +578,9 @@ class ChatBot:
                     self.execute_function(response_message)
 
                 self.log(num_iterations)
+
+            st.session_state.gdf = self.places_gdf
+            st.session_state.latest_query_result = self.latest_query_result
             self.remaining_iterations -= 1
 
         if self.overpass_queries:
