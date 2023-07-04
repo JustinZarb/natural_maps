@@ -37,6 +37,40 @@ def overpass_to_feature_group(data_str=""):
     return fg
 
 
+def create_circles_from_nodes(nodes):
+    # Loop over each node in the 'bar' key of the JSON object
+    circles = []
+    for tag_key in nodes.keys():
+        color = word_to_color(tag_key)
+        for node in nodes[tag_key]:
+            # Get the latitude and longitude of the node
+            lat = node["lat"]
+            lon = node["lon"]
+
+            # Get the 'tags' dictionary
+            tags = node["tags"]
+
+            # Create a string for the hover text
+            hover_text = (
+                f"{tag_key}: {tags.get('name', 'N/A')}\n"  # Add more details here
+            )
+
+            # Create a circle on the map for this key
+            circles.append(
+                folium.Circle(
+                    location=[lat, lon],
+                    radius=5,  # Set the radius as needed
+                    color=color,
+                    fill=True,
+                    fill_color=color,
+                    fill_opacity=0.4,
+                    tooltip=hover_text,
+                )
+            )
+
+    return circles
+
+
 def calculate_center(bounds):
     center = ((bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2)
     return center
@@ -44,7 +78,6 @@ def calculate_center(bounds):
 
 def calculate_zoom_level(bounds):
     """Calculate zoom level for PYDECK
-
     Args:
         gdf (_type_): _description_
 
@@ -67,17 +100,33 @@ def calculate_zoom_level(bounds):
     return zoom_level
 
 
-def calculate_parameters_for_map(overpass_answer):
+def calculate_parameters_for_map(gdf=None, overpass_answer=None):
     """
     takes an overpass answer string
     and returns:
     fg, center, zoom
     """
-    fg = overpass_to_feature_group(overpass_answer)
-    # Nasty hack for empty answers
-    bounds = fg.get_bounds()
-    if bounds == [[None, None], [None, None]]:
-        bounds = [[52.5210821, 13.3942864], [52.525776, 13.4038867]]
+    default_bounds = [[52.5210821, 13.3942864], [52.525776, 13.4038867]]
+    if overpass_answer is None:
+        if gdf is not None:
+            south = gdf.loc[:, "bbox_south"].min()
+            north = gdf.loc[:, "bbox_north"].max()
+            west = gdf.loc[:, "bbox_west"].min()
+            east = gdf.loc[:, "bbox_east"].max()
+            bounds = [[south, west], [north, east]]
+            fg = None
+        else:
+            # default gdf
+            bounds = default_bounds
+            fg = None
+
+    else:
+        fg = overpass_to_feature_group(overpass_answer)
+        bounds = fg.get_bounds()
+        # Nasty hack for empty answers
+        if bounds == [[None, None], [None, None]]:
+            bounds = default_bounds
+
     center = calculate_center(bounds)
     zoom = calculate_zoom_level(bounds)
     return fg, center, zoom
@@ -99,7 +148,7 @@ def name_to_gdf(place_name):
 
 def map_location(gdf=None, feature_group=None):
     """Create a map object given an optional gdf and feature group
-
+    Do not use this feature_group attribute, because it cannot be updated.
     Args:
         gdf (_type_, optional): _description_. Defaults to None.
         feature_group (_type_, optional): _description_. Defaults to None.
@@ -109,6 +158,9 @@ def map_location(gdf=None, feature_group=None):
     """
     # Initialize the map
     m = folium.Map(height="50%")
+
+    if (gdf is None) and (feature_group) is None:
+        _, center, zoom = calculate_parameters_for_map()
 
     # Add the gdf to the map
     if gdf is not None:
@@ -355,7 +407,7 @@ def get_tag_keys():
 
 
 def get_points_from_bbox_and_tags(bbox: list, tags: dict):
-    """Run a Overpass query given bbox and tags"""
+    """OX has a get things from bbox already..."""
     # bbox = [S, W, N, E]
     west = bbox[1]
     south = bbox[0]
@@ -388,37 +440,3 @@ def filter_nodes_with_tags(nodes: dict, tags: dict):
             ]
 
     return selection
-
-
-def create_circles_from_nodes(json_obj):
-    # Loop over each node in the 'bar' key of the JSON object
-    circles = []
-    for tag_key in json_obj.keys():
-        color = word_to_color(tag_key)
-        for node in json_obj[tag_key]:
-            # Get the latitude and longitude of the node
-            lat = node["lat"]
-            lon = node["lon"]
-
-            # Get the 'tags' dictionary
-            tags = node["tags"]
-
-            # Create a string for the hover text
-            hover_text = (
-                f"{tag_key}: {tags.get('name', 'N/A')}\n"  # Add more details here
-            )
-
-            # Create a circle on the map for this key
-            circles.append(
-                folium.Circle(
-                    location=[lat, lon],
-                    radius=5,  # Set the radius as needed
-                    color=color,
-                    fill=True,
-                    fill_color=color,
-                    fill_opacity=0.4,
-                    tooltip=hover_text,
-                )
-            )
-
-    return circles

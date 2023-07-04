@@ -33,8 +33,29 @@ st.subheader("Ask the map!")
 
 bot_left, bot_right = st.columns((1, 2), gap="small")
 with bot_left:
-    m = st_functions.map_location(st_functions.name_to_gdf("berlin"))
-    st_folium(m, key="bot_map")
+    if "gdf" in st.session_state:
+        gdf = st.session_state.gdf
+    else:
+        gdf = None
+
+    if "overpass_answer" in st.session_state:
+        overpass_answer = st.session_state.overpass_answer
+    else:
+        overpass_answer = None
+
+    m = st_functions.map_location(gdf)
+    fg, center, zoom = st_functions.calculate_parameters_for_map(
+        gdf=gdf, overpass_answer=overpass_answer
+    )
+
+    st.markdown([gdf, fg, center, zoom])
+    st_folium(
+        m,
+        feature_group_to_add=fg,
+        center=center,
+        zoom=zoom,
+        key="bot_map",
+    )
 
 with bot_right:
     # Layout of input/response containers
@@ -90,8 +111,9 @@ with bot_right:
                 )
                 st.session_state.true_run = False
 
-st.session_state.gdf = st.session_state.bot.places_gdf
-st.markdown(st.session_state.gdf)
+if "bot" in st.session_state:
+    st.session_state.gdf = st.session_state.bot.places_gdf
+    st.markdown(st.session_state.gdf)
 
 
 st.header("Debug")

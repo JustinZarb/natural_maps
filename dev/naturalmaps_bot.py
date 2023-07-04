@@ -387,9 +387,9 @@ class ChatBot:
 
         self.add_function_message(function_name, function_response)
         self.add_system_message(
-            content=f"""Ask yourself whether function response contain enough information to answer step {self.current_step}? 
-            If yes: Mention that your next step is [step {self.current_step+1}] and if necessarry call the next function. If necessary, 
-            perform some simple arithmetic but always show your calculations.
+            content=f"""Report on the results from step {self.current_step}. If possible 
+            move on to [step {self.current_step+1}]. State which message you are working on.
+            If necessary, perform some simple arithmetic but always show your calculations.
             If not: Return a message saying the first attempt at step {self.current_step} failed and how you will try to overcome this problem.
             If you do not have an adequate function to run the next step or if some steps failed,
             skip to the final step. Provide a response explaining what worked and what didn't, and
@@ -686,6 +686,12 @@ class ChatBot:
                     # "user_feedback": self.user_feedback,
                 },
             )
+
+    def process_user_input(self, message):
+        self.add_user_message(
+            [m for m in st.session_state.messages if m["role"] == "user"][-1]["content"]
+        )
+        self.run_conversation_vanilla(temperature=0.1, num_iterations=10)
 
 
 if __name__ == "__main__":
