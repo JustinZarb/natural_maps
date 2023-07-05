@@ -7,6 +7,7 @@ import osmnx as ox
 import streamlit as st
 import re
 import pandas as pd
+import folium
 from .streamlit_functions import (
     gdf_data,
     get_nodes_with_tags_in_bbox,
@@ -75,15 +76,15 @@ class ChatBot:
             },
             {
                 "name": "get_place_info",
-                "description": """Gets tag keys of a place. provide at least two keywords to search. Values may be in the local language
+                "description": """Gets tag keys of a place. provide at least one keyword for each noun in the human prompt. Values may be in the local language
                 - Returns useful key:value pairs which can be used by overpass queries 
                 Args:
                     places (str(list)): A list of place names.
                 Returns:
                     data (str): A JSON string containing a dictionary with matching key:value pairs, projected_area and area_unit. 
                     - keys: a list of unique tag key:value pairs which match the words in the input string
-                    - projected_area: a dict of display_name:area for each of the locations in places_str
-                    - area_units: a dict of display_name:area_units for each of the locations in places_str
+                    - projected_area: a dict of display_name:area of "place" 
+                    - area_units: a dict of display_name: the units of projected_area
                         
                     """,
                 "parameters": {
@@ -95,7 +96,7 @@ class ChatBot:
                         },
                         "search_words": {
                             "type": "string",
-                            "description": """a string of comma separated words to search within the tags. Use this to look for synonyms or parts 
+                            "description": """all the nouns in the user message as a string. Use this to look for synonyms or parts 
                             of words which might improve your search. eg. given "fire, table" it will return {'emergency': ['fire_hydrant'],
                             'fire_hydrant': ['200', 'sidewalk', 'underground'], 'sport': ['table_tennis']}}""",
                         },
@@ -204,10 +205,17 @@ class ChatBot:
         ].apply(longest_distance_to_vertex)
 
         data = {}
-        if "search_words" in data and data["search_words"].strip() != "":
-            data["tag_matches"] = self.search_dict(self.unique_tags_dict, search_words)
-        else:
-            data["amenities"] = self.search_dict(self.unique_tags_dict, "amenity")
+        tag_matches = self.search_dict(self.unique_tags_dict, search_words)
+        for k, v in tag_matches.items():
+            tag_matches[k] = (
+                v if len(v) < 10 else v[:10] + [f"{len(v)-10} more values not shown"]
+            )
+        data["tag_matches"] = tag_matches
+        st.markdown(data)
+        # if "search_words" in data and data["search_words"].strip() != "":
+        # else:
+        # data["amenities"] = self.search_dict(self.unique_tags_dict, "amenity")
+
         data["area"] = dict(
             zip(self.places_gdf["display_name"], self.places_gdf["projected_area"])
         )
@@ -219,7 +227,8 @@ class ChatBot:
         return tags
 
     def search_dict(self, d, substring):
-        search_words = [s.strip() for s in substring.split(",")]
+        search_words = [s.strip() for s in substring.replace(",", " ").split()]
+
         print(search_words)
         matches = {}
         for s in search_words:
@@ -248,8 +257,11 @@ class ChatBot:
         # Check if the file exists
         if os.path.isfile(json_file_path):
             # If it exists, open it and load the JSON data
-            with open(json_file_path, "r") as f:
-                data = json.load(f)
+            try:
+                with open(json_file_path, "r") as f:
+                    data = json.load(f)
+            except:
+                data = {}
         else:
             # If it doesn't exist, create an empty dictionary
             data = {}
@@ -529,9 +541,12 @@ class ChatBot:
             self.save_to_json(
                 file_path=filepath,
                 this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
-                log={"temperature": self.temperature,
-            "valid_messages": "jsondecodeerror while logging"}
-            #print(f"JSONDecodeError: {str(e)}")
+                log={
+                    "temperature": self.temperature,
+                    "valid_messages": "jsondecodeerror while logging",
+                },
+            )
+            # print(f"JSONDecodeError: {str(e)}")
             st.markdown(f"JSONDecodeError while logging: {str(e)}")
             # Perform appropriate error handling or take necessary actions
 
@@ -581,44 +596,42 @@ class ChatBot:
 
             # Check if response includes a function call, and if yes, run it.
             for response_message in response_messages:
+                st.markdown(["response_message:", response_message])
                 # if the role is "assistant", write the content
-                try:
-                    if response_message.get("role") == "assistant":
-                        st.markdown(response_message)
-                        if response_message.get("content"):
-                            s = response_message.get("content")
-                        # Check for a plan (should only happen in the first response)
-                        if s.startswith("Here's the plan:"):
-                            # set class attribute
-                            self.plan = self.read_plan(s)
-                            # add to session state in streamlit
-                            st.session_state["plan"] = s
-                            if "planner_message" not in st.session_state:
-                                self.start_planner()
-                                st.session_state.planner_message.write(
-                                    st.session_state["plan"]
-                                )
 
-                        # Check if <End of Response>
-                        elif s.endswith("<final_response>"):
-                            final_response = True
-                            st.session_state["message_history"].append(
-                                s.replace("<final_response>", "")
+                if response_message.get("role") == "assistant":
+                    if response_message.get("content"):
+                        s = response_message.get("content")
+                    # Check for a plan (should only happen in the first response)
+                    if s.startswith("Here's the plan:"):
+                        # set class attribute
+                        self.plan = self.read_plan(s)
+                        # add to session state in streamlit
+                        st.session_state["plan"] = s
+                        if "planner_message" not in st.session_state:
+                            self.start_planner()
+                            st.session_state.planner_message.write(
+                                st.session_state["plan"]
                             )
 
-                        else:
-                            st.session_state["message_history"].append(s)
+                    # Check if <End of Response>
+                    elif s.endswith("<final_response>"):
+                        final_response = True
+                        st.session_state["message_history"].append(
+                            s.replace("<final_response>", "")
+                        )
 
-                        # Update current step (for the in-between system prompt)
-                        if "step" in s:
-                            match = re.search(r"\[step (\d+)\]", s)
-                            if match:
-                                self.current_step = int(match.group(1))
+                    else:
+                        st.session_state["message_history"].append(s)
 
-                        if response_message.get("function_call"):
-                            self.execute_function(response_message)
-                except:
-                    pass
+                    # Update current step (for the in-between system prompt)
+                    if "step" in s:
+                        match = re.search(r"\[step (\d+)\]", s)
+                        if match:
+                            self.current_step = int(match.group(1))
+
+                    if response_message.get("function_call"):
+                        self.execute_function(response_message)
 
                 if st.session_state.message_history:
                     if "assistant_message" not in st.session_state:
@@ -633,11 +646,25 @@ class ChatBot:
 
         if self.overpass_queries:
             st.session_state["overpass_queries"] = self.overpass_queries
+
+        # update the map attributes
+        if self.latest_query_result is not None:
             (
                 st.session_state.feature_group,
                 st.session_state.center,
                 st.session_state.zoom,
             ) = calculate_parameters_for_map(overpass_answer=self.latest_query_result)
+        """else:
+            pass
+            (
+                st.session_state.feature_group,
+                st.session_state.center,
+                st.session_state.zoom,
+            ) = calculate_parameters_for_map(
+                overpass_answer=folium.GeoJson(self.places_gdf)
+            )"""
+        # add the gd
+        # st.session_state.feature_group.add_child(folium.GeoJson(self.places_gdf))
 
         return response_message
 
