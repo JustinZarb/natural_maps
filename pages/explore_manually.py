@@ -13,26 +13,26 @@ from dev.st_explore_with_wordcloud import explore_data
 
 
 # Explore the data manually
-with st.expander("Manually explore a map area"):
-    # Text input for place name
-    place_name = st.text_input(
-        "Location",
-        value="Schöneberg",
-    )
-    st.session_state.place_name = place_name
-    st.session_state.gdf = st_functions.name_to_gdf(place_name)
 
-    # Columns
-    explore_left, explore_right = st.columns((1, 2), gap="small")
-    # Left: Map
-    with explore_left:
-        m = st_functions.update_map()
-        if "circles" in st.session_state:
-            circles = st.session_state.circles
-        else:
-            circles = None
-        st_data = st_folium(m)
+# Text input for place name
+place_name = st.text_input(
+    "Location",
+    value="Museum Island",
+)
+st.session_state.place_name = place_name
+st.session_state.gdf = st_functions.name_to_gdf(place_name)
 
-    # Right: Chat/Explore
-    with explore_right:
-        explore_data(st_data)
+# Columns
+explore_left, explore_right = st.columns((1, 2), gap="small")
+# Left: Map
+with explore_left:
+    m = st_functions.update_map()
+    if "circles" in st.session_state:
+        circles = st.session_state.circles
+    else:
+        circles = None
+    st_data = st_folium(m)
+
+# Right: Chat/Explore
+with explore_right:
+    explore_data(st_data)

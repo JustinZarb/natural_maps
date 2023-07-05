@@ -73,56 +73,60 @@ st.markdown(
 Justin Zarb, Pasquale Zito"""
 )
 
-# Layout of input/response containers
-map_container = st.container()
-input_container = st.container()
-response_container = st.container()
+left, right = st.columns((1, 2), gap="small")
 
-with map_container:
+
+with left:
+    # Layout of input/response containers
+    map_container = st.container()
     m = folium.Map()
     st_data = st_folium(
         m,
         feature_group_to_add=st.session_state.feature_group,
         center=st.session_state.center,
         zoom=st.session_state.zoom,
-        width=1200,
+        width=400,
         height=500,
     )
     st.session_state.bbox = st_functions.bbox_from_st_data(st_data)
 
-## Applying the user input box
-with input_container:
-    input = get_text()
-    if ("user_input" in st.session_state) and (st.session_state.user_input == input):
-        pass
-    else:
-        st.session_state.user_input = input
+with right:
+    input_container = st.container()
+    response_container = st.container()
+    ## Applying the user input box
+    with input_container:
+        input = get_text()
+        if ("user_input" in st.session_state) and (
+            st.session_state.user_input == input
+        ):
+            pass
+        else:
+            st.session_state.user_input = input
 
-    st.checkbox(
-        "Run plan and execute-style agent using GPT 3.5",
-        on_change=toggle_run,
-        key="run_checkbox",
-    )
+        st.checkbox(
+            "Run plan and execute-style agent using GPT 3.5",
+            on_change=toggle_run,
+            key="run_checkbox",
+        )
 
-with response_container:
-    if st.session_state.human_prompt:
-        st.session_state.bot = ChatBot(openai_api_key=OPENAI_API_KEY)
-        if ("true_run" in st.session_state) and (st.session_state.true_run):
-            # display the user's message in the chat
-            user_message = st.chat_message("user", avatar="👤")
-            user_message.write(st.session_state.human_prompt)
-            # Initialise and run the bot
-            st.session_state.bot.add_user_message(st.session_state.human_prompt)
-            st.session_state.bot.run_conversation_streamlit(
-                num_iterations=8, temperature=0.2
-            )
+    with response_container:
+        if st.session_state.human_prompt:
+            st.session_state.bot = ChatBot(openai_api_key=OPENAI_API_KEY)
+            if ("true_run" in st.session_state) and (st.session_state.true_run):
+                # display the user's message in the chat
+                user_message = st.chat_message("user", avatar="👤")
+                user_message.write(st.session_state.human_prompt)
+                # Initialise and run the bot
+                st.session_state.bot.add_user_message(st.session_state.human_prompt)
+                st.session_state.bot.run_conversation_streamlit(
+                    num_iterations=8, temperature=0.2
+                )
 
-            # update parameters for map
-            st.session_state.true_run = False
+                # update parameters for map
+                st.session_state.true_run = False
 
-
-if "gdf" in st.session_state:
-    st.markdown(st.session_state.gdf)
+    if "gdf" in st.session_state:
+        st.markdown(st.session_state.gdf)
 
 
 st.markdown(

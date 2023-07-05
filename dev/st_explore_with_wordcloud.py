@@ -56,7 +56,7 @@ def explore_data(st_data):
                 st.session_state["st_data"] = st_data
                 # get bbox
                 st.session_state["bbox"] = st_functions.bbox_from_st_data(
-                    st.session_state.st_data["bounds"]
+                    st.session_state.st_data
                 )
                 # query all nodes with tags in bbox
                 st.session_state["nodes"] = st_functions.get_nodes_with_tags_in_bbox(
@@ -107,7 +107,6 @@ def explore_data(st_data):
                 st.session_state.circles = st_functions.create_circles_from_node_dict(
                     st.session_state.selected_nodes
                 )
-                st.markdown(st.session_state.circles)
                 # Reset the checkbox
                 st.session_state.add_selection = False
                 st_functions.update_map()

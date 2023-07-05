@@ -84,8 +84,7 @@ class ChatBot:
                     - keys: a list of unique tag key:value pairs which match the words in the input string
                     - projected_area: a dict of display_name:area for each of the locations in places_str
                     - area_units: a dict of display_name:area_units for each of the locations in places_str
-                 
-                Convert from m² to km² when returning information about large areas.          
+                        
                     """,
                 "parameters": {
                     "type": "object",
@@ -101,7 +100,7 @@ class ChatBot:
                             'fire_hydrant': ['200', 'sidewalk', 'underground'], 'sport': ['table_tennis']}}""",
                         },
                     },
-                    "required": ["place", "tag_key"],
+                    "required": ["place", "search_words"],
                 },
             },
         ]
@@ -205,7 +204,7 @@ class ChatBot:
         ].apply(longest_distance_to_vertex)
 
         data = {}
-        if "tag_key" in data and data["tag_key"].strip() != "":
+        if "search_words" in data and data["search_words"].strip() != "":
             data["tag_matches"] = self.search_dict(self.unique_tags_dict, search_words)
         else:
             data["amenities"] = self.search_dict(self.unique_tags_dict, "amenity")
@@ -527,7 +526,12 @@ class ChatBot:
             )
 
         except json.JSONDecodeError as e:
-            print(f"JSONDecodeError: {str(e)}")
+            self.save_to_json(
+                file_path=filepath,
+                this_run_name=f"iteration {num_iterations-self.remaining_iterations}/{num_iterations} step {self.current_step}",
+                log={"temperature": self.temperature,
+            "valid_messages": "jsondecodeerror while logging"}
+            #print(f"JSONDecodeError: {str(e)}")
             st.markdown(f"JSONDecodeError while logging: {str(e)}")
             # Perform appropriate error handling or take necessary actions
 
@@ -580,6 +584,7 @@ class ChatBot:
                 # if the role is "assistant", write the content
                 try:
                     if response_message.get("role") == "assistant":
+                        st.markdown(response_message)
                         if response_message.get("content"):
                             s = response_message.get("content")
                         # Check for a plan (should only happen in the first response)

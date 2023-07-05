@@ -55,14 +55,15 @@ openai.api_key = OPENAI_API_KEY  # st.secrets["OPENAI_API_KEY"]
 # and the method .process_user_input(prompt).
 # Currently this convention is not satisfied by the agent
 
+
+st.title("Natural Maps")
+st.subheader("Testing a simple chain")
 # Model selection. Should be changed to something more elegant...
 model_choice = st.radio(
     "Select model 👉",
     key="model",
     options=["Simple chain, gpt-3.5", "Agent, gpt-3.5"],
 )
-st.title("Natural Maps")
-
 if model_choice == "Simple chain, gpt-3.5":
     model = OverpassQueryChain(OPENAI_API_KEY)
 else:
@@ -76,7 +77,6 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-st.markdown(st.session_state.messages)
 
 if prompt := st.chat_input("What is up?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
