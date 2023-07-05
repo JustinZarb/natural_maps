@@ -116,7 +116,7 @@ def create_circles_from_node_dict(nodes):
 
 
 def calculate_center(bounds):
-    center = ((bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2)
+    center = [(bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2]
     return center
 
 
@@ -148,7 +148,50 @@ def calculate_zoom_level(bounds):
     return zoom_level
 
 
-def calculate_parameters_for_map(
+def calculate_parameters_for_map(overpass_answer=None, gdf=None):
+    """
+    takes an overpass answer string or a geodataframe
+    and returns:
+    fg, center, zoom
+    """
+    default_bounds = [[52.5210821, 13.3942864], [52.525776, 13.4038867]]
+    fg = None
+    bounds = default_bounds
+
+    if overpass_answer is not None:
+        fg = overpass_to_circles(overpass_answer)
+        bounds = fg.get_bounds()
+        # Nasty hack for empty answers
+        if bounds == [[None, None], [None, None]]:
+            bounds = default_bounds
+    elif gdf is not None:
+        # Drop missing geometries
+        gdf = gdf[gdf["geometry"].notna()]
+
+        # Repair invalid geometries
+        gdf["geometry"] = gdf["geometry"].buffer(0)
+
+        # Convert to GeoJSON
+        geojson_data = json.loads(gdf.to_json())
+
+        # Calculate bounds from GeoJSON
+        if geojson_data["features"]:
+            all_coords = [
+                feat["geometry"]["coordinates"] for feat in geojson_data["features"]
+            ]
+            lats = [coord[1] for coords in all_coords for coord in coords]
+            lons = [coord[0] for coords in all_coords for coord in coords]
+            bounds = [[min(lats), min(lons)], [max(lats), max(lons)]]
+        else:
+            bounds = default_bounds
+        fg = geojson_data
+
+    center = calculate_center(bounds)
+    zoom = calculate_zoom_level(bounds)
+    return fg, center, zoom
+
+
+def calculate_parameters_for_map_old(
     overpass_answer=None,
     gdf=None,
 ):
@@ -168,6 +211,7 @@ def calculate_parameters_for_map(
         if bounds == [[None, None], [None, None]]:
             bounds = default_bounds
     elif gdf is not None:
+        print(gdf)
         south = gdf.loc[:, "bbox_south"].min()
         north = gdf.loc[:, "bbox_north"].max()
         west = gdf.loc[:, "bbox_west"].min()

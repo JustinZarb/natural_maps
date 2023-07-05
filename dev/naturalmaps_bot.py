@@ -49,13 +49,16 @@ class ChatBot:
         self.function_metadata = [
             {
                 "name": "overpass_query",
-                "description": """Run an overpass QL query.
+                "description": """Run an overpass QL query. Examples:
+                '[out:json][timeout:25];area[name='Neukölln']->.searchArea;node(area.searchArea)[shop=supermarket];out;'
+                '[out:json][timeout:25];area[name="Schöneberg"]->.searchArea;(node[shop=supermarket](area.searchArea););out;'
+                '[out:json][timeout:25];area[name="Marzahn-Hellersdorf"];node(area)["wheelchair"="yes"]["shop"];out;'
                     Instructions:
                     - Keep the queries simple and specific.
                     - Always use Overpass built-in geocodeArea for locations like this {{geocodeArea:charlottenburg}}->.searchArea; 
                     - Use correct formatting, like using square brackets around nodes.
                     - If previous attempts fail:
-                        - Try a different geocode eg. "Prenzlauer Berg" instead of "Prenzlauer Berg, Berlin"
+                        - make it simpler
                     """,
                 "parameters": {
                     "type": "object",
@@ -76,8 +79,9 @@ class ChatBot:
             },
             {
                 "name": "get_place_info",
-                "description": """Gets tag keys of a place. provide at least one keyword for each noun in the human prompt. Values may be in the local language
-                - Returns useful key:value pairs which can be used by overpass queries 
+                "description": """Gets tag keys of a place. provide at least one keyword for each noun in the human prompt. 
+                .Values may be in the local language. Returns useful key:value pairs which can be used by overpass queries 
+                Do not use new lines as it causes errors, eg. 'input': '{\n "place": "Pankow",\n "search_words": "child, park"\n}'} is not of type 'string' 
                 Args:
                     places (str(list)): A list of place names.
                 Returns:
@@ -134,15 +138,15 @@ class ChatBot:
                 )
                 return json.dumps({"error": "Raised an error"})
 
+        data_str = json.dumps(data)
         if len(data) > 1000:
             # return a summary of the data and some features
-            return json.dumps(
+            data_str = json.dumps(
                 {
-                    "success": "but the data cannot be returned to the llm. it will be displayed."
+                    "success": "the query returned so much data and we are working on summarizing it. For now it will just be displayed."
                 }
             )
 
-        data_str = json.dumps(data)
         self.log_overpass_query(human_prompt, generated_query, cleaned_query, data_str)
         return data_str
 
@@ -206,12 +210,15 @@ class ChatBot:
 
         data = {}
         tag_matches = self.search_dict(self.unique_tags_dict, search_words)
+        tag_matches_to_keep = {}
         for k, v in tag_matches.items():
-            tag_matches[k] = (
-                v if len(v) < 10 else v[:10] + [f"{len(v)-10} more values not shown"]
-            )
-        data["tag_matches"] = tag_matches
-        st.markdown(data)
+            if len(v) < 10:
+                tag_matches_to_keep[k] = v
+            else:
+                tag_matches_to_keep[k] = ["too many values"]
+
+        data["tag_matches"] = tag_matches_to_keep
+        # st.markdown(data)
         # if "search_words" in data and data["search_words"].strip() != "":
         # else:
         # data["amenities"] = self.search_dict(self.unique_tags_dict, "amenity")
@@ -596,13 +603,17 @@ class ChatBot:
 
             # Check if response includes a function call, and if yes, run it.
             for response_message in response_messages:
-                st.markdown(["response_message:", response_message])
                 # if the role is "assistant", write the content
-
-                if response_message.get("role") == "assistant":
-                    if response_message.get("content"):
+                if (
+                    isinstance(response_message, dict)
+                    and response_message.get("role") == "assistant"
+                ):
+                    if isinstance(response_message, dict) and response_message.get(
+                        "content"
+                    ):
                         s = response_message.get("content")
                     # Check for a plan (should only happen in the first response)
+
                     if s.startswith("Here's the plan:"):
                         # set class attribute
                         self.plan = self.read_plan(s)
@@ -615,7 +626,7 @@ class ChatBot:
                             )
 
                     # Check if <End of Response>
-                    elif s.endswith("<final_response>"):
+                    elif "final_response" in s:
                         final_response = True
                         st.session_state["message_history"].append(
                             s.replace("<final_response>", "")
@@ -654,17 +665,6 @@ class ChatBot:
                 st.session_state.center,
                 st.session_state.zoom,
             ) = calculate_parameters_for_map(overpass_answer=self.latest_query_result)
-        """else:
-            pass
-            (
-                st.session_state.feature_group,
-                st.session_state.center,
-                st.session_state.zoom,
-            ) = calculate_parameters_for_map(
-                overpass_answer=folium.GeoJson(self.places_gdf)
-            )"""
-        # add the gd
-        # st.session_state.feature_group.add_child(folium.GeoJson(self.places_gdf))
 
         return response_message
 
@@ -718,8 +718,13 @@ class ChatBot:
             # Check if response includes a function call, and if yes, run it.
             for response_message in response_messages:
                 # if the role is "assistant", write the content
-                if response_message.get("role") == "assistant":
-                    if response_message.get("content"):
+                if (
+                    isinstance(response_message, dict)
+                    and response_message.get("role") == "assistant"
+                ):
+                    if isinstance(response_message, dict) and response_message.get(
+                        "content"
+                    ):
                         s = response_message.get("content")
                         print(s)
                         # Check for a plan (should only happen in the first response)

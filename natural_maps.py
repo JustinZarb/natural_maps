@@ -79,8 +79,10 @@ Justin Zarb, Pasquale Zito"""
 
 # Layout of input/response containers
 map_container = st.container()
+
 with map_container:
     m = folium.Map()
+
     st_folium(
         m,
         feature_group_to_add=st.session_state.feature_group,
@@ -92,6 +94,7 @@ with map_container:
 
 input_container = st.container()
 response_container = st.container()
+
 ## Applying the user input box
 with input_container:
     input = get_text()
@@ -116,24 +119,10 @@ with response_container:
             # Initialise and run the bot
             st.session_state.bot.add_user_message(st.session_state.human_prompt)
             st.session_state.bot.run_conversation_streamlit(
-                num_iterations=8, temperature=0.2
+                num_iterations=8, temperature=0
             )
-
-            # update the map attributes
-            if st.session_state.bot.latest_query_result is not None:
-                (
-                    st.session_state.feature_group,
-                    st.session_state.center,
-                    st.session_state.zoom,
-                ) = st_functions.calculate_parameters_for_map(
-                    overpass_answer=st.session_state.bot.latest_query_result
-                )
 
             # update parameters for map
             st.session_state.true_run = False
 
-if "gdf" in st.session_state:
-    st.markdown(["gdf", st.session_state.gdf])
-
-
-# st.session_state.bbox = st_functions.bbox_from_st_data(st_data)
+    # st.session_state.bbox = st_functions.bbox_from_st_data(st_data)

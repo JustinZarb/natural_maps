@@ -1,7 +1,7 @@
 promptType,prompt,Output on map,Interesting metrics
 Basic Query,Find all the ping pong tables in Monbijoupark,"points, one color",
 Basic Query,Find all the public toilets in Monbijoupark,"points, one color",
-Basic Query,"Find bike parking near tech parks in Kreuzberg, Berlin","points and areas, two colors",
+Basic Query,"Find bike parking near spätis in Kreuzberg, Berlin","points and areas, two colors",
 Basic Query,"Where can I get a pizza in Neukölln, Berlin","points, one color",
 Basic Query,"What can you tell me about libraries in Mitte, Berlin","points, one color",
 Basic Query,"Show me benches and picnic areas in Grunewald, Berlin",paths,
@@ -20,7 +20,6 @@ Basic Query,"Find child-friendly parks in Pankow, Berlin","points, one color",
 Basic Query,What is the current distribution of EV charging stations in Kreuzberg?,points and/or heatmap,
 Basic Query,What is the current distribution of public art in Kreuzberg?,points and/or heatmap,
 Basic Query,What is the current distribution of wellness facilities in Kreuzberg?,points and/or heatmap,
-Basic Query,What is the current distribution of bike lanes in Kreuzberg?,paths and/or heatmap,
 Climate Resilience,How are EV charging stations in Mitte distributed in relation to flood-prone areas?,points and heatmap,
 Climate Resilience,How are fountains in Mitte distributed in relation to areas prone to heat waves?,points and heatmap,"fountains per km² in high, medium and low heat risk areas"
 Climate Resilience,How are wellness facilities in Mitte distributed in relation to flood-prone areas?,points and heatmap,
