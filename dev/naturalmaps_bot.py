@@ -550,7 +550,7 @@ class ChatBot:
         self.add_system_message(
             content=f"""Let's first understand the problem and devise 
                 break it down into simple steps. Fore example, if asked "Find child-friendly parks in Pankow, Berlin",
-                first search for parks in Pankow, then check tag keys and values for child-friendliness. 
+                first run get_place_info for Pankow passing keywords such as child, park, play, sand, etc. for child-friendliness. 
                 Please output the plan starting with the header 'Here's the plan:' and then followed by a concise 
                 numbered list of steps. Each step should correspond to a 
                 specific function from the following list: {self.functions.keys()}. 
@@ -622,16 +622,15 @@ class ChatBot:
 
                 self.log(num_iterations)
 
+            self.remaining_iterations -= 1
+
+        if self.overpass_queries:
+            st.session_state["overpass_queries"] = self.overpass_queries
             (
                 st.session_state.feature_group,
                 st.session_state.center,
                 st.session_state.zoom,
             ) = calculate_parameters_for_map(overpass_answer=self.latest_query_result)
-
-            self.remaining_iterations -= 1
-
-        if self.overpass_queries:
-            st.session_state["overpass_queries"] = self.overpass_queries
 
         return response_message
 
