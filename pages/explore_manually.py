@@ -1,4 +1,12 @@
 import streamlit as st
+
+st.set_page_config(
+    page_title=None,
+    page_icon=None,
+    layout="wide",
+    initial_sidebar_state="collapsed",
+    menu_items=None,
+)
 from streamlit_folium import st_folium
 import dev.streamlit_functions as st_functions
 from dev.st_explore_with_wordcloud import explore_data
@@ -9,7 +17,7 @@ with st.expander("Manually explore a map area"):
     # Text input for place name
     place_name = st.text_input(
         "Location",
-        value="Berlin",
+        value="Schöneberg",
     )
     st.session_state.place_name = place_name
     st.session_state.gdf = st_functions.name_to_gdf(place_name)

@@ -19,6 +19,168 @@ from geopandas import GeoDataFrame
 import hashlib
 
 
+def overpass_to_feature_group(data_str=""):
+    """Takes the  result of an overpass query in string form as input.
+    Selects 'elements' as nodes. Creates a folium.FeatureGroup.
+    Adds a Marker for each node,  with coordinates and a tags dictionary."""
+    # need to convert the string into a dictionary first.
+    data = folium.GeoJson(data_str).data
+    # these are the nodes we want
+    if "elements" in data:
+        elements = data["elements"]
+        fg = folium.FeatureGroup(name="Elements from overpass")
+        for node in elements:
+            st.markdown(node)
+            node_data = [(node["lat"], node["lon"], node["tags"])]
+            # the tags content needs to be reformatted
+            for lat, lon, tags in node_data:
+                tags_content = "<br>".join(
+                    [f"<b>{k}</b>: {v}" for k, v in tags.items()]
+                )
+                fg.add_child(folium.Marker(location=[lat, lon], popup=tags_content))
+        return fg
+    else:
+        return None
+
+
+def overpass_to_circles(data_str=""):
+    data = folium.GeoJson(data_str).data
+    # these are the nodes we want
+    if "elements" in data:
+        elements = data["elements"]
+        circles = create_circles_from_nodes(elements)
+        return circles
+    else:
+        return None
+
+
+def create_circles_from_nodes(nodes):
+    # Create a feature group
+    feature_group = folium.FeatureGroup(name="circles")
+    for node in nodes:
+        # Loop over each node in the 'elements' key of the JSON object
+        if node["type"] == "node":
+            st.markdown(node)
+            node_data = [(node["lat"], node["lon"], node["tags"])]
+            # the tags content needs to be reformatted
+            for lat, lon, tags in node_data:
+                tags_content = "<br>".join(
+                    [f"<b>{k}</b>: {v}" for k, v in tags.items()]
+                )
+                circle = folium.Circle(
+                    location=[lat, lon],
+                    radius=5,  # Set the radius as needed
+                    color="blue",  # Set a default color or use a function to determine color based on tags
+                    fill=True,
+                    fill_color="blue",  # Set a default color or use a function to determine color based on tags
+                    fill_opacity=0.4,
+                    tooltip=tags_content,
+                )
+                # Add the circle to the feature group
+                feature_group.add_child(circle)
+        elif node["type"] == "area":
+            pass
+    return feature_group
+
+
+def create_circles_from_node_dict(nodes):
+    # Loop over each node in the 'bar' key of the JSON object
+    circles = []
+    for tag_key in nodes.keys():
+        color = word_to_color(tag_key)
+        for node in nodes[tag_key]:
+            # Get the latitude and longitude of the node
+            lat = node["lat"]
+            lon = node["lon"]
+
+            # Get the 'tags' dictionary
+            tags = node["tags"]
+
+            # Create a string for the hover text
+            hover_text = (
+                f"{tag_key}: {tags.get('name', 'N/A')}\n"  # Add more details here
+            )
+
+            # Create a circle on the map for this key
+            circles.append(
+                folium.Circle(
+                    location=[lat, lon],
+                    radius=10,  # Set the radius as needed
+                    color=color,
+                    fill=True,
+                    fill_color=color,
+                    fill_opacity=0.4,
+                    tooltip=hover_text,
+                )
+            )
+
+    return circles
+
+
+def calculate_center(bounds):
+    center = ((bounds[0][0] + bounds[1][0]) / 2, (bounds[0][1] + bounds[1][1]) / 2)
+    return center
+
+
+def calculate_zoom_level(bounds):
+    """Calculate zoom level for PYDECK
+    Args:
+        gdf (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
+    # Get the bounds of the geometry
+    try:
+        minx, miny, maxx, maxy = bounds[0][0], bounds[0][1], bounds[1][0], bounds[1][1]
+
+        # Calculate the diagonal length of the bounding box
+        diagonal_length = sqrt((maxx - minx) ** 2 + (maxy - miny) ** 2)
+
+        # Calculate a base zoom level based on the diagonal length
+        # This is a rough estimate and may need to be adjusted to fit your specific needs
+        base_zoom = 9 - log(maxx - minx)
+
+        # Make sure the zoom level is within the valid range (0-22)
+        zoom_level = max(0, min(base_zoom, 22))
+
+    except:
+        # st.markdown(["probably a math error. bounds:",  bounds,])
+        zoom_level = 17
+    return zoom_level
+
+
+def calculate_parameters_for_map(
+    overpass_answer=None,
+    gdf=None,
+):
+    """
+    takes an overpass answer string
+    and returns:
+    fg, center, zoom
+    """
+    default_bounds = [[52.5210821, 13.3942864], [52.525776, 13.4038867]]
+    fg = None
+    bounds = default_bounds
+
+    if overpass_answer is not None:
+        fg = overpass_to_circles(overpass_answer)
+        bounds = fg.get_bounds()
+        # Nasty hack for empty answers
+        if bounds == [[None, None], [None, None]]:
+            bounds = default_bounds
+    elif gdf is not None:
+        south = gdf.loc[:, "bbox_south"].min()
+        north = gdf.loc[:, "bbox_north"].max()
+        west = gdf.loc[:, "bbox_west"].min()
+        east = gdf.loc[:, "bbox_east"].max()
+        bounds = [[south, west], [north, east]]
+
+    center = calculate_center(bounds)
+    zoom = calculate_zoom_level(bounds)
+    return fg, center, zoom
+
+
 def name_to_gdf(place_name):
     """Return a Pandas.GeoDataframe object for a name if Nominatim can find it
 
@@ -33,9 +195,9 @@ def name_to_gdf(place_name):
     return gdf
 
 
-def map_location(gdf=None, feature_group=None, highlight_location=True):
+def map_location(gdf=None, feature_group=None):
     """Create a map object given an optional gdf and feature group
-
+    Do not use this feature_group attribute, because it cannot be updated.
     Args:
         gdf (_type_, optional): _description_. Defaults to None.
         feature_group (_type_, optional): _description_. Defaults to None.
@@ -46,10 +208,12 @@ def map_location(gdf=None, feature_group=None, highlight_location=True):
     # Initialize the map
     m = folium.Map(height="50%")
 
+    if (gdf is None) and (feature_group) is None:
+        _, center, zoom = calculate_parameters_for_map()
+
     # Add the gdf to the map
-    if highlight_location:
-        if gdf is not None:
-            folium.GeoJson(gdf).add_to(m)
+    if gdf is not None:
+        folium.GeoJson(gdf).add_to(m)
 
     # Add the feature group(s) to the map and update the bounds
     if feature_group is not None:
@@ -97,11 +261,12 @@ def overpass_query(query):
     return data
 
 
-def bbox_from_st_data(bounds):
+def bbox_from_st_data(st_data):
     """
-    Return a tuple of coordinates from the "bounds" object returned by streamlit_folium
+    Return a list of coordinates [W, S, N, E]
     bounds = {'_southWest': {'lat': 52.494239118767496, 'lng': 13.329420089721681}, '_northEast': {'lat': 52.50338318818063, 'lng': 13.344976902008058}}
     """
+    bounds = st_data["bounds"]
     bbox = [
         bounds["_southWest"]["lat"],
         bounds["_southWest"]["lng"],
@@ -109,28 +274,6 @@ def bbox_from_st_data(bounds):
         bounds["_northEast"]["lng"],
     ]
     return bbox
-
-
-def gdf_data_old(gdf):
-    """Get the area of a polygon
-    can take a gdf with multiple rows"""
-    places_dict = {}
-    for index, row in gdf.iterrows():
-        print(index)
-        utm_zone = utm.latlon_to_zone_number(
-            gdf.loc[[index], "lat"].values[0], gdf.loc[[index], "lon"].values[0]
-        )
-        south = gdf.loc[[index], "lat"].values[0] < 0
-        crs = CRS.from_dict({"proj": "utm", "zone": utm_zone, "south": south})
-        epsg_code = crs.to_authority()[1]
-        unit = list({ai.unit_name for ai in crs.axis_info})[0]
-        gdf_projected = gdf.loc[[index], :].to_crs(epsg_code)
-        area = gdf_projected.area.values[0]
-        places_dict[row["display_name"]] = {
-            "area": area,
-            "unit": unit,
-        }
-    return places_dict
 
 
 def gdf_data(row, original_crs):
@@ -176,18 +319,54 @@ def longest_distance_to_vertex(geometry):
     return max_distance
 
 
-def count_tag_frequency(datasets, tag=None):
+def add_value(tag_frequency, t, v):
+    if isinstance(v, str):
+        values = v.split(";")
+        for value in values:
+            if t in tag_frequency:
+                if (
+                    value not in tag_frequency[t]
+                ):  # Check if value is not already in the list
+                    tag_frequency[t].append(value)
+            else:
+                tag_frequency[t] = [value]
+    else:
+        if t in tag_frequency:
+            if (
+                str(v) not in tag_frequency[t]
+            ):  # Check if value is not already in the list
+                tag_frequency[t].append(str(v))
+        else:
+            tag_frequency[t] = [str(v)]
+    return tag_frequency
+
+
+def count_tag_frequency_in_nodes(nodes, tag=None):
     tag_frequency = {}
 
-    # Combine elements of all datasets into a single list
-    elements = [element for data in datasets for element in data["elements"]]
-
-    for element in elements:
-        if "tags" in element:
-            for t, v in element["tags"].items():
+    for node in nodes:
+        if "tags" in node:
+            for t, v in node["tags"].items():
                 # Split the tag on the first separator
                 t = t.split(":")[0]
 
+                if tag is None:
+                    # Collecting unique values for each tag
+                    tag_frequency = add_value(tag_frequency, t, v)
+                else:
+                    # Collecting unique values for a specific tag
+                    if t == tag:
+                        tag_frequency = add_value(tag_frequency, t, v)
+
+    return tag_frequency
+
+
+def count_tag_frequency_old(data, tag=None):
+    tag_frequency = {}
+
+    for element in data["elements"]:
+        if "tags" in element:
+            for t, v in element["tags"].items():
                 if tag is None:
                     # Counting tag frequency
                     if t in tag_frequency:
@@ -202,45 +381,13 @@ def count_tag_frequency(datasets, tag=None):
                         else:
                             tag_frequency[v] = 1
 
-    # Sort the dictionary by its values in descending order
-    tag_frequency = {
-        k: v
-        for k, v in sorted(
-            tag_frequency.items(), key=lambda item: item[1], reverse=True
-        )
-    }
-
     return tag_frequency
 
 
-def count_tag_frequency_new(datasets):
-    unique_tag_values = {}
+def count_tag_frequency(datasets, tag=None):
     # Combine elements of all datasets into a single list
-    elements = [element for data in datasets for element in data["elements"]]
-
-    for element in elements:
-        if "tags" in element:
-            for t, v in element["tags"].items():
-                # Split the tag on the first separator
-                t = t.split(":")[0]
-                # Counting tag frequency
-                if t in unique_tag_values:
-                    if v in unique_tag_values[t]:
-                        pass
-                    else:
-                        unique_tag_values[t].add(v)
-                else:
-                    unique_tag_values[t] = set(v)
-
-    # Sort the dictionary by its values in descending order
-    unique_tag_values = {
-        k: v
-        for k, v in sorted(
-            unique_tag_values.items(), key=lambda item: item[1], reverse=True
-        )
-    }
-
-    return unique_tag_values
+    nodes = [element for data in datasets for element in data["elements"]]
+    return count_tag_frequency_in_nodes(nodes, tag)
 
 
 def count_unique_values(datasets, tag=None):
@@ -338,7 +485,7 @@ def get_tag_keys():
 
 
 def get_points_from_bbox_and_tags(bbox: list, tags: dict):
-    """Run a Overpass query given bbox and tags"""
+    """OX has a get things from bbox already..."""
     # bbox = [S, W, N, E]
     west = bbox[1]
     south = bbox[0]
@@ -371,37 +518,3 @@ def filter_nodes_with_tags(nodes: dict, tags: dict):
             ]
 
     return selection
-
-
-def create_circles_from_nodes(json_obj):
-    # Loop over each node in the 'bar' key of the JSON object
-    circles = []
-    for tag_key in json_obj.keys():
-        color = word_to_color(tag_key)
-        for node in json_obj[tag_key]:
-            # Get the latitude and longitude of the node
-            lat = node["lat"]
-            lon = node["lon"]
-
-            # Get the 'tags' dictionary
-            tags = node["tags"]
-
-            # Create a string for the hover text
-            hover_text = (
-                f"{tag_key}: {tags.get('name', 'N/A')}\n"  # Add more details here
-            )
-
-            # Create a circle on the map for this key
-            circles.append(
-                folium.Circle(
-                    location=[lat, lon],
-                    radius=5,  # Set the radius as needed
-                    color=color,
-                    fill=True,
-                    fill_color=color,
-                    fill_opacity=0.4,
-                    tooltip=hover_text,
-                )
-            )
-
-    return circles
