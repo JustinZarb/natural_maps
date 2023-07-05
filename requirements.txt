@@ -25,6 +25,7 @@ decorator==5.1.1
 earthpy==0.9.4
 executing==1.2.0
 Faker==18.11.2
+fastjsonschema==2.17.1
 favicon==0.7.0
 Fiona==1.9.4.post1
 folium==0.14.0
@@ -83,6 +84,7 @@ mercantile==1.2.1
 more-itertools==9.1.0
 multidict==6.0.4
 mypy-extensions==1.0.0
+nbformat==5.9.0
 nest-asyncio==1.5.6
 networkx==3.1
 numexpr==2.8.4
@@ -133,6 +135,7 @@ rsa==4.9
 scikit-image==0.21.0
 scikit-learn==1.2.2
 scipy==1.10.1
+seaborn==0.12.2
 shapely==2.0.1
 six==1.16.0
 smmap==5.0.0

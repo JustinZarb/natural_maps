@@ -30,7 +30,6 @@ def overpass_to_feature_group(data_str=""):
         elements = data["elements"]
         fg = folium.FeatureGroup(name="Elements from overpass")
         for node in elements:
-            st.markdown(node)
             node_data = [(node["lat"], node["lon"], node["tags"])]
             # the tags content needs to be reformatted
             for lat, lon, tags in node_data:
@@ -60,7 +59,6 @@ def create_circles_from_nodes(nodes):
     for node in nodes:
         # Loop over each node in the 'elements' key of the JSON object
         if node["type"] == "node":
-            st.markdown(node)
             node_data = [(node["lat"], node["lon"], node["tags"])]
             # the tags content needs to be reformatted
             for lat, lon, tags in node_data:

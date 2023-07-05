@@ -75,16 +75,15 @@ class ChatBot:
             },
             {
                 "name": "get_place_info",
-                "description": """Gets area and tag keys of a place. Requires real places as input. 
-                 provide at least one word for search_words. preferably four or five. Try multiple languages
+                "description": """Gets tag keys of a place. provide at least two keywords to search. Values may be in the local language
                 - Returns useful key:value pairs which can be used by overpass queries 
                 Args:
                     places (str(list)): A list of place names.
                 Returns:
-                    data (str): A JSON string containing a dictionary with projected_area, area_unit and keys. 
+                    data (str): A JSON string containing a dictionary with matching key:value pairs, projected_area and area_unit. 
+                    - keys: a list of unique tag key:value pairs which match the words in the input string
                     - projected_area: a dict of display_name:area for each of the locations in places_str
                     - area_units: a dict of display_name:area_units for each of the locations in places_str
-                    - keys: a list of unique tag keys (includes all locations fed to the function). Sorted by frequency.
                  
                 Convert from m² to km² when returning information about large areas.          
                     """,
@@ -366,6 +365,7 @@ class ChatBot:
             except json.JSONDecodeError as e:
                 json_failed = True
                 function_response = {
+                    "message": "unfortunately an error occured",
                     "invalid args": str(e),
                     "input": function_args,
                 }
@@ -528,7 +528,7 @@ class ChatBot:
 
         except json.JSONDecodeError as e:
             print(f"JSONDecodeError: {str(e)}")
-            st.markdown(f"JSONDecodeError: {str(e)}")
+            st.markdown(f"JSONDecodeError while logging: {str(e)}")
             # Perform appropriate error handling or take necessary actions
 
     def run_conversation_streamlit(self, num_iterations=4, temperature=0.1):
@@ -548,9 +548,11 @@ class ChatBot:
 
         # Give first instructions.
         self.add_system_message(
-            content=f"""Let's first understand the problem and devise 
-                break it down into simple steps. Fore example, if asked "Find child-friendly parks in Pankow, Berlin",
-                first run get_place_info for Pankow passing keywords such as child, park, play, sand, etc. for child-friendliness. 
+            content=f"""Let's first understand the problem and  
+                break it down into simple steps. Fore example, 
+                if asked "Find child-friendly parks in Pankow, Berlin",
+                first run get_place_info for Pankow passing keywords 
+                runsuch as child, park, play, sand, etc. for child-friendliness. 
                 Please output the plan starting with the header 'Here's the plan:' and then followed by a concise 
                 numbered list of steps. Each step should correspond to a 
                 specific function from the following list: {self.functions.keys()}. 

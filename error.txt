@@ -1,1 +1,1 @@
-Object of type ValueError is not JSON serializable
+Object of type TypeError is not JSON serializable
