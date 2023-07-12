@@ -6,3 +6,13 @@ NaturalMaps is an attempt to explore maps with natural language, such as “Find
 ## Objectives
 - Use natural language processing to make map queries more accessible to non-specialists.
 - Overlay other datasets such as air pollution, noise, shade, etc. to benefit individuals as well as planners.
+
+## Aproaches
+Both of the approaches discussed below use GPT-3.5-turbo.
+
+### Function Calls using a plan-and-execute style agent
+The architecture of the main bot used for demo day.
+The agent is aware of certain functions it is able to call. Using system prompts, the first response is a list of steps needed to answer the user's question using the available functions. The LLM is then given some iterations to run functions (eg. api calls to Overpass Turbo) and produce a final answer using the results. 
+
+### Langchain
+Currently implemented in the langchain branch, this is the more promising architecture moving forward. Also includes an implementation of a plan-and-execute agent (inspiration for the above)
