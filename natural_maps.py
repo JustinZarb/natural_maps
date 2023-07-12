@@ -11,11 +11,14 @@ st.set_page_config(
 
 import dev.streamlit_functions as st_functions
 from streamlit_folium import st_folium
-from config import OPENAI_API_KEY
+
 import pandas as pd
 import numpy as np
 import folium
 from dev.naturalmaps_bot import ChatBot
+
+# from config import OPENAI_API_KEY
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
 
 prompts = pd.read_csv("./dev//prompts/prompts.csv")
 prompt_type = prompts.promptType.unique()
