@@ -18,7 +18,6 @@ from .streamlit_functions import (
 import sys
 
 sys.path.append("..")
-from config import OPENAI_API_KEY
 
 
 class ChatBot:
@@ -783,6 +782,6 @@ class ChatBot:
 
 
 if __name__ == "__main__":
-    chatbot = ChatBot(openai_api_key=OPENAI_API_KEY)
+    chatbot = ChatBot()
     chatbot.add_user_message("are there ping pong tables in Neukölln? where?")
     chatbot.run_conversation_vanilla(temperature=0.3, num_iterations=5)
