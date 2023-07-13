@@ -8,8 +8,8 @@ st.set_page_config(
     menu_items=None,
 )
 from streamlit_folium import st_folium
-import dev.streamlit_functions as st_functions
-from dev.st_explore_with_wordcloud import explore_data
+import src.streamlit_functions as st_functions
+from src.st_explore_with_wordcloud import explore_data
 
 
 # Explore the data manually

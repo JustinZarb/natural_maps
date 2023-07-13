@@ -9,13 +9,13 @@ st.set_page_config(
     menu_items=None,
 )
 
-import dev.streamlit_functions as st_functions
+import src.streamlit_functions as st_functions
 from streamlit_folium import st_folium
 
 import pandas as pd
 import numpy as np
 import folium
-from dev.naturalmaps_bot import ChatBot
+from src.naturalmaps_bot import ChatBot
 
 # from config import OPENAI_API_KEY
 OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]

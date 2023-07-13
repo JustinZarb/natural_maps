@@ -1,4 +1,4 @@
-import dev.streamlit_functions as st_functions
+import src.streamlit_functions as st_functions
 import streamlit as st
 import pandas as pd
 

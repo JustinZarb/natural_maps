@@ -7,8 +7,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
     menu_items=None,
 )
-import dev.streamlit_functions as st_functions
-from dev.st_explore_with_wordcloud import explore_data
+import src.streamlit_functions as st_functions
+from src.st_explore_with_wordcloud import explore_data
 import folium
 from streamlit_folium import st_folium
 
@@ -17,8 +17,8 @@ import json
 import pandas as pd
 import openai
 
-from dev.langchain.chains_as_classes_with_json import OverpassQueryChain
-from dev.naturalmaps_bot import ChatBot
+from src.langchain.chains_as_classes_with_json import OverpassQueryChain
+from src.naturalmaps_bot import ChatBot
 
 import sys
 
