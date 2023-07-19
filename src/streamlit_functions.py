@@ -83,7 +83,7 @@ def create_circles_from_nodes(nodes):
 
 def create_circles_from_node_dict(nodes):
     # Loop over each node in the 'bar' key of the JSON object
-    circles = []
+    circles = folium.FeatureGroup(name="State bounds")
     for tag_key in nodes.keys():
         color = word_to_color(tag_key)
         for node in nodes[tag_key]:
@@ -100,7 +100,7 @@ def create_circles_from_node_dict(nodes):
             )
 
             # Create a circle on the map for this key
-            circles.append(
+            circles.add_child(
                 folium.Circle(
                     location=[lat, lon],
                     radius=10,  # Set the radius as needed
@@ -257,12 +257,13 @@ def map_location(gdf=None, feature_group=None):
     if gdf is not None:
         folium.GeoJson(gdf).add_to(m)
 
+    """
     # Add the feature group(s) to the map and update the bounds
     if feature_group is not None:
         features = feature_group if isinstance(feature_group, list) else [feature_group]
         for feature in features:
             feature.add_to(m)
-
+    """
     # Fit the map to the bounds of all features
     m.fit_bounds(m.get_bounds())
     return m

@@ -1,62 +1,68 @@
-import src.streamlit_functions as st_functions
 import streamlit as st
+
+st.set_page_config(
+    page_title=None,
+    page_icon=None,
+    layout="wide",
+    initial_sidebar_state="collapsed",
+    menu_items=None,
+)
+import folium
+from streamlit_folium import st_folium
+import src.streamlit_functions as st_functions
+from src.st_explore_with_wordcloud import generate_wordcloud, explore_data
 import pandas as pd
 
+if "circles" not in st.session_state:
+    st.session_state.circles = None
 
-def generate_wordcloud():
-    st.subheader("Tags in this area")
+if "st_data" not in st.session_state:
+    st.session_state.st_data = None
 
-    tag_keys = list(st.session_state.tags_in_bbox.keys())
-    default_key_index = tag_keys.index("amenity") if "amenity" in tag_keys else 0
+# Text input for place name
+st.session_state.place_name = st.text_input(
+    "Location",
+    value="Theresienstrasse, Munich",
+)
+st.session_state.gdf = st_functions.name_to_gdf(st.session_state.place_name)
 
-    # Select a tag key for wordcloud visualisation
-    st.selectbox(
-        label="Select a different tag",
-        options=st.session_state.tags_in_bbox.keys(),
-        index=default_key_index,
-        key="selected_key",
+# Columns
+explore_left, explore_right = st.columns((1, 2), gap="small")
+# Left: Map
+with explore_left:
+    m = st_functions.update_map()  # folium.Map()
+    st.session_state.st_data = st_folium(
+        m, width=400, height=400, feature_group_to_add=st.session_state.circles
     )
 
-    # Return a dictionary with the frequency each value appears in the bounding box
-    st.session_state.value_frequency = st_functions.count_tag_frequency_old(
-        st.session_state.nodes, tag=st.session_state.selected_key
-    )
-
-    # Generate word cloud
-    values_wordcloud = st_functions.generate_wordcloud(st.session_state.value_frequency)
-    st.subheader(f"Things tagged as '{st.session_state.selected_key}'")
-    st.image(values_wordcloud.to_array(), use_column_width=True)
-
-
-def explore_data(st_data):
-    if st_data["zoom"] >= 13:
+# Right: Chat/Explore
+with explore_right:
+    if (st.session_state.st_data) and (st.session_state.st_data["zoom"] >= 13):
         # Initialize the checkbox value in the session state if it's not already set
-        if "explore_area" not in st.session_state:
-            st.session_state.explore_area = False
+        if "show_tags" not in st.session_state:
+            st.session_state.show_tags = False
 
-        def explore_button():
-            if st.session_state["explore_area"]:
-                st.session_state["explore_area"] = False
-            else:
-                st.session_state["explore_area"] = True
+        def toggle_show_tags():
+            st.session_state.show_tags = not (st.session_state.show_tags)
 
         # Use the session state value for the checkbox
-        st.button(
-            label=f"Common tags in this view",
-            on_click=explore_button,
-        )
+        if not st.session_state.show_tags:
+            st.button(label=f"Show tags", on_click=toggle_show_tags)
+        else:
+            st.button(label=f"Hide tags", on_click=toggle_show_tags)
+
         # Create a checkbox that will control whether the map and data are stored in the session state
         if st.session_state.explore_area:
             # check if  m and st_data already exist in the session state
-            if "st_data" in st.session_state:
+            if "st_data_freeze" in st.session_state:
                 # st_data already in session state
                 pass
             else:
                 # Store the map and data in the session state
-                st.session_state["st_data"] = st_data
+                st.session_state["st_data_freeze"] = st.session_state.st_data
                 # get bbox
                 st.session_state["bbox"] = st_functions.bbox_from_st_data(
-                    st.session_state.st_data
+                    st.session_state.st_data_freeze
                 )
                 # query all nodes with tags in bbox
                 st.session_state["nodes"] = st_functions.get_nodes_with_tags_in_bbox(
@@ -96,19 +102,12 @@ def explore_data(st_data):
             st.session_state.add_selection = False
             st_functions.update_map()
 
-            if "selected_nodes" in st.session_state:
-                st.subheader("Currently shown on map:")
-                for key, value in st.session_state.selected_nodes.items():
-                    st.markdown(f"{key}")
-                    df = pd.json_normalize(value, sep="\n")
-                    st.table(df)
-
         else:
             # delete
             temporary_variables = [
                 "gdf",
                 "m",
-                "st_data",
+                "st_data_freeze",
                 "bbox",
                 "tags_in_bbox",
                 "nodes",
@@ -119,3 +118,11 @@ def explore_data(st_data):
 
     else:
         st.markdown("Zoom in to see what's in the map")
+
+
+if ("selected_nodes" in st.session_state) and st.session_state.selected_nodes:
+    st.subheader("Currently shown on map:")
+    for key, value in st.session_state.selected_nodes.items():
+        st.markdown(f"{key}")
+        df = pd.json_normalize(value, sep="\n")
+        st.table(df)
