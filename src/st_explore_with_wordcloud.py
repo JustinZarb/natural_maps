@@ -4,8 +4,6 @@ import pandas as pd
 
 
 def generate_wordcloud():
-    st.subheader("Tags in this area")
-
     tag_keys = list(st.session_state.tags_in_bbox.keys())
     default_key_index = tag_keys.index("amenity") if "amenity" in tag_keys else 0
 

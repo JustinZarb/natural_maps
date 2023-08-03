@@ -237,12 +237,12 @@ def name_to_gdf(place_name):
     return gdf
 
 
-def map_location(gdf=None, feature_group=None):
+def map_location(
+    gdf=None,
+):
     """Create a map object given an optional gdf and feature group
-    Do not use this feature_group attribute, because it cannot be updated.
     Args:
         gdf (_type_, optional): _description_. Defaults to None.
-        feature_group (_type_, optional): _description_. Defaults to None.
 
     Returns:
         map object: _description_
@@ -250,36 +250,15 @@ def map_location(gdf=None, feature_group=None):
     # Initialize the map
     m = folium.Map(height="50%")
 
-    if (gdf is None) and (feature_group) is None:
+    if gdf is None:
         _, center, zoom = calculate_parameters_for_map()
 
     # Add the gdf to the map
     if gdf is not None:
         folium.GeoJson(gdf).add_to(m)
 
-    """
-    # Add the feature group(s) to the map and update the bounds
-    if feature_group is not None:
-        features = feature_group if isinstance(feature_group, list) else [feature_group]
-        for feature in features:
-            feature.add_to(m)
-    """
     # Fit the map to the bounds of all features
     m.fit_bounds(m.get_bounds())
-    return m
-
-
-def update_map():
-    # Create a folium map, adding
-    if "gdf" in st.session_state:
-        gdf = st.session_state.gdf
-    else:
-        gdf = None
-    if "circles" in st.session_state:
-        circles = st.session_state.circles
-    else:
-        circles = None
-    m = map_location(gdf, circles)
     return m
 
 
@@ -494,7 +473,7 @@ def generate_wordcloud(frequency_dict):
     return wordcloud
 
 
-def get_nodes_with_tags_in_bbox(bbox: list):
+def get_nodes_with_tags_in_bbox(bbox: list, what_to_get="nodes"):
     """Get unique tag keys within a bounding box and plot the top 200 in a wordcloud
     In this case it is necessary to run a query in overpass because
     osmnx.geometries.geometries_from_bbox requires an input for "tags", but here
@@ -506,17 +485,64 @@ def get_nodes_with_tags_in_bbox(bbox: list):
         data: the query response in json format
     """
     overpass_url = "http://overpass-api.de/api/interpreter"
-    overpass_query = f"""
-    [out:json];
-    (
-      node({bbox[0]}, {bbox[1]}, {bbox[2]}, {bbox[3]})[~"."~"."];
-    );
-    out body;
-    """
+    if what_to_get == "nodes":
+        overpass_query = f"""
+        [out:json];
+        (
+        node({bbox[0]}, {bbox[1]}, {bbox[2]}, {bbox[3]})[~"."~"."];
+        );
+        out body;
+        """
+    elif "way" in what_to_get.lower():
+        overpass_query = f"""
+        [out:json];
+        (
+        way({bbox[0]}, {bbox[1]}, {bbox[2]}, {bbox[3]})[~"."~"."];
+        );
+        out body;
+        """
+
     response = requests.get(overpass_url, params={"data": overpass_query})
     data = response.json()
 
     return data
+
+
+def save_nodes_to_json(self, file_path: str, this_run_name: str, log: dict):
+    """Raw pasted from naturalmaps_bot
+
+    Args:
+        file_path (str): _description_
+        this_run_name (str): _description_
+        log (dict): _description_
+    """
+    json_file_path = file_path if file_path.endswith(".json") else file_path + ".json"
+    # Check if the folder exists and if not, create it.
+    folder_path = os.path.dirname(json_file_path)
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    # Check if the file exists
+    if os.path.isfile(json_file_path):
+        # If it exists, open it and load the JSON data
+        try:
+            with open(json_file_path, "r") as f:
+                data = json.load(f)
+        except:
+            data = {}
+    else:
+        # If it doesn't exist, create an empty dictionary
+        data = {}
+
+    data[this_run_name] = {
+        "log": log,
+    }
+    try:
+        with open(json_file_path, "w") as f:
+            json.dump(data, f, indent=4)
+    except TypeError as e:
+        with open("error.txt", "w") as error_file:
+            error_file.write(str(e))
 
 
 def get_tag_keys():

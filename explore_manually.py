@@ -19,10 +19,12 @@ if "circles" not in st.session_state:
 if "st_data" not in st.session_state:
     st.session_state.st_data = None
 
+st.title("Manually explore OSM Data")
+
 # Text input for place name
 st.session_state.place_name = st.text_input(
     "Location",
-    value="Theresienstrasse, Munich",
+    value="Alt-Treptow",
 )
 st.session_state.gdf = st_functions.name_to_gdf(st.session_state.place_name)
 
@@ -30,10 +32,11 @@ st.session_state.gdf = st_functions.name_to_gdf(st.session_state.place_name)
 explore_left, explore_right = st.columns((1, 2), gap="small")
 # Left: Map
 with explore_left:
-    m = st_functions.update_map()  # folium.Map()
+    m = st_functions.map_location(st.session_state.gdf)
     st.session_state.st_data = st_folium(
-        m, width=400, height=400, feature_group_to_add=st.session_state.circles
+        m, width=600, height=600, feature_group_to_add=st.session_state.circles
     )
+
 
 # Right: Chat/Explore
 with explore_right:
@@ -52,7 +55,7 @@ with explore_right:
             st.button(label=f"Hide tags", on_click=toggle_show_tags)
 
         # Create a checkbox that will control whether the map and data are stored in the session state
-        if st.session_state.explore_area:
+        if st.session_state.show_tags:
             # check if  m and st_data already exist in the session state
             if "st_data_freeze" in st.session_state:
                 # st_data already in session state
@@ -64,6 +67,7 @@ with explore_right:
                 st.session_state["bbox"] = st_functions.bbox_from_st_data(
                     st.session_state.st_data_freeze
                 )
+                # st.markdown(st.session_state["bbox"])
                 # query all nodes with tags in bbox
                 st.session_state["nodes"] = st_functions.get_nodes_with_tags_in_bbox(
                     st.session_state.bbox
@@ -100,7 +104,7 @@ with explore_right:
             )
             # Reset the checkbox
             st.session_state.add_selection = False
-            st_functions.update_map()
+            st_functions.map_location(st.session_state.gdf)
 
         else:
             # delete

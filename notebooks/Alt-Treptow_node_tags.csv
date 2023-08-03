@@ -1,0 +1,4029 @@
+key,value
+highway,traffic_signals
+highway,turning_circle
+highway,crossing
+highway,bus_stop
+highway,construction
+highway,elevator
+highway,give_way
+highway,stop
+highway,street_lamp
+highway,speed_camera
+highway,traffic_sign
+highway,primary
+highway,residential
+highway,secondary
+highway,tertiary
+highway,footway
+highway,service
+highway,path
+highway,steps
+highway,pedestrian
+highway,proposed
+highway,unclassified
+highway,platform
+highway,cycleway
+TMC,Point
+TMC,9.00
+TMC,32785
+TMC,25610
+TMC,32784
+TMC,27186
+TMC,27187
+TMC,27185
+TMC,32801
+TMC,Area
+TMC,4989
+TMC,Road
+TMC,8.00
+TMC,50459
+TMC,27188
+TMC,32797
+TMC,32796
+TMC,32792
+TMC,32802
+TMC,Segment
+TMC,9076
+TMC,9077
+TMC,9075
+TMC,32888
+TMC,32887
+TMC,25611
+TMC,26935
+TMC,26934
+TMC,32886
+fixme,Ein Zusatzanzeiger noch nicht erfasst
+fixme,Eventuell kann Zs3 auch dunkel geschaltet sein?
+fixme,removed
+fixme,toilets:wheelchair -> yes or no?
+fixme,exact location?
+fixme,ref vor Ort prüfen – Abweichung zum Baumkataster
+fixme,continue?
+fixme,"Nach Abschluss der Baumaßnahmen Radberechtigung neu setzen, VZ240 wohl nur während der Umbaumaßnahmen"
+fixme,Provisorium während der Baumaßnahmen
+fixme,Tagging präzisieren/verbessern
+operator,DB Netz AG
+operator,Wall GmbH
+operator,DocMorris Kooperationen GmbH
+operator,Deutsche Post
+operator,Q157645
+operator,de:Deutsche Post AG
+operator,Deutsche Telekom
+operator,Berliner Sparkasse
+operator,Vattenfall GmbH
+operator,Q1649778
+operator,de:Vattenfall (Deutschland)
+operator,Bund
+operator,Dirk Rossmann GmbH
+operator,Treptower Art Center GmbH
+operator,Robert Roggenbuck
+operator,CODE Education GmbH
+operator,Wall
+operator,Ilg-Außenwerbung
+operator,Berliner Stadtreinigung
+operator,Euronet
+operator,Q5412010
+operator,en:Euronet Worldwide
+operator,PIN Mail
+operator,private
+operator,Q1342288
+operator,de:PIN Mail
+operator,S-Bahn Berlin GmbH
+operator,Psychosozialer Verbund Treptow e.V.
+operator,Inh. Verona Reichert
+operator,A.Lauer
+operator,Berliner Volksbank eG
+operator,Vattenfall
+operator,DaKS – Dachverband Berliner Kinder- und Schülerläden e. V.
+operator,community
+operator,Berliner Tafel
+operator,Dr. med. Sonja Khalaf
+operator,Pokroppa
+operator,Pahl
+operator,Prego e.V.
+operator,Terra Concordia gUG Deutschland
+operator,Glimmer
+operator,Versero GmbH
+operator,PIN AG
+operator,Edeka
+operator,Haluk Erpehlivan
+operator,Tioli GmbH & Co. KG
+operator,Dahlewitzer Landbäckerei
+operator,Thomas Kappauf
+operator,Weibliche Visionen in Kultur Politik und Kunst e.V.
+operator,Flutgraben e.V.
+operator,AED-SICAD GmbH
+operator,Verband für Interkulturelle Arbeit Regionalverband Berlin/Brandenburg e.V.
+operator,Nicole Morgenroth
+operator,Stefan Hölck
+operator,Silvio Sen Gupta
+operator,Holger Jank
+operator,Sabine Lehmann
+operator,Christian Herzberg
+operator,Max Bürck-Gemassmer
+operator,Michaela Falter
+operator,Burkhard Schulz
+operator, Jacqueline Herholz
+operator,Mario Fosca
+operator,Edeltraud Pohl-Schubert
+operator,ADFC
+operator,Q24349
+operator,de:ADFC
+operator,Motionlab
+operator,Flixbus
+operator,Sibel
+operator,Venezuelan
+operator,Factory Works GmbH
+operator,ARC-Greenlab Gmbh
+operator,Deutsche Telekom AG
+operator,Q9396
+operator,de:Deutsche Telekom
+operator,nextbike GmbH
+operator,Stromnetz Berlin GmbH
+operator,HUMANA
+operator,Cavtex
+operator,Fa. Cavuslar
+operator,Allego
+operator,Q75560554
+operator,EDEKA
+operator,Q701755
+operator,de:Edeka
+operator,Amazon
+operator,Q3884
+operator,en:Amazon (company)
+operator,DHL
+operator,Jörg Pontow
+operator,Jimmy
+operator,Deutsche Bahn
+operator,Museum der verbotenen Kunst
+operator,Humanistischer Verband Berlin-Brandenburg
+operator,Hegemann-Gruppe
+operator,DB Energie GmbH
+operator,Q1152043
+operator,de:DB Energie
+operator,Netto ApS & Co. KG / Dansk Supermarked A/S
+operator,FSP
+operator,Der Holländer Pflanzencenter GmbH
+operator,Unionhilfswerk
+operator,ATCP Management GmbH
+operator,Lawrenz
+operator,Neue Flutgraben Betriebsgesellschaft mbH & Co KG
+operator,BKA
+operator,offensiv '91 e.V.
+operator,Agromex
+operator,NBB Netzgesellschaft Berlin-Brandenburg
+operator,Fröbel e.V.
+operator,Grenzkultur gGmbH
+operator,Siemens Mobility GmbH
+operator,Wohnungsbaugenossenschaft DPF eG
+operator,MOM'S Restaurant
+operator,Gemeinde Berlin-Treptow der Neuapostolischen Kirche
+operator,LPG Biomarkt
+operator,Kinderring Berlin e.V.
+operator,BF Berlin
+operator,STADT UND LAND
+operator,Senatsverwaltung für Stadtentwicklung Berlin
+operator,Berliner Verkehrsbetriebe
+operator,BVG
+operator,Bundesrepublik Deutschland
+operator,Tourismusverein Berlin Treptow-Köpenick e.V
+operator,DB Station&Service AG
+operator,"Senatsverwaltung für Umwelt, Mobilität, Verbraucher- und Klimaschutz"
+operator,European Ramblers Association
+operator,Deutscher Wanderverband
+operator,ADFC Sachsen
+operator,Q896765
+operator,DB Regio AG
+operator,de:DB Netz
+operator,"Prima Klima Reisen, BusArt"
+operator,Tourismusverband Dahme-Seenland
+operator,Gläser Reisen
+operator,Reisebüro & Omnibusbetrieb Karsten Brust
+operator,Bundeskriminalamt
+operator,Q56030
+operator,de:Bundeskriminalamt (Deutschland)
+railway,signal
+railway,DE-ESO:ks
+railway,no
+railway,light
+railway,block
+railway,normal
+railway,DE-ESO:hp0
+railway,DE-ESO:ks1
+railway,DE-ESO:ks2
+railway,DE-ESO:db:zs12
+railway,DE-ESO:db:zs7
+railway,forward
+railway,right
+railway,DE-ESO:mastschild_rot-weiss
+railway,written_default_speed
+railway,dictated_default_speed
+railway,milestone
+railway,yes
+railway,14.4
+railway,entry
+railway,left
+railway,DE-ESO:zs3v
+railway,DE-ESO:mastschild_gelb-weiss
+railway,stop
+railway,switch
+railway,backward
+railway,DE-ESO:zs3
+railway,40
+railway,off
+railway,70
+railway,DE-ESO:db:zs6
+railway,DE-ESO:zs2v
+railway,B
+railway,R
+railway,50
+railway,?
+railway,DE-ESO:zs2
+railway,S
+railway,station
+railway,BTP
+railway,BOK
+railway,4
+railway,W
+railway,60
+railway,DE-ESO:dr:zs1
+railway,14.2
+railway,DE-ESO:ne5
+railway,sign
+railway,DE-ESO:lf7
+railway,80
+railway,dwarf
+railway,DE-ESO:el2
+railway,power_on
+railway,DE-ESO:el1
+railway,power_off
+railway,bridge
+railway,DE-ESO:lf6
+railway,24x
+railway,Kurzzug
+railway,light_rail
+railway,rail
+railway,abandoned
+railway,platform_edge
+railway,1
+railway,3
+railway,2
+railway,platform
+ref,6081
+ref,2
+ref,1625
+ref,1623
+ref,6083
+ref,6085
+ref,"Bouchéstraße 20-21, 12435 Berlin"
+ref,"Alt Treptow, 12435 Berlin"
+ref,"Am Treptower Park 14, 12435 Berlin"
+ref,105740
+ref,105741
+ref,"Elsenstraße 107-108, 12435 Berlin"
+ref,"Elsenstraße 5-8, 12435 Berlin"
+ref,"Puschkinallee 52, 12435 Berlin"
+ref,106300
+ref,106032
+ref,106031
+ref,PKC 154
+ref,105735
+ref,105742
+ref,106243
+ref,N32674
+ref,1
+ref,3
+ref,689
+ref,DE115055186
+ref,106975
+ref,6082
+ref,1622
+ref,1620
+ref,6080
+ref,"Karl-Kunger-Str. 69, 12435 Berlin"
+ref,B 89617
+ref,B 89616
+ref,015 037
+ref,Postfiliale 414
+ref,105736
+ref,106488
+ref,105734
+ref,105744
+ref,105743
+ref,105791
+ref,105776
+ref,106909
+ref,106890
+ref,106908
+ref,106912
+ref,106917
+ref,5
+ref,B 89615
+ref,B 89614
+ref,61 F
+ref,61 FF
+ref,106900
+ref,"Fanny-Zobel-Str. 49, 12435 Berlin"
+ref,105237
+ref,106363
+ref,50/553
+ref,35
+ref,44
+ref,4
+ref,Aufgang 4
+ref,14
+ref,35/1
+ref,1404
+ref,NSHV2
+ref,12460
+ref,6
+ref,DEALLEGO001944
+ref,21/1
+ref,21/2
+ref,78/4
+ref,54/1
+ref,54/2
+ref,20/2
+ref,74/1
+ref,74/2
+ref,74/3
+ref,75/1
+ref,09614
+ref,alang
+ref,14-17
+ref,14-15
+ref,14-13
+ref,14-11
+ref,Stfl.
+ref,QG
+ref,Stfl./QG
+ref,VH
+ref,09760
+ref,09630
+ref,DEALLEGO0019572
+ref,6088
+ref,B 96a
+ref,6020
+ref,6170
+ref,6007
+ref,"09040272,T,001"
+ref,A 100
+ref,de:11000:900190001:2:53
+ref,6142
+ref,B
+ref,Tw
+ref,09020289
+ref,DE310804941
+ref,09031192
+ref,09031008
+ref,52467
+ref,52426
+ref,de:11000:900190001:1:51
+ref,de:11000:900190001:1:50
+ref,de:11000:900190001:2:52
+ref,30861
+ref,52451
+ref,1400
+ref,Mau
+ref,S41
+ref,S42
+ref,N60
+ref,TR4
+ref,0901
+ref,166
+ref,Hww
+ref,SPR
+ref,18
+ref,265
+ref,165
+ref,194
+ref,N65
+ref,8
+ref,N94
+ref,S8
+ref,S9
+ref,S85
+ref,09020335
+ref,E11
+ref,B-DD
+ref,900190501
+ref,RB24
+ref,de:11000:900190001:2
+ref,de:11000:900190001:1
+ref,N70
+ref,070
+ref,270
+ref,46
+ref,N232
+ref,370
+ref,170
+ref,002
+ref,FEX
+ref,R1
+ref,D3
+ref,M43
+created_by,JOSM
+addr,Berlin
+addr,46
+addr,12435
+addr,Karl-Kunger-Straße
+addr,Alt-Treptow
+addr,111
+addr,Elsenstraße
+addr,5-8
+addr,Am Treptower Park
+addr,DE
+addr,10/12
+addr,Puschkinallee
+addr,14
+addr,49
+addr,Kiefholzstraße
+addr,50
+addr,16
+addr,16A
+addr,12
+addr,Bouchéstraße
+addr,3
+addr,4
+addr,Eichenstraße
+addr,26
+addr,27
+addr,35
+addr,33
+addr,30
+addr,Beermannstraße
+addr,2
+addr,79a
+addr,54
+addr,6
+addr,Plesser Straße
+addr,5
+addr,Schmollerplatz 27
+addr,11
+addr,9
+addr,7
+addr,71-74
+addr,Martin-Hoffmann-Straße
+addr,1
+addr,An den Treptowers
+addr,10
+addr,106
+addr,107
+addr,108
+addr,109
+addr,110
+addr,112
+addr,113
+addr,115
+addr,18
+addr,8
+addr,13
+addr,17
+addr,Krüllsstraße
+addr,34
+addr,405a
+addr,405b
+addr,405c
+addr,405d
+addr,406
+addr,407
+addr,408
+addr,408a
+addr,409
+addr,409a
+addr,410
+addr,410a
+addr,411
+addr,412
+addr,69
+addr,46A
+addr,47
+addr,48
+addr,14-17
+addr,Lohmühlenstraße
+addr,19
+addr,20
+addr,21
+addr,22
+addr,23
+addr,38
+addr,39
+addr,40
+addr,41
+addr,42
+addr,44
+addr,45
+addr,47a
+addr,51
+addr,52
+addr,Harzer Straße
+addr,65
+addr,25
+addr,102A
+addr,24
+addr,101
+addr,102
+addr,3a
+addr,3b
+addr,Lexisstraße
+addr,15
+addr,Grabowstraße
+addr,Wildenbruchstraße
+addr,103
+addr,103A
+addr,103B
+addr,104
+addr,104A
+addr,104B
+addr,119
+addr,37
+addr,75
+addr,Isingstraße
+addr,Hauptverwaltung
+addr,InBit
+addr,60
+addr,62
+addr,63
+addr,64
+addr,67
+addr,68
+addr,66
+addr,58
+addr,59
+addr,85
+addr,80
+addr,81
+addr,82
+addr,83
+addr,84
+addr,57
+addr,55
+addr,61
+addr,actual
+addr,14-15
+addr,Heidelberger Straße
+addr,105
+addr,100
+addr,99
+addr,98
+addr,97
+addr,96
+addr,Schmollerplatz
+addr,56
+addr,Fanny-Zobel-Straße
+addr,28
+addr,43
+addr,4a
+addr,9a
+addr,Jordanstraße
+addr,Onckenstraße
+addr,Schmollerstraße
+addr,Mengerzeile
+addr,10A
+addr,1A
+addr,25A
+addr,29
+addr,31
+addr,32
+addr,potential
+addr,36
+addr,3A
+addr,Neukölln
+addr,46B
+addr,52A
+addr,77
+addr,78
+addr,87
+addr,88
+addr,89
+addr,90
+addr,91
+addr,92
+addr,93
+addr,94
+addr,95
+addr,105A
+addr,15B
+addr,16B
+addr,18A
+addr,18B
+addr,29A
+addr,30A
+addr,30B
+addr,33A
+addr,394
+addr,398
+addr,399
+addr,39A
+addr,400
+addr,401
+addr,402
+addr,413
+addr,420
+addr,Bulgarische Straße
+addr,63A
+addr,64A
+addr,65-66
+addr,70
+addr,Plänterwald
+addr,76
+addr,79B
+addr,8A
+addr,9A
+addr,9B
+addr,9C
+addr,9D
+addr,9E
+addr,9F
+addr,9G
+addr,9H
+addr,Lohmühlenstraße 49
+addr,403
+addr,6ab
+addr,6d
+addr,414
+addr,418
+addr,Kiefholzstraße 420 (Kiefholzstraße / Wildenbruchstraße)
+addr,Am Flutgraben
+addr,81A
+addr,80A
+addr,79A
+addr,79
+addr,13a
+addr,Am Treptower Park 77
+addr,403C
+addr,403B
+addr,403A
+addr,39b
+addr,39a
+addr,"11,13"
+addr,13A
+addr,Kiefholzstraße ggü. 9
+addr,397
+addr,63-64
+addr,7e
+addr,7d
+addr,7b
+addr,7c
+addr,5-6
+addr,an der breiten Rutsche
+addr,Hochhaus Treptower
+addr,16a
+addr,425
+addr,405
+addr,43-54
+addr,Kunsthalle M3
+addr,1-3
+addr,118
+addr,53
+addr,Haus 1/2
+addr,Haus 8
+addr,6b
+addr,115 - 116
+addr,Haus 18
+addr,Haus 17
+addr,6c
+addr,7f
+addr,6a
+addr,Haus 21
+addr,Haus 4
+addr,Haus 20
+addr,Atelierhaus Mengerzeile
+addr,0
+addr,Haus 19
+addr,7a
+addr,417
+addr,415/416
+addr,Haus 11
+addr,Haus 13
+addr,Haus 22
+addr,Haus 14
+addr,Haus 3
+addr,26a
+addr,404
+addr,74
+amenity,pharmacy
+amenity,toilets
+amenity,police
+amenity,post_box
+amenity,kindergarten
+amenity,taxi
+amenity,fountain
+amenity,cafe
+amenity,fast_food
+amenity,pub
+amenity,telephone
+amenity,bank
+amenity,nightclub
+amenity,bar
+amenity,parking_entrance
+amenity,restaurant
+amenity,waste_basket
+amenity,brothel
+amenity,boat_rental
+amenity,biergarten
+amenity,parking
+amenity,recycling
+amenity,marketplace
+amenity,bench
+amenity,bicycle_parking
+amenity,university
+amenity,atm
+amenity,school
+amenity,vending_machine
+amenity,social_facility
+amenity,doctors
+amenity,charging_station
+amenity,arts_centre
+amenity,driving_school
+amenity,dentist
+amenity,community_centre
+amenity,clock
+amenity,car_rental
+amenity,casino
+amenity,bicycle_rental
+amenity,ice_cream
+amenity,studio
+amenity,bicycle_repair_station
+amenity,parcel_locker
+amenity,grit_bin
+amenity,public_bookcase
+amenity,smoking_area
+amenity,place_of_worship
+amenity,theatre
+amenity,library
+amenity,vehicle_inspection
+amenity,cinema
+amenity,clinic
+amenity,waste_disposal
+amenity,shelter
+amenity,trolley_bay
+amenity,parking_space
+amenity,planetarium
+check_date,2023-01-15
+check_date,2021-09-21
+check_date,2020-12-07
+check_date,2021-06-15
+check_date,2021-02-24
+check_date,2020-08-19
+check_date,2020-11-16
+check_date,2022-12-04
+check_date,2021-09-13
+check_date,2022-09-11
+check_date,2021-07-16
+check_date,2023-02-14
+check_date,2020-12-08
+check_date,2022-12-08
+check_date,2023-04-28
+check_date,2022-09-06
+check_date,2023-07-31
+check_date,2021-02-11
+check_date,2020-03-31
+check_date,2021-02-05
+check_date,2020-08-25
+check_date,2022-09-18
+check_date,2020-09-27
+check_date,2023-04-24
+check_date,2022-06-02
+check_date,2023-04-19
+check_date,2023-03-19
+check_date,2023-02-05
+check_date,2019-08-23
+check_date,2023-03-25
+check_date,2023-07-23
+check_date,2022-01-23
+check_date,2021-09-18
+check_date,2021-02-27
+check_date,2021-01-09
+check_date,2022-11-01
+check_date,2021-02-21
+check_date,2020-12-27
+check_date,2021-01-12
+check_date,2022-12-13
+check_date,2021-02-23
+check_date,2021-03-27
+check_date,2023-07-25
+check_date,2021-05-12
+check_date,2021-01-24
+check_date,2021-01-04
+check_date,2022-05-22
+check_date,2020-12-16
+check_date,2021-09-23
+check_date,2023-05-23
+check_date,2023-07-20
+check_date,2021-10-26
+check_date,2023-03-30
+check_date,2023-06-24
+check_date,2020-12-12
+check_date,2022-04-01
+check_date,2020-10-28
+check_date,2022-01-16
+check_date,2021-09-20
+check_date,2022-01-12
+check_date,2022-09-29
+check_date,2021-12-13
+check_date,2021-10-02
+check_date,2021-09-27
+check_date,2022-08-08
+check_date,2021-09-05
+check_date,2020-08-17
+check_date,2023-06-12
+check_date,2022-01-15
+check_date,2023-05-17
+check_date,2021-01-16
+check_date,2021-02-06
+check_date,2023-04-20
+check_date,2022-11-1
+check_date,2023-05-31
+check_date,2023-03-11
+check_date,2023-01-29
+check_date,2023-01-22
+dispensing,yes
+healthcare,pharmacy
+healthcare,sample_collection
+healthcare,psychotherapist
+healthcare,physiotherapist
+healthcare,doctor
+healthcare,ophthalmology
+healthcare,psychiatry
+healthcare,dentist
+healthcare,general
+healthcare,dialysis
+healthcare,nephrology
+healthcare,gynaecology
+healthcare,otolaryngology
+healthcare,orthopaedics
+healthcare,osteopathy
+healthcare,acupuncture
+healthcare,physiotherapy
+healthcare,dermatology
+healthcare,rheumatology
+healthcare,urology
+healthcare,vaccination_centre
+healthcare,vaccination
+healthcare,centre
+name,Margareten-Apotheke
+name,Alt-Treptow
+name,Ortsteil
+name,Treptower Park
+name,Grüne Apotheke
+name,Gemeinsames Terrorismusabwehrzentrum
+name,Fröbel-Kindergarten Wirbelwind
+name,Sowjetisches Ehrenmal
+name,Heidelberger Straße
+name,Alt Treptow
+name,Eichenstraße/Puschkinallee
+name,Elsenstraße/S Treptower Park
+name,real
+name,ALDI Nord
+name,REWE
+name,Hafengarten
+name,Hafen-Café
+name,Löcknitz-Forelle Imbiß
+name,Treptower Park / Westeingang
+name,Treptower Park / West Entrance
+name,Billard Company Salon Treptow
+name,Sparkasse SB-Center
+name,arena Berlin
+name,Escobar
+name,Glashaus
+name,Flutgraben
+name,San Mendoza
+name,Desha - Aceto Lokanta
+name,Gute Laune
+name,Else
+name,Testzentrum Else
+name,Tapas No. 6
+name,Twins Catering
+name,real Sportwelt
+name,Vintage Berlin
+name,Hindi
+name,Lohmühlenstraße/Heidelberger Straße
+name,Bäckerei Krülls
+name,Lohmühlenplatz
+name,Elsenstraße/Kiefholzstraße
+name,Bouchéstraße
+name,Lohmühlenstraße
+name,Beermannstraße
+name,S Treptower Park
+name,S Treptower Park [Bus Treptowers]
+name,Angel II
+name,Märchenland
+name,Rent-a-Boat Treptow
+name,Biergarten Bootsverleih Rent a´ Boat
+name,Amplifon
+name,Anna Mendelson
+name,Ristorante dell' Arte
+name,Wilde 28
+name,Goldsprint
+name,Rossmann
+name,Global Kontakt
+name,Boutique Flair
+name,Petra Steinbiß Blumenoase
+name,Treptower Figaro
+name,Bäckerei Plesser
+name,Insel
+name,Am Treptower Park
+name,Renata Radic Hairdesign
+name,Muca
+name,Elsenhof
+name,Treptower Klause
+name,Junky's Point
+name,Haarfabrika
+name,Sevit
+name,Proske
+name,Treptower Hallentrödelmarkt
+name,Treptower Fleamarket
+name,Klingende Blume
+name,Mutter Heimat
+name,Mother Heimat
+name,Moeder Heimat
+name,Il Sogno
+name,Blaue Apotheke
+name,Zenner
+name,Café Kalle Klein
+name,Code University of Applied Sciences
+name,Asia-Wok
+name,Bäckerei Sesam
+name,Reisebedarf
+name,Berliner Mauer
+name,Kungerkiez
+name,Fernrohr der Archenhold-Sternwarte
+name,Kometensucher
+name,Newton-Spiegelteleskop
+name,Берлінський Мур
+name,Fashion Nails
+name,Mauerweg
+name,Euronet
+name,"Segelschiffrestaurant ""Klipper"""
+name,Riesenblumen
+name,InBit Institut
+name,LPG BioMarkt
+name,Mike Model Maßschuhmacher
+name,Kastanie
+name,Café Grenzenlos
+name,Integrationsfachdienst Süd
+name,Spielzeugparadies
+name,Kiezsalon
+name,Physiotherapie Kremena Group
+name,Augenarztpraxis Dipl.-Med. Ricarda Hoffmann
+name,Loh-ise
+name,Agentur Mai
+name,Bourbon
+name,Phsychotherapeutische Praxis-Verhaltenstherapie Dipl.-Phych. Anette Diezmann
+name,Die Lernwerkstatt
+name,Karl und Karla e. V.
+name,Kiez Galerie / Initiative
+name,Lotto und DHL
+name,Kanuliebe
+name,Drahtelse
+name,take a way
+name,Praxis Winkelmann Ergotherapie
+name,AKURAT
+name,Laib und Seele
+name,Praxis Khalaf
+name,Obst & Gemüse
+name,Copy Deluxe
+name,Kita Pretty World
+name,S Treptower Park [Bus Puschkinallee]
+name,Bellmann Bestattungen
+name,FHF Reisebüro
+name,Pizza Latino
+name,Friseur Bouchela
+name,Kiezhebammen Praxis
+name,Sportsbar Royal
+name,Lotus Tattoo
+name,Fahrschule Berg
+name,Pings Art
+name,Ankes Blumenshop
+name,Fahrradpraxis
+name,Crazy Bar
+name,Yoga und Körperarbeit
+name,Deichmann
+name,Vermittelpunkt Coaching
+name,Gasgeräte Service Pokroppa
+name,Fotostudio Pahl
+name,Vermietungsmanagement Rahlke Youngster GbR
+name,Bündnis90/ Die Grünen
+name,Zahn33
+name,ABT - Arbeits- und Bildungzentrum in Treptow
+name,Mamas Spätkauf
+name,Podologie und Kosmetik
+name,"Kosmetikstudio ""Aphrodite"""
+name,Kiosk
+name,Ilona Reh
+name,Asia Lebensmittel
+name,Mion Records Berlin
+name,Ost-West Späti
+name,Obst und Gemüse
+name,Klavierwerkstatt
+name,Kalle Klein
+name,T.viet
+name,Projekt: Laden
+name,Huyoff & Huyoff HbR
+name,Mundraub
+name,Backwerk
+name,Tchibo Outlet
+name,Chelsea
+name,McPaper
+name,Apollo-Optik
+name,Mäc-Geiz
+name,Ernsting's family
+name,Pizza Farina
+name,Dialyse am Treptower Park
+name,W&W Rechtsanwälte Weitzberg & Weitzberg
+name,Psysiotherapie Praxis Ines Bösch
+name,Sportbar
+name,Blumen und Pflanzen
+name,Psychotherapeutische Praxis Dipl.Badke
+name,"Psychotherapeutische Gemeinschaftspraxis U. Wehrhahn, Kath. Thometzy"
+name,Keramikwerkstatt
+name,verMITTELPUNKT - Coaching
+name,Kunstaustellungsraum Björn Saul
+name,Taubenblau
+name,Dr. med. Filiz Şenyuva
+name,Zahnarztpraxis Christian Franke
+name,passenger coffee
+name,Bären-Apotheke
+name,Dahlback
+name,Spätkauf
+name,Burger Junkys
+name,SIXT
+name,De Noantri
+name,Masha's
+name,Liga Tattoo Collective
+name,Haireinspaziert
+name,Motionlab Berlin
+name,Bäcker Lecker
+name,Our/Berlin
+name,Mom's
+name,Verdampftnochmal
+name,Lila Bäcker
+name,Car City Treptow
+name,East & West
+name,Da Gelo
+name,Joker Casino
+name,Änderungsschneiderei
+name,Pizza Pasta Döner
+name,Black Star Textildruck
+name,"Burkhard Kunow, Facharzt für Hals-Nasen-Ohrenheilkunde, Sportmedizin, Akupunktur"
+name,Safari Falafel
+name,Galerie Futura
+name,Alpha Nova-Kulturwerkstatt
+name,Flutgraben e.V.
+name,Aed-Sicad
+name,RomaniPhen
+name,Labor für Kunst und nachhaltige Bildung
+name,Orthopädische Praxis Am Treptower Park
+name,Zahnarztpraxis Stefan Hölck
+name,Orthopädie Dr. med. Silvio Sen Gupta
+name,Physiotherapie Ines Böttcher
+name,Praxis Holger Jank
+name,Dermatologie Dr. med. Sabine Lehmann
+name,Rheumatologie Dr. med. Christian Herzberg
+name,Allgemeinmedizin Max Bürck-Gemassmer
+name,Allgemeinmedizin Michaela Falter
+name,"Urologie Dr. med. Burkhard Schulz, Dr. med Jacqueline Herholz"
+name,Zahnarzt Mario Fosca
+name,Libelle
+name,Augenoptik Esther Goeltzer
+name,Liljedal Verkhus
+name,Walter
+name, Inge
+name,Gustav-Meyer-Denkmal
+name,Mensch und Natur
+name,Reh
+name,Urban Street Gym
+name,Baum
+name,Fenster
+name,Bahnhof Treptower Park/Fernbus
+name,Schaffner und Schaffnerin
+name,Bär
+name,Boot
+name,Große Liegende
+name,Festivalblume
+name,Werdendes
+name,Schwarzer Panther
+name,Säule
+name,Wolf und Storch
+name,Auf dem Meeresgrund
+name,Dr. Emil von Behring
+name,Soul Kitchen von Sibel
+name,Gelateria Italiana da Roberto
+name,Bruschetta Bar Berlin
+name,La Casita
+name,Neue Republik Reger
+name,Hausarztpraxis Dr. med. Iris Erdmann & Julia Schimkus
+name,Factory Görlitzer Park
+name,Arc-Greenlab
+name,Berliner Vinylwerk
+name,Cafe Bread
+name,Kapitell
+name,Trafostation Stern- und Kreis- Schifffahrt
+name,Stern und Kreis
+name,Mola's Hot Dogs
+name,Hafen Imbiss
+name,Slush Eis
+name,Monsieur Crépes
+name,Lê Lu'u
+name,Buongiorno
+name,Yeay
+name,Green Harbor
+name,Tourist Infornation
+name,Impfzentrum
+name,Gerard
+name,Raum
+name,Cynatix GmbH
+name,Der Befreier
+name,Ваяр-вызваліцель
+name,Воин-освободитель
+name,Asia Palast
+name,Bistro Liliput
+name,Bundesservice Telekommunikation
+name,Möbelina
+name,Fritz Storch
+name,Fitness am Park
+name,Irrlicht e.V.
+name,Resi - der Ressourcenladen Alt-Treptow
+name,MUCA Kiosk
+name,Sool Imbiss
+name,B.A.U.M Consult GmbH
+name,LA FÈVE
+name,La Fève
+name,Yukalou
+name,Soulmate
+name,IndoBoard Germany
+name,Jimmy's Falafel
+name,Radfix
+name,Elsenbrücke
+name,Q25239
+name,de:Erlen (Gattung)
+name,Karpfenteich
+name,Трэптаў-парк
+name,Q702517
+name,de:Berlin-Alt-Treptow
+name,Трептов-парк
+name,Elsenstraße
+name,Q99029401
+name,Eichenstraße
+name,Q12004
+name,de:Eichen
+name,Fanny-Zobel-Straße
+name,Q17321611
+name,de:Fanny Zobel
+name,Puschkinallee
+name,Q7200
+name,de:Alexander Sergejewitsch Puschkin
+name,Q666937
+name,de:Treptower Park
+name,Vor dem Schlesischen Tor
+name,Q1169350
+name,de:Schlesisches Tor
+name,Jordanstraße
+name,Q1912182
+name,de:Max August Jordan
+name,Kiefholzstraße
+name,Q12024
+name,de:Kiefern
+name,Q374116
+name,de:Lohmühle
+name,Krüllsstraße
+name,Q101580548
+name,Plesser Straße
+name,Q948304
+name,de:Pszczyna
+name,Isingstraße
+name,Q98055435
+name,de:Julius von Ising
+name,Mengerzeile
+name,Q84177
+name,de:Carl Menger
+name,Wildenbruchstraße
+name,Q45337
+name,de:Ernst von Wildenbruch
+name,Schmollerstraße
+name,Q62833
+name,de:Gustav von Schmoller (Ökonom)
+name,Lexisstraße
+name,Q64383
+name,de:Wilhelm Lexis
+name,Grabowstraße
+name,Q2572852
+name,de:Wilhelm Grabow
+name,Q2966
+name,de:Heidelberg
+name,Onckenstraße
+name,Q87004
+name,de:August Oncken
+name,Schmollerplatz
+name,Abteibrücke
+name,Q256020
+name,Am Flutgraben
+name,Martin-Hoffmann-Straße
+name,Q101581959
+name,Bernhard-Langwaldt-Weg
+name,Parkwegbrücke
+name,Q814099
+name,ehem. Görlitzer Bahn
+name,Q162558
+name,Insel der Jugend
+name,Wiesenufer
+name,Q1434274
+name,de:Flurname
+name,Haus Zenner
+name,Q894978
+name,de:Bouché (Familie)
+name,Hochhaus Treptower
+name,Wachturm Schlesischer Busch
+name,Gemeinde Berlin-Treptow der Neuapostolischen Kirche
+name,Heidekampgraben
+name,Karl-Kunger-Straße
+name,Q1732060
+name,de:Karl Kunger
+name,Baustelle A100
+name,JuKuZ Gerard Philipe
+name,Stern und Kreisschiffahrt
+name,Wasserfontänen
+name,Vorwerk
+name,Kulturhaus Insel Berlin
+name,Figurentheater Grashüpfer
+name,Zenner Biergarten
+name,Platz am Spreetunnel
+name,Q2313475
+name,de:Spreetunnel Stralau–Treptow
+name,S-Bahn Gleichrichterunterwerk Treptower Park
+name,Netto
+name,Wagendorf Lohmühle
+name,Netto Marken-Discount
+name,Manfred-Bofinger-Bibliothek im Gerard Philipe
+name,Kundenparkplatz Der Holländer
+name,Kfz - Prüfstelle
+name,An den Treptowers
+name,Q454985
+name,de:Treptowers
+name,Atelierhaus Mengerzeile
+name,Röntgen-Sekundarschule
+name,Rosengarten
+name,Mausoleum
+name,Sonnenphysikalisches Kabinett
+name,Cassegrain-Teleskop
+name,Coudé-Refraktor
+name,Bekenntniskirche
+name,Bouché-Schule
+name,Der Holländer
+name,Umspannwerk Puschkinallee
+name,"Pflegewohnheim ""Alt-Treptow"""
+name,Bundesamt für Verfassungsschutz Berlin
+name,Oberhafenkantine
+name,CineStar
+name,Ärztehaus an den Treptowers
+name,Botschaft der Sozialistischen Republik Vietnam
+name,Twin Towers
+name,Park Center
+name,Anleger Sport 24h
+name,EDEKA
+name,Sinsheimer Weg
+name,Q14950
+name,de:Sinsheim
+name,Artist Studios
+name,Wildwiese
+name,Uferpromenade
+name,Q468756
+name,Q1684
+name,Spreeimbiss
+name,Segelschiffrestaurant „Klipper“
+name,15
+name,Bouché Gewerbepark
+name,16
+name,Stralauer Spreetunnel
+name,Christus-Treff Berlin-Treptow
+name,Rogate-Kapelle
+name,Festsaal Kreuzberg
+name,Brückenturm
+name,Kita Offensive Krümel
+name,Gartenhaus
+name,Kita am Karpfenteich
+name,Ringbahnbrücke Oberspree
+name,Club der Visionaere
+name,Treptower Parkmäuse
+name,Sowjetski cesny pomnik
+name,Soviet War Memorial
+name,Воину-освободителю
+name,Katzenspielplatz
+name,Weltspielplatz im Treptower Park
+name,Sommerblumengarten
+name,Zenner Eisdiele
+name,Kita Tausendfüßler
+name,Fröbel-Kindergarten Heureka
+name,Treptower Brücke
+name,Obere Freiarchenbrücke
+name,Cabuwazi
+name,Siemens Mobility
+name,Wohnanalage Harzer Straße 113-115
+name,Badeschiff
+name,Matthesstraße
+name,Q104004900
+name,Paradiesapfel
+name,Gerard Philipe
+name,Abenteuer- und Bauspielplatz Kuhfuß
+name,Street Workout
+name,Kiefholz-Grundschule
+name,Berliner Mauerweg
+name,Umweltzone Berlin
+name,Nízkoemisní zóny
+name,Berlin Environmental Zone
+name,Zona de baja emisión
+name,Miljözon
+name,S41: Ring im Uhrzeigersinn ↻
+name,"S-Bahn Circle Line (Clockwise, Ringbahn S41) ↻"
+name,S42: Ring gegen den Uhrzeigersinn ↺
+name,"S-Bahn Circle Line (Anticlockwise, Ringbahn S42) ↺"
+name,Bus N60: Flughafen BER - Terminal 1-2 => S+U Alexanderplatz
+name,TR4 Südspange
+name,Альт-Трептов
+name,Bundesstraße 96a
+name,Bus 166: U Boddinstraße => S Schöneweide
+name,Plänterwald
+name,Heide Wanderweg
+name,Spreeradweg [Beeskow↔Berlin]
+name,Bus N60: S+U Alexanderplatz => Flughafen BER - Terminal 1-2
+name,"Berlin, S Treptower Park"
+name,Innerer Parkring
+name,Bus 265: S Schöneweide => U Märkisches Museum
+name,"Bus 165: U Märkisches Museum => Köpenick, Müggelschlößchenweg"
+name,"Bus 165: Köpenick, Müggelschlößchenweg => U Märkisches Museum"
+name,"Bus 194: Marzahn, Helene-Weigel-Platz => U Hermannplatz"
+name,"Bus 194: U Hermannplatz => Marzahn, Helene-Weigel-Platz"
+name,Bus N65: Rahnsdorf/Waldschänke => S+U Alexanderplatz
+name,Bus N65: S+U Alexanderplatz => Rahnsdorf/Waldschänke
+name,Kaulsdorfer Weg
+name,Bus N94: U Hermannplatz => U Magdalenenstraße
+name,Bus N94: U Magdalenenstraße => U Hermannplatz
+name,S8: S Birkenwerder => S Zeuthen
+name,S8: S Zeuthen => S Birkenwerder
+name,Archenhold-Sternwarte
+name,Freigelände der Archenhold-Sternwarte
+name,Spreeweg
+name,Spree Trail / Berlin glacial valley
+name,S9: S Flughafen BER - Terminal 1-2 => S Spandau
+name,S9: S Spandau => S Flughafen BER - Terminal 1-2
+name,S85: S Grünau => S Pankow
+name,S85: S Schöneweide => S Pankow
+name,S85: S Pankow => S Grünau
+name,S85: S Pankow => S Schöneweide
+name,"Europäischer Fernwanderweg E11, Berlin"
+name,"European walking route E11, Berlin"
+name,Radweg Berlin-Dresden
+name,"Berlin, Alt-Treptow"
+name,"Berlin, Eichenstraße/Puschkinallee"
+name,"Berlin, Elsenstraße/S Treptower Park"
+name,"Berlin, S Treptower Park [Bus Puschkinallee]"
+name,"Berlin, S Treptower Park [Bus Treptowers]"
+name,Bus 166: S Schöneweide => U Boddinstraße
+name,"Berliner Ringbahn (Fern-, Regional- und Güterbahn)"
+name,RB24: Senftenberg => Eberswalde Hauptbahnhof
+name,RB24: Eberswalde Hauptbahnhof => Senftenberg
+name,"6020 Berlin-Moabit - Berlin-Moabit, Ring S-Bahn"
+name,"6170 Berlin-Moabit - Berlin-Moabit, Ring"
+name,Берлінская сцяна
+name,Mur de Berlín
+name,Berlínská zeď
+name,Berlin Wall
+name,Muro de Berlín
+name,Berliinin muuri
+name,Mur de Berlin
+name,Muro di Berlino
+name,ベルリンの壁
+name,베를린 장벽
+name,Берлинская стена
+name,Berlínsky múr
+name,柏林墙
+name,柏林圍牆
+name,Bus 265: U Märkisches Museum => S Schöneweide
+name,Luisenstadt
+name,6007 Berlin Warschauer Straße - Königs Wusterhausen
+name,Blitzer Elsenstr Ecke Puschkinallee Richtung SW
+name,"Flixbus N70: Hamburg ZOB => Prag, ÚAN Florenc"
+name,"Flixbus N70: Centrální autobusové nádraží v Hamburku => Praha, ÚAN Florenc"
+name,"Flixbus N70: Prag, ÚAN Florenc => Hamburg ZOB"
+name,"Flixbus N70: Praha, ÚAN Florenc => Centrální autobusové nádraží v Hamburku"
+name,"Flixbus 070: Hamburg ZOB => Dresden, Hbf. Bayrische Straße"
+name,"Flixbus 070: Dresden, Hbf. Bayrische Straße => Hamburg ZOB"
+name,"Flixbus 270: Dresden, Hbf. Bayrische Straße => Warnemünde, Strand"
+name,"Flixbus 270: Warnemünde, Strand => Dresden, Hbf. Bayrische Straße"
+name,Treptowers
+name,Paul-Gerhardt-Weg Etappe 1
+name,Berliner Ringbahn (S-Bahn)
+name,"Flixbus N232(part GER, CS): Praha, ÚAN Florenc => Rostock, Fährhafen"
+name,"Flixbus N232(part GER, CS): Praha, ÚAN Florenc => Rostock, přístav trajektů"
+name,"Flixbus N232(part GER, CS): Prag, ÚAN Florenc => Rostock, Fährhafen"
+name,"Flixbus N232(part GER, CS): Rostock, Fährhafen => Praha, ÚAN Florenc"
+name,"Flixbus N232(part GER, CS): Rostock, trajektový přístav => Praha, ÚAN Florenc"
+name,"Flixbus N232(part GER, CS): Rostock, Fährhafen => Prag, ÚAN Florenc"
+name,"Flixbus 370: Berlin, Alexanderplatz => Chemnitz, Busbahnhof"
+name,"Flixbus 370: Chemnitz, Busbahnhof => Berlin, Alexanderplatz"
+name,"Flixbus 170: Göhren, Rügen => Dresden, Hbf. Bayrische Straße"
+name,"Flixbus 170: Dresden, Hbf. Bayrische Straße => Göhren, Rügen"
+name,"Flixbus 002: Warnemünde, Strand => Leipzig, Hbf."
+name,"Flixbus 002: Leipzig, Hbf. => Warnemünde, Strand"
+name,RB24 Uml: Senftenberg => Eberswalde Hauptbahnhof
+name,RB24 Uml: Eberswalde Hauptbahnhof => Senftenberg
+name,FEX: Berlin Hauptbahnhof => Flughafen BER - Terminal 1-2
+name,FEX: Flughafen BER - Terminal 1-2 => Berlin Hauptbahnhof
+name,Berliner Innenstadt
+name,D-Netz Route 3 - Europaradweg R1 - Teil 14
+name,D-Net Route 3 - Euroroute R1 - part 14
+name,"Bus M43: Stralau, Tunnelstraße => U Berliner Straße"
+name,"Bus M43: U Berliner Straße => Stralau, Tunnelstraße"
+name,Schlesischer Busch
+name,Q1360410
+name,de:Niederwald
+name,Kasernengelände Am Treptower Park
+name,RB24: Wünsdorf - Berlin
+name,RB24: Berlin - Wünsdorf
+opening_hours,Mo-Fr 08:30-18:30
+opening_hours, Sa 08:30-13:00
+opening_hours,24/7
+opening_hours,Mo-Fr 09:00-20:00
+opening_hours, Sa 10:00-20:00
+opening_hours,Mo-Sa 08:00-21:00
+opening_hours,Mo-Sa 07:00-22:00
+opening_hours,Mo-Su 10:00-16:00
+opening_hours,Mo-Su 14:00-01:00
+opening_hours,Mo-Su 08:00-22:00
+opening_hours,"Tu-Fr 15:00-18:00+, Sa,Su 18:00-24:00+"
+opening_hours,Mo-Sa 14:00-22:00+
+opening_hours,Tu-Sa 18:00-24:00
+opening_hours, Tu-Th 11:30-14:30
+opening_hours,Mo-Su 06:00-18:00
+opening_hours,Mo-Sa 08:00-20:00
+opening_hours,Tu-Fr 13:00-18:00
+opening_hours, Sa 12:00-18:00
+opening_hours,"Mo-Th 12:00-24:00, Fr-Sa 12:00-01:00, Su 12:00-23:30"
+opening_hours,Mo-Fr 10:00-21:00
+opening_hours," Sa,Su 12:00-20:00"
+opening_hours,Mo-Su 12:00-22:00
+opening_hours,no
+opening_hours,Mo off
+opening_hours, Tu-Fr 13:00-20:00
+opening_hours, Sa 10:30-16:00
+opening_hours,Mo-Sa 09:00-20:00
+opening_hours,Mo-Sa 09:00-23:00
+opening_hours,Mo-Fr 10:00-18:00
+opening_hours,Sa 08:00-14:00
+opening_hours, Tu-Fr 09:00-18:00
+opening_hours,Mo-Fr 06:00-18:00
+opening_hours, Sa 06:00-17:00
+opening_hours, Su 06:00-16:00
+opening_hours,"Mo 14:00-20:00, Tu 16:00-02:00, We 19:30-02:00, Th,Su 14:00-02:00, Fr 21:00-04:00, Sa 22:00-04:00"
+opening_hours, Dec-Feb off
+opening_hours,"Mo-Fr 09:00-19:00, Sa 09:00-13:00"
+opening_hours,Tu-Sa 18:00-22:30
+opening_hours, Su 18:00-21:30
+opening_hours,Mo-Fr 09:00-19:00
+opening_hours, Sa 09:00-16:00
+opening_hours, Su off
+opening_hours,Sa-Su 08:00-18:00
+opening_hours, Sa 09:30-14:00
+opening_hours,Mo-Sa 12:30-23:00
+opening_hours," Su,PH 10:00-23:00"
+opening_hours,Mo-Fr 05:30-22:00
+opening_hours," Sa,Su 08:30-23:00"
+opening_hours,Mo-Fr 10:00-18:30
+opening_hours, Sa 10:00-16:00
+opening_hours,Mo 11:00-18:00
+opening_hours," Tu,We 09:00-18:00"
+opening_hours, Th 13:00-18:00
+opening_hours,Mo-Fr 11:30-18:00
+opening_hours,closed
+opening_hours,Mo-Fr 11:30-15:00
+opening_hours,"Mo,Tu,We,Fr 08:00-18:30"
+opening_hours, Th 08:00-20:00
+opening_hours, Sa 08:00-13:00
+opening_hours,"Mo-Fr 08:00-18:00 ""und nach Vereinbarung"""
+opening_hours," Sa ""nach Vereinbarung"""
+opening_hours,"Mo 08:30-13:00,15:00-18:00, Tu,We,Fr 08:30-13:00, Th 13:00-18:00"
+opening_hours,"Tu 10:00-12:00,14:00-16:00"
+opening_hours, We 16:00-18:00
+opening_hours, Th-Su 15:00-19:00
+opening_hours,Tu-Fr 10:30-19:30
+opening_hours, Sa 11:00-16:00
+opening_hours,Tu 14:00-15:00
+opening_hours,"""nach Vereinbarung"""
+opening_hours,Mo-Fr 09:00-17:00
+opening_hours,Mo 12:00-18:30
+opening_hours, Tu 10:00-18:30
+opening_hours, We 13:00-18:30
+opening_hours," Th,Fr 10:00-18:30"
+opening_hours,Tu-Fr 11:00-22:30
+opening_hours," Sa,Su,PH 13:00-22:30"
+opening_hours,"Tu,Th 15:00-18:00"
+opening_hours,Mo-Fr 12:00-19:00
+opening_hours,Mo-Sa 08:00-19:00
+opening_hours, Su 08:30-16:00
+opening_hours,Tu-Fr 10:00-19:00
+opening_hours,Mo-Sa 09:30-20:00
+opening_hours,Mo-Fr 08:00-20:00
+opening_hours,"Mo-Sa 06:00-02:30, Su 11:00-02:00"
+opening_hours,Mo-Th 09:00-19:00
+opening_hours,"Mo 09:00-13:00,15:00-18:00"
+opening_hours, Tu 09:00-15:00
+opening_hours," We,Th 09:00-13:00"
+opening_hours,Mo-Sa 10:00-16:00
+opening_hours,Mo-Fr 06:00-20:00
+opening_hours, Sa 07:00-18:00
+opening_hours, Su 07:00-18:00
+opening_hours,"14:00-18:00 ""an Tagen ungeraden Datums"""
+opening_hours,"Su,PH 10:00-23:00+"
+opening_hours, Mo-Sa 12:30-23:00+
+opening_hours,Mo-Fr 06:00-19:00
+opening_hours, Sa 08:00-15:00
+opening_hours, Su 10:00-16:00
+opening_hours,Mo-Sa 10:00-20:00
+opening_hours,Mo-Sa 09:00-19:00
+opening_hours,Mo-Th 08:00-19:00
+opening_hours, Fr 08:00-16:00
+opening_hours,Tu-Fr 09:00-18:00
+opening_hours,"""nach telefonische Vereinbarung"""
+opening_hours,Mo-Fr 13:00-18:00
+opening_hours, Sa 12:00-16:00
+opening_hours,Su-Mo off
+opening_hours,Mo 13:00-18:00
+opening_hours, Tu-We 08:00-13:00
+opening_hours, Fr 08:00-13:00
+opening_hours,"Mo 09:00-13:00,13:30-18:00"
+opening_hours," Tu 08:00-12:30,13:00-16:00"
+opening_hours, We 08:00-13:00
+opening_hours," Th 11:00-15:00,15:30-19:00"
+opening_hours,07:30-17:30
+opening_hours,Mo-Fr 08:00-18:30
+opening_hours,"PH,Mo-Su 12:00-22:00"
+opening_hours,"Mo-Fr 06:00-20:00, Sa 08:00-14:00, Su 10:00-14:00"
+opening_hours,same
+opening_hours,We-Fr 08:00-16:00
+opening_hours, Sa-Su 09:00-16:00
+opening_hours, Sa 09:00-15:00
+opening_hours,Tu-Sa 16:00+
+opening_hours,"Mo-Fr 05:30-20:00, Sa 06:00-20:00, Su 07:00-18:30, PH 08:00-17:00"
+opening_hours,Mo-Fr 11:00-23:00
+opening_hours," PH,Sa,Su 12:00-23:00"
+opening_hours,Mo-Fr 11:00-22:00
+opening_hours, Sa 12:00-22:00
+opening_hours, Tu 08:00-16:00
+opening_hours, We 14:00-18:00
+opening_hours, Th 09:00-15:00
+opening_hours,"Mo 09:30-14:00, 15:00-18:00"
+opening_hours," Tu, Th, Fr 09:00-13:00"
+opening_hours," We 09:00-14:00, 15:00-18:00 || ""nach Vereinbarung"""
+opening_hours,"Mo,Th 13:00-19:00"
+opening_hours," Tu,We 08:00-14:00"
+opening_hours," Fr open ""nach Vereinbarung"""
+opening_hours,Mo 15:00-19:00
+opening_hours, We 15:00-18:00
+opening_hours," Tu,Th 09:00-13:00,14:00-18:00 || ""nach Vereinbarung"""
+opening_hours,"Mo, We 08:00-13:00,13:30-19:00"
+opening_hours," Tu, Th 08:00-12:30,13:00-19:00"
+opening_hours, Fr 08:00-15:00
+opening_hours,"Mo, We, Fr 08:00-14:00"
+opening_hours," Tu, Th 12:00-18:00"
+opening_hours,"Mo 09:00-13:00, 14:00-16:00"
+opening_hours, Tu 09:00-13:00
+opening_hours," Th 09:00-13:00, 14:00-18:00"
+opening_hours," Fr 09:00-12:00 || ""nach Vereinbarung"""
+opening_hours,"Mo 09:30-12:00, 14:00-16:00"
+opening_hours, Tu 09:30-12:00
+opening_hours, We 09:30-13:30
+opening_hours," Th 09:30-13:30, 14:30-17:00"
+opening_hours, Fr 09:30-12:00
+opening_hours,Mo-Fr 09:00-12:00
+opening_hours, Mo 15:00-18:00
+opening_hours," Th 14:00-17:00 || ""nach Vereinbarung"""
+opening_hours,"Mo-Fr 09:00-12:00, Tu 14:00-17:00, Th 14:00-17:00 || ""nach Vereinbarung"""
+opening_hours,Mo-Th 07:00-13:00
+opening_hours," Tu, Th 14:00-19:00"
+opening_hours," Fr 08:00-13:00 || ""nach Vereinbarung"""
+opening_hours,"Mo,Th,Fr 08:00-14:00"
+opening_hours," Tu,We 13:00-19:00"
+opening_hours,Mo-Th 09:00-18:30
+opening_hours, Fr 09:00-18:00
+opening_hours, Sa 09:00-13:00
+opening_hours,Tu-Fr 11:00-18:00
+opening_hours, Sa 11:00-14:00
+opening_hours,Tu-Fr 10:00-20:00
+opening_hours,"Mo,We-Fr 17:00-22:00"
+opening_hours, Tu off
+opening_hours," Sa,Su 12:30-22:00"
+opening_hours,We-Mo 12:00-21:00
+opening_hours,"Mo,We,Fr 09:00-13:00"
+opening_hours," Tu,Th 14:00-18:30"
+opening_hours, PH closed
+opening_hours,Mo-Fr 07:00-18:00
+opening_hours,Mo-Sa 06:00-18:00
+opening_hours, Su 06:00-17:00
+opening_hours,Tu-Su 10:00-16:00
+opening_hours,Mo-Fr 09:00-18:00
+opening_hours,08:00-18:00
+opening_hours,Mo-Fr 07:00-22:00
+opening_hours, Sa 09:00-17:00
+opening_hours, Su 09:00-20:00
+opening_hours,"Mo, We-Fr 17:00-19:00"
+opening_hours, Sa 10:00-14:00
+opening_hours,"Mo-Fr 11:30-20:00, Sa-Su 12:30-20:00"
+opening_hours," Sa,Su 10:00-18:00"
+opening_hours,Mo-Sa 12:00-18:00
+opening_hours,Mo-Fr 11:00-22:00 Sa-Su 12:00-22:00
+opening_hours,"Tu, Fr, Su 11:00-20:00 ""bei guter Witterung"""
+opening_hours,Mo-Sa 13:00-20:00
+opening_hours,12:00-18:00
+opening_hours, Sa 08:00-20:00
+opening_hours,"Mo, Th 13:00-19:00"
+opening_hours," Tu, Fr 11:00-17:00"
+opening_hours,Mo-Fr 08:00-19:00
+opening_hours,Sa 09:00-18:00
+opening_hours, Mo-Fr 09:00-18:30
+opening_hours,"Mo-Fr ""15 Minuten vor dem ersten Filmstart"""
+opening_hours," Sa-Su ""30 Minuten vor dem ersten Filmstart"""
+opening_hours,"Mo,We,Th 09:00-12:30, 13:30-17:00"
+opening_hours,Mo-Sa 08:00-22:00
+opening_hours,Mo-Sa 07:00-21:00
+opening_hours,10:00-01:00
+opening_hours,12:00-17:00
+opening_hours,Mo-Fr 06:30-17:30
+opening_hours, SH 10:00-16:00
+opening_hours,"We-Su 14:00-16:30 ""museum"" || Th 20:00+"
+opening_hours," Sa-Su 15:00+ ""guided tour"""
+phone,+49 30 5337855
+phone,+49 30 53212201
+phone,+49-30-5333821
+phone,+49305360790
+phone,+49-30-5347134
+phone,+49 30 53 21 91 10
+phone,+49 30 5337847
+phone,+49 30 99408428
+phone,+49 30 49782634
+phone,+49 176 62373247
+phone,+49 177 299 3262
+phone,+49 30 5346809
+phone,+49 30 54777884
+phone,+49 30 53603575
+phone,+49 30 53338920
+phone,+49 30 5368391
+phone,+49 30 5348693
+phone,+49 30 53005090
+phone,+493032663104
+phone,+49 30 91474180
+phone,+49 30 89637941
+phone,+49 30 53600859
+phone,+49-30-91560131
+phone,+493098196195
+phone,+49 157 73160596
+phone,+49 3033843474
+phone,+493053211291
+phone,+49 30 53605830
+phone,+49 30 4048783
+phone,+49 30 75548482
+phone,+493012082028
+phone,+49 30 5302398 0
+phone,+49 30 44599946
+phone,+49 30 53218241
+phone,+49 30 5363800
+phone,+491786593850
+phone,+49 1521 9464879
+phone,+49 30 5360 1884-0
+phone,+491794403326
+phone,49 30 37463348
+phone,+49 30 53600956
+phone,+49 30 53 69 51 50
+phone,+49 30 53218166
+phone,+49 30 5363900
+phone,+49 30 53216490
+phone,+49 30 403655630
+phone,+49 30 69518942
+phone,+49 30 53214638
+phone,+49 30 536 063 7199
+website,http://www.apotheke.borchert-online.de/
+website,http://www.docmorris-apotheke.de/de/apotheken/list/berlin/treptow/
+website,https://qr.bvg.de/h105740
+website,https://qr.bvg.de/h105741
+website,https://qr.bvg.de/h106300
+website,https://qr.bvg.de/h106032
+website,https://qr.bvg.de/h106031
+website,https://www.real.de/nc/suche.html?bkz=8233
+website,http://www.aldi-nord.de
+website,http://www.billard-company.de/
+website,http://www.acetolokanta.de
+website,http://www.restaurant-hindi.de/
+website,https://qr.bvg.de/h105735
+website,https://qr.bvg.de/h105742
+website,https://qr.bvg.de/h106243
+website,http://www.angel-berlin.de
+website,http://www.märchenland.biz/
+website,https://qr.bvg.de/h106975
+website,http://www.renata-radic-haardesign.de/
+website,https://www.kalle-klein.de
+website,https://code.berlin
+website,https://kungerkiez.de/
+website,https://www.spielzeugparadies-berlin.de/
+website,http://drahtelse.de/
+website,https://www.grossformat-berlin.de/kontakt.htm
+website,https://qr.bvg.de/h105736
+website,https://qr.bvg.de/h106488
+website,https://qr.bvg.de/h105734
+website,https://qr.bvg.de/h105744
+website,https://qr.bvg.de/h105743
+website,https://qr.bvg.de/h105791
+website,https://qr.bvg.de/h105776
+website,https://qr.bvg.de/h106909
+website,https://qr.bvg.de/h106890
+website,https://qr.bvg.de/h106908
+website,https://qr.bvg.de/h106912
+website,https://qr.bvg.de/h106917
+website,https://ost-west-spaeti-berlin.eatbu.com
+website,https://www.kalle-klein.de/
+website,vermittelpunkt.com
+website,http://bjoernsaul.blogspot.de/
+website,https://qr.bvg.de/h106900
+website,http://www.haireinspaziert.berlin/
+website,https://motionlab.berlin/
+website,https://www.cotton.de
+website,https://qr.bvg.de/h105237
+website,https://qr.bvg.de/h106363
+website,https://www.physiotherapie-boettcher.de/
+website,https://www.libelle-kinderland.de/
+website,http://www.esthergoeltzer.de/
+website,https://flotte-berlin.de/cb-items/walter
+website,https://www.republik.sexy/
+website,http://www.hausarztpraxis-elsenstrasse.de
+website,https://cafe-bread-berlin.eatbu.com
+website,https://service.berlin.de/dienstleistung/330073/standort/330070/
+website,https://flotte-berlin.de/cb-items/gerard/
+website,https://cynatix.com
+website,bst.bund.de
+website,https://www.activ-fitness-deutschland.de/berlin-treptow.html
+website,https://irrlicht-verein.de/
+website,https://resi-ressourcen.org/
+website,http://www.baumgroup.de/
+website,https://yukalou.de/
+website,https://www.soulmate-restaurant.de/
+website,https://www.inselberlin.de/
+website,https://theater-treptower-park.de/
+website,https://www.zenner.berlin/garten/
+website,https://www.berlin.de/stadtbibliothek-treptow-koepenick/bibliotheken/alt-treptow/
+website,https://www.kfz-pruefstelle-berlin.de/
+website,https://www.atelierhaus-mengerzeile.de/haus/home
+website,http://www.bekenntniskirche.de/
+website,http://www.vietnambotschaft.org/
+website,http://www.klipper-berlin.de
+website,https://www.christus-treff-berlin.de/
+website,https://www.festsaal-kreuzberg.de/
+website,https://clubdervisionaere.com/
+website,https://www.fanny-zobel-strasse.de/
+website,https://heureka.froebel.info/
+website,http://www.arena.berlin/en/location/badeschiff/
+website,https://www.berlin.de/mauer/mauerweg/
+website,https://fahrinfo.vbb.de/bin/stboard.exe/dn?start=yes&input=900190001
+website,https://www.berlin.de/sen/uvk/natur-und-gruen/landschaftsplanung/gruene-hauptwege/die-wege-im-ueberblick/artikel.930425.php
+website,https://www.berlin.de/sen/uvk/natur-und-gruen/landschaftsplanung/gruene-hauptwege/die-wege-im-ueberblick/artikel.930354.php
+website,https://www.planetarium.berlin/archenhold-sternwarte
+website,https://www.berlin.de/sen/uvk/natur-und-gruen/landschaftsplanung/gruene-hauptwege/die-wege-im-ueberblick/artikel.928698.php
+website,http://www.radweg-berlin-dresden.de
+website,https://fahrinfo.vbb.de/bin/stboard.exe/dn?start=yes&input=900190501
+website,https://fahrinfo.vbb.de/bin/stboard.exe/dn?start=yes&input=900190004
+website,https://fahrinfo.vbb.de/bin/stboard.exe/dn?start=yes&input=900190100
+website,https://fahrinfo.vbb.de/bin/stboard.exe/dn?start=yes&input=900190701
+website,https://fahrinfo.vbb.de/bin/stboard.exe/dn?start=yes&input=900190702
+website,https://meinfernbus.de/unser-angebot/linien/n70.html
+website,https://meinfernbus.de/unser-angebot/linien/070.html
+website,https://meinfernbus.de/unser-angebot/linien/270.html
+website,https://www.dahme-seenland.de/poi/berlin/wandertouren/etappe-1-paul-gerhardt-weg-von-berlin-alexanderplatz-wuhlheide/
+website,https://www.muenchen-zob.de/de/carriers/1/connections/N232
+wheelchair,no
+wheelchair,yes
+wheelchair,limited
+wheelchair,"Billard Salon voll rollstuhlgerecht, Platz auch für E-Rollstühle. WC ist rollstuhlgerecht, jedoch werden dort viele Dinge gelagert, daher nur bedingt nutzbar. Es gibt Getränke + einige warme Gerichte für den kleinen Hunger. Bedienungen immer freundlich"
+wheelchair,"Zugang schmal, aber ebenerdig. Rollstuhl WC zwar vorhanden, aber als Abstellraum genutzt. d.h. nicht für Behinderte nutzbar. Für Elektro-Rollstühle vermutlich sowieso zu eng."
+wheelchair,"Früher konnte man von den Seiten her auf die untere Terrasse rollern, grade so, wenn man die Tische wegschob. Und dann in den Innenraum. Das geht jetzt nicht mehr."
+wheelchair,Haben eine Rampe und ein rollstuhlgerechtes WC
+wheelchair,"Fahrstuhlzugang vom Innenhof, Rolli-Toilette vorhanden"
+wheelchair,"Rollstuhlgerechter Zugang über Seiteneingang, Barrierefreies WC im UG über Aufzug zu erreichen. Personal sehr freundlich und hilft gern."
+wheelchair,"Sehr steil, nicht ohne Begleitung oder Antrieb zu empfehlen."
+wheelchair,"Emporen nur über Treppen erreichbar, Kirchenschiff jedoch mit Rollstuhl erreichbar"
+wheelchair,"Durchs Tor kann man ebenerdig, kein Rolli-WC"
+wheelchair,use_sidepath
+natural,tree
+natural,tree_stump
+natural,shrub
+natural,water
+natural,wood
+natural,tree_row
+natural,sand
+natural,scrub
+natural,grassland
+access,yes
+access,private
+access,no
+access,delivery
+access,customers
+access,permissive
+access,emergency
+access,destination
+access,designated
+access,no @ (Mo-Fr 09:00-18:00)
+access,no @ (Mo-Fr 07:00-19:00)
+access,green_sticker_germany
+centralkey,eurokey
+changing_table,yes
+charge,0.5 EUR
+description,Berliner Toilette
+description,"S Treptower Park, Gleis 2"
+description,"Einfahrt unmöglich, festliegende Ölsperre"
+description,Information about Molecule Man
+description,"S Treptower Park, Gleis 1"
+description,"S Treptower Park, Gleis 3"
+description,"S Treptower Park, Gleis 4"
+description,"Abteibrücke, LH= 9m, WT= 1,6m. Zwischen Treptow und Insel der Jugend. Älteste Stahlbetonbrücke Deutschlands"
+description,InBit Institut für Betriebsorganisation und Informationstechnik
+description,Vordereingang
+description,Hintereingang
+description,Ks-Mehrabschnittssignal als Einfahrsignal in nordöstlicher Richtung
+description,Bagels & Delicatessen
+description,Textildruckerei
+description,"Geoinformationssystem, GIS"
+description,Kurz nach der deutschen Wiedervereinigung in Folge einer japanischen Spendenkampagne gepflanzt – zur Geschichte siehe https://facettenneukoelln.wordpress.com/2019/10/03/japanische-kirschbaeume-erinnern-an-die-freude-ueber-die-wiedervereinigung/
+description,"Fachärztin für Orthopädie/Unfallchirurgie, Akupunktur, Osteopathie, Schmerztherapie, Kinderorthopädie, Sonografie, Röntgen"
+description,"Facharzt für Orthopädie, Unfallchirurgie, Chirotherapie, Sportmedizin, Schmerztherapie, Kinderorthopädie, Sonografie, Röntgen"
+description,"Manuelle Therapie, Krankengymnastik, Massagen, manuelle Lymphdrainage, Fango, Ultraschall, Elektrotherapie, Fußreflexzonentherapie, Kinesio-Tape, PNF-Therapie, medizinische Trainingstherapie, Rhea-Sport"
+description,"Facharzt für Frauenheilkunde & Geburtenhilfe, Gynäkologische Onkologie"
+description,Fachärztin für klassische & ästhetische Dermatologie
+description,Facharzt für Innere Medizin & Rheumatologie
+description,"Facharzt für Allgemeinmedizin, Chirotherapie, Homöopathie, Naturheilverfahren"
+description,"Fachärztin für Allgemeinmedizin, Naturheilverfahren"
+description,An den Treptowers
+description,PFAU-Tec Jumbo ohne Kinderbank (Walter) und Bakfiets CargoTrike Classic Wide mit 2 Kinderbänken und Regenverdeck (Inge)
+description,Fahrradpraxis Jürgen Albrecht
+description,"Vermessung, CAD&GIS, Consulting"
+description,"TaKeTiNa Berlin, Helmut Erler
+taketina.heyrec.org"
+description,Covid19-Impfzentrum Berlin: Arena
+description,Bakfiets CargoBike Classic Long mit 1 Kinderbank
+description,KIEZKLUB Gerard Philipe
+description,Tarnbehörde des Verfassungsschutz
+description,mit Parkscheibe
+description,Tor
+description,Durch Schnitzen verzierter Baumstumpf.
+description,Warschauer Str - Königs Wuster
+description,Wachturm der ehemaligen Berliner Mauer
+description,Unterführung
+description,open only in nice weather
+description,Parkplatz Rewe/Aldi
+description,Agfa-Fabrik
+description,Raucherplatz
+description,Villa
+description,"Missionarisches Projekt ""Christus-Treff Berlin"""
+description,Kenotaphe
+description,Aufzugsfläche
+description,"Aktuell gesperrt bis vorraussichtlich 2028, teilweise auch demontiert."
+description,Freibad in einem umgebauten Schubleichter
+description,Baustellengelände Baustelle Elsenbrücke
+description,Feuerwehraufstellfläche
+description,Behelfsbrücke
+description,"Firma Weber, Metallwarenfabrik"
+description,"ABOAG-Betriebshof, Shedhalle (heute Arena Berlin)"
+description,Border PL/LT - Olsztyn (PL) - Torun (PL) - Poznan (PL) - Berlin (D) - Halle (D) - Hameln (D) - Osnabrück (D) - Hengeloh (NL) - Deventer (NL) - Ammersfoort (NL) - Scheveningen (NL)
+description,S Treptower Park S42 S8 S85 S9 Bahnsteig
+description,S Treptower Park S41 S8 S85 S9 Bahnsteig
+description,"Former course of the Berlin wall, some marked with cobblestones"
+description,"Vedení bývalé Berlínské zdi, místy označené dlažebními kostkami"
+description,"Ehem. Verlauf der Berliner Mauer, Markierung durch Pflastersteine"
+description,"Die 1. Etappe führt von der Nikolaikirche in Berlin über den Görlitzer Park, Treptower Park, Plänterwald zur Wuhlheide. Entlang des Weges befinden sich zahlreiche Denkmäler, historische Bauwerke und Museen."
+description,"Different definitions of Innenstadt exist. The one based on the S-Bahn-Ring is used as basis for the Berlin Environmentl Zone and VBB tariff/fare zone A. It is also used as basis for Planwerk Innere Stadt 2010, amd in https://www.stadtentwicklung.berlin."
+description,Alternativstrecke Treptower Park
+drinking_water,yes
+drinking_water,no
+fee,yes
+fee,no
+payment,yes
+payment,only
+payment,no
+toilets,flush
+toilets,yes
+toilets,seated
+toilets,no
+toilets,designated
+toilets,customers
+unisex,yes
+level,-1
+level,0
+level,1
+level,4
+level,3
+level,2
+button_operated,no
+button_operated,yes
+crossing,traffic_signals
+crossing,no
+crossing,unmarked
+crossing,both
+crossing,marked
+crossing,uncontrolled
+crossing,left
+crossing,yes
+crossing,right
+crossing,dashes
+mapillary,328978908634158
+mapillary,2899703770347636
+mapillary,969636117177077
+mapillary,134700048680471
+mapillary,243689707546873
+mapillary,370530274380914
+mapillary,1358758351178153
+mapillary,832312190744386
+mapillary,520984439087566
+mapillary,200698788405385
+mapillary,529850201516930
+mapillary,468958780830490
+mapillary,841876366740995
+mapillary,1267691770313408
+mapillary,258281569318686
+mapillary,488987325677503
+mapillary,942371629853059
+mapillary,545817676387021
+mapillary,5522935451113611
+mapillary,194305632512777
+mapillary,918653338983389
+mapillary,938922340254153
+mapillary,308487830669261
+mapillary,255795386284672
+mapillary,441383270866918
+mapillary,878811616512750
+mapillary,296912182100787
+survey,2017-08-25
+survey,2017-12-04
+survey,2017-09-11
+survey,2017-08-24
+survey,2017-09-19
+survey,2020-08-19
+survey,2017-11-12
+survey,2018-01-11
+survey,2022-11-05
+survey,2020-11-16
+survey,2021-03-30
+survey,2022-01-06
+tactile_paving,yes
+tactile_paving,no
+traffic_signals,yes
+traffic_signals,forward
+traffic_signals,no
+traffic_signals,backward
+traffic_signals,signal
+note,siehe Relation für Details
+note,"Es kann nur entweder das Zs3v ""7"" oder das Zs 6 leuchten, da im selben Zusatzanzeiger verbaut"
+note,no opening_hours to be found outside
+note,usually closed!
+note,In Hausnr. 1 befindet sich ein Show- und Verkaufsraum.
+note,"Es kann nur entweder das Zs3v ""5"" oder das Zs 6 leuchten, da im selben Zusatzanzeiger verbaut"
+note,Kein EC-Zahlung möglich
+note,Höhe geschätzt
+note,Vereinssitz
+note,Hier Standort des Showrooms. In Hausnr. 2 befinden sich Werkstatträume.
+note,Weltacker-Club-Mitglied
+note,Bildhauerei in Berlin schreibt die Skulptur Magda Gádor zu: https://bildhauerei-in-berlin.de/bildwerk/saeule-6861/
+note,"Irrlicht e.V. - Verein für fantastische Kultur, Rollenspiel und Brettspiel"
+note,"Übergeordnete Straße, Stufe II"
+note,"ja, Krüllsstraße (mit 2 s in der Mitte)"
+note,Ergänzungsstraße mit besonderer Bedeutung
+note,"Veränderte Verkehrsführung wegen Baustelle, es stehen zwei Fahrstreifen auf der späteren Gegenfahrbahn zur Verfügung"
+note,BAB 100 Abschnitt 17 Planung
+note,"Kreuzungszufahrt zur Elsenstraße gesperrt (wegen Kreuzungsumbau im Zuge des 16. BA der A100), Umleitung über Puschkinallee Einbahnstraßenregelung aufgehoben, damit Anlieger Grundstücke erreichen können"
+note,Außerdienststellung am 30.03.2012
+note,eigentl. Baubeginn Ende 2. Quartal 2020
+note,destination* nach Ende der Bauarbeiten aktualisieren
+note,Restauriert 1993
+note,"Bauschild: ""Hier sollen bis April 2022 101 kostengünstige und unverkäufliche Genossenschaftswohnungen entstehen.""
+2022-11: sagt nun Mai 2023 per https://www.openstreetmap.org/note/3241467"
+note,Baustellenzufahrt Elsenbrücke
+note,"Veränderte Verkehrsführung wegen Baustelle, es stehen zwei baulich voneinander getrennte Fahrstreifen zur Verfügung"
+note,Temporäre Behelfsbrücke
+note,"Kreuzungszufahrt zur Elsenstraße gesperrt (wegen Kreuzungsumbau im Zuge des 16. BA der A100), Umleitung über Puschkinallee"
+note,Baustellengelände Ausbau des Berliner Mauerwegs bis etwa Mitte 2023 (Stand 09/2022)
+note,Pfad zur Umgehung am Rande der Uferweg-Baustelle (Stand 03/2023)
+note,Pausenraum
+note,Sehr ungenau. Quelle mit Karten https://www.berlin.de/senuvk/umwelt/luftqualitaet/umweltzone/de/gebiet.shtml
+note,im Uhrzeigersinn
+note,gegen den Uhrzeigersinn
+note,Die Routenführung entspricht der vor Ort vorgefundenen Wegmarkierung
+note,Die Routenführung entspricht der vor Ort vorgefundenen Wegmarkierung. Zwischen S-Bahnhof Betriebsbahnhof Rummelsburg und Friedenhorster Straße folgt die Route der vor Ort aufgefunden Markierung und nicht den Verlauf der Webseite.
+note,Gleise im Nordteil noch eingleisig
+note,Baustellen-bedingt ist dieser Linienverlauf derzeit ausgesetzt
+note,Der Wanderweg ist in Berlin nicht markiert. Die Routenführung entspricht den Angaben der Webseite und dem vor Ort derzeit möglichen Wegverlauf.
+note,border of Innenstadt of Berlin using outer tracks of S-Bahn-Ring 6020
+place,suburb
+place,neighbourhood
+place,islet
+place,mobile_home
+place,locality
+light_rail,yes
+local_ref,2
+local_ref,1
+local_ref,3
+local_ref,4
+public_transport,stop_position
+public_transport,station
+public_transport,platform
+public_transport,2
+public_transport,stop_area
+public_transport,stop_area_group
+train,yes
+usage,main
+usage,test
+source,survey
+source,http://www.parkcentertreptow.de/einkaufswelt/centerplan.html
+source,HiRes aerial imagery
+source,Geoportal Berlin / Hauskoordinaten
+source,local_knowledge
+source,2015-12-03
+source,Solikon 2015
+source,estimate
+source, extrapolate
+source, survey
+source,Eigene Felderfassung
+source,Geoportal Berlin / Adressen Berlin
+source,https://www.neubaukompass.de/neubau/bouchegaerten-berlin-alt-treptow-berlin/
+source,Geoportal Berlin / Baumbestand
+source,Mapillary 2020-07-14
+source,Mapillary 2022-01-06
+source,aerial imagery
+source,ALKIS
+source,DE:zone:30
+source,sign
+source,DE:urban
+source,yahoo_wms
+source,ARCore
+source,Amtsblatt Berlin 31/2016
+source,local knowledge
+source,www.wsa-spree-havel.wsv.de
+source,30
+source,Geoportal Berlin / ALKIS Berlin - Gebäude
+contact,http://www.s-bahn-berlin.de/fahrplanundnetz/bahnhof/treptower-park/152
+contact,https://www.facebook.com/ARENABERLIN
+contact,https://www.instagram.com/arenaberlin/
+contact,+49 30 53320339
+contact,http://www.arena-berlin.de
+contact,+49 30 91513728
+contact,https://www.twins-catering.de/
+contact,praxis@annamendelson.de
+contact,+49 30 21454933
+contact,https://www.annamendelson.de/
+contact,info@goldsprint.de
+contact,+49 30 53605570
+contact,http://www.goldsprint.de
+contact,+49 30 53605896
+contact,https://www.rossmann.de
+contact,kontakt@inselberlin.de
+contact,inselberlin
+contact,+49 30 80961849
+contact,https://de.foursquare.com/v/inselgarten/4c4ece3cdb2c20a177cffd74
+contact,+49 30 80961850
+contact,http://inselberlin.de
+contact,kulturhaus-insel-berlin-berlin-3
+contact,+49 30 53218552
+contact,http://www.treptower-klause.de/
+contact,+49 30 991 408 4
+contact,info@haarfabrika.de
+contact,+49 30 53002950
+contact,http://www.haarfabrika.de/
+contact,hello@code.berlin
+contact,+49 30 120 859 61
+contact,https://code.berlin
+contact,+49 30 20396810
+contact,info@klipper-berlin.de
+contact,+49 30 53216490
+contact,http://www.klipper-berlin.de/
+contact,http://www.lpg-naturkost.de/
+contact,+49 30 64830642
+contact,https://www.cafe-grenzenlos.de/
+contact,+49 30 68409460
+contact,http://www.lebenswelten.de/27/integrations-fachdienst
+contact,https://www.berliner-volksbank.de/
+contact,http://www.kanuliebe.de/
+contact,http://www.ergowinkelmann.de
+contact,http://praxis-khalaf.de/
+contact,+49 30 53699920
+contact,https://www.bellmann-bestattungen.de/
+contact,+49 171 4562890
+contact,http://www.fahrschule-berg.de/
+contact,https://www.pings-art.de/
+contact,+49 30 53213930
+contact,https://www.zahn33.de/standort-treptow
+contact,+49 30 5348620
+contact,+49 30 68086134
+contact,https://www.christus-treff-berlin.de/projektladen/
+contact,info@mundraub.org
+contact,+49 3054821101
+contact,http://mundraub.org
+contact,https://dialyse-treptow.de/
+contact,http://kanzlei-weitzberg.de
+contact,https://www.taubenblau-berlin.de/
+contact,+49 30 5346654
+contact,+49 30 5337798
+contact,https://www.frauenaerztin-treptow.de/
+contact,+49 30 13896377
+contact,+49 30 5348560
+contact,https://www.zahnarzt-treptow-berlin.de/
+contact,https://www.passenger-coffee.de/
+contact,+49 30 694 847 2
+contact,+49 30 28436778
+contact,https://denoantri.com/
+contact,info@mashasbagels.com
+contact,+49 30 50597960
+contact,https://www.mashasbagels.com
+contact,http://else.tv/
+contact,http://ourvodka.com/ourberlin/
+contact,+49 30 34508898
+contact,https://moms-restaurant.de/
+contact,+49 30 54733733
+contact,https://verdampftnochmal.de
+contact,https://www.facebook.com/Safari-Falafel-800791223640330/
+contact,http://www.alpha-nova-kulturwerkstatt.de/galerie/
+contact,http://www.alpha-nova-kulturwerkstatt.de/kulturwerkstatt/
+contact,http://flutgraben.org/
+contact,+49 30 5200080
+contact,https://www.aed-sicad.de/
+contact,http://www.romnja-power.de/
+contact,orthopaedie-treptow@freenet.de
+contact,+49 30 53213113
+contact,+49 30 5337373
+contact,https://www.orthopädie-treptow.de/
+contact,+49 30 5348695
+contact,dr-sen-gupta@freenet.de
+contact,https://orthopädie-treptow.de/
+contact,+49 30 53015689
+contact,+49 30 53014740
+contact,+49 30 53216611
+contact,+49 30 5348698
+contact,+49 30 5348692
+contact,+49 30 53609667
+contact,+49 30 5348694
+contact,+49 30 53212148
+contact,+49 30 5348601
+contact,http://www.liljedal.de/
+contact,+49 30 5337544
+contact,contact@factoryberlin.com
+contact,https://factoryberlin.com/
+contact,+49 30 76293350
+contact,https://www.arc-greenlab.de/
+contact,+49 30 12086364
+contact,https://www.deezernextbike.de/
+contact,+49 30 67814100
+contact,http://www.berlinervinylwerk.de/
+contact,+49 30 233210000
+contact,https://www.allego.eu/de-de/elektromobilisten/ladestation-finden
+contact,jukuz@hvd-bb.de
+contact,+49 30 53218163
+contact,https://humanistisch.de/jukuz
+contact,http://www.sternundkreis.de
+contact,info@engelmann-schmidt.de
+contact,sekretariat@bouche.schule.berlin.de
+contact,+49 30 5337476
+contact,+49 30 5337745
+contact,https://www.bouche-schule.de/
+contact,info@der-hollaender.de
+contact,+49 30 5368745
+contact,+49 30 53002877
+contact,https://www.der-hollaender.de/
+contact,http://www.oberhafenkantine-berlin.de/
+contact,http://www.bouche-gp.de
+contact,https://www.facebook.com/FestsaalKreuzberg/
+contact,https://www.instagram.com/festsaalkreuzberg/
+contact,+49 30 5337203
+contact,http://www.offensiv91.de/index.php/de/kitas/offensive-kruemel
+contact,kita-amtreptowerpark@kita-suedost.de
+contact,+49 30 5337615
+contact,http://www.kindertagesstaetten-suedost.de/kitas.html?kitaid=6
+contact,buero.treptow@cabuwazi.de
+contact,+49 30 60969563
+contact,https://cabuwazi.de/
+contact,https://portal1879.webcam-profi.de/
+contact,https://www.dpfonline.de/
+contact,https://www.facebook.com/badeschiff
+contact,https://www.instagram.com/badeschiff_berlin/
+contact,garten@klima.kungerkiez.de
+contact,https://klima.kungerkiez.de/gemeinschaftsgarten.html
+contact,ASPKuhfuss@kinderring-berlin.de
+contact,+49 30 53699069
+contact,https://kinderring-berlin.de/asp-kuhfuss/
+contact,sekretariat@kiefholz.schule.berlin.de
+contact,+49 30 53007795
+contact,+49 30 53007686
+contact,https://www.planetarium.berlin/archenhold-sternwarte
+network,Verkehrsverbund Berlin-Brandenburg
+network,VBB
+network,Berliner Straßenbrunnen
+network,Deezer nextbike
+network,rcn
+network,s-bahn
+network,Q315451
+network,de:Verkehrsverbund Berlin-Brandenburg
+network,lcn
+network,lwn
+network,iwn
+network,Flixbus
+network,Q15712258
+network,en:Flixbus
+network,rwn
+network,ncn
+official_name,Berlin Treptower Park
+official_name,Mom's Creation Restaurant
+official_name,Jugendkunst- und Kulturzentrum Gérard Philipe
+station,light_rail
+surveillance,indoor
+surveillance,outdoor
+surveillance,camera
+surveillance,building
+uic_ref,8089043
+wikidata,Q559274
+wikidata,Q1411368
+wikidata,Q641323
+wikidata,Q25063930
+wikidata,Q40387612
+wikidata,Q2451777
+wikidata,Q29015582
+wikidata,Q111792538
+wikidata,Q110458483
+wikidata,Q115857980
+wikidata,Q110485851
+wikidata,Q110472769
+wikidata,Q117154692
+wikidata,Q113365876
+wikidata,Q115864483
+wikidata,Q115864278
+wikidata,Q26690348
+wikidata,Q115864412
+wikidata,Q110484147
+wikidata,Q111008037
+wikidata,Q115860232
+wikidata,Q110463841
+wikidata,Q110537477
+wikidata,Q16911010
+wikidata,Q666937
+wikidata,Q15110321
+wikidata,Q23834460
+wikidata,Q17124556
+wikidata,Q2246601
+wikidata,Q334380
+wikidata,Q2052827
+wikidata,Q1489375
+wikidata,Q80543118
+wikidata,Q117422472
+wikidata,Q111327937
+wikidata,Q815009
+wikidata,Q310522
+wikidata,Q2523850
+wikidata,Q115794233
+wikidata,Q37902175
+wikidata,Q5136437
+wikidata,Q48441
+wikidata,Q23786526
+wikidata,Q798967
+wikidata,Q34977464
+wikidata,Q1333774
+wikidata,Q107587896
+wikidata,Q20827135
+wikidata,Q647266
+wikidata,Q12374455
+wikidata,Q15118875
+wikidata,Q702517
+wikidata,Q1007298
+wikidata,Q17353685
+wikidata,Q17353735
+wikidata,Q4048678
+wikidata,Q632629
+wikidata,Q17354108
+wikidata,Q4048680
+wikidata,Q4048677
+wikidata,Q459884
+wikidata,Q525056
+wikidata,Q5086
+wikidata,Q324667
+wikidata,Q96107092
+wikidata,Q454985
+wikidata,Q59780184
+wikidata,Q100533383
+wikidata,Q1297200
+wikidata,Q1734923
+wikipedia,de:Bahnhof Berlin Treptower Park
+wikipedia,de:Gemeinsames Terrorismusabwehrzentrum
+wikipedia,de:Arena Berlin
+wikipedia,de:Liste der Straßenbrunnen im Berliner Bezirk Treptow-Köpenick
+wikipedia,de:CODE University of Applied Sciences
+wikipedia,de:Treptower Brücke (Landwehrkanal)
+wikipedia,de:Alpha nova & galerie futura
+wikipedia,de:Bundesservice Telekommunikation
+wikipedia,de:Treptower Park
+wikipedia,de:Abteibrücke
+wikipedia,de:Parkwegbrücke
+wikipedia,de:Treptowers
+wikipedia,de:Elsenstraße (Berlin-Alt-Treptow)
+wikipedia,de:Bekenntniskirche (Berlin)
+wikipedia,de:Bundesamt für Verfassungsschutz
+wikipedia,de:Vietnamesische Botschaft in Berlin
+wikipedia,de:Spreetunnel Stralau–Treptow
+wikipedia,de:Ringbahnbrücke Oberspree
+wikipedia,de:Liste der Straßen und Plätze in Berlin-Alt-Treptow#Uferpromenade
+wikipedia,de:Club der Visionaere
+wikipedia,de:Obere Freiarchenbrücke
+wikipedia,de:Badeschiff (Berlin)
+wikipedia,de:Elsenbrücke
+wikipedia,de:Berliner Mauerweg
+wikipedia,de:Umweltzone
+wikipedia,de:Berlin-Alt-Treptow
+wikipedia,de:Bundesstraße 96a
+wikipedia,de:Innerer Parkring
+wikipedia,de:Kaulsdorfer Weg
+wikipedia,de:Archenhold-Sternwarte
+wikipedia,de:Spreeweg (Berlin)
+wikipedia,en:E11 European long distance path
+wikipedia,de:Berliner Ringbahn
+wikipedia,en:Berlin Wall
+wikipedia,de:Luisenstadt
+wikipedia,de:Bahnstrecke Berlin Warschauer Straße–Königs Wusterhausen
+wikipedia,de:Schlesischer Busch
+wikipedia,de:Kasernengelände Am Treptower Park
+email,treptow@docmorris-apotheke.de
+email,info@motionlab.berlin
+email,poststelle@bst.bund.de
+email,fitnessampark@activ-fitness.de
+email,post@irrlicht-verein.de
+email,info@indoboard.de
+email,info@christus-treff-berlin.de
+building,yes
+building,commercial
+building,2
+building,32
+building,office
+building,warehouse
+building,1
+building,tower
+building,concrete
+building,kindergarten
+building,0
+building,apartments
+building,4
+building,6
+building,5
+building,tent
+building,retail
+building,3
+building,detached
+building,shed
+building,carport
+building,kiosk
+building,service
+building,supermarket
+building,white
+building,house
+building,gatehouse
+building,stone
+building,roof
+building,industrial
+building,brick
+building,garages
+building,7
+building,plaster
+building,school
+building,college
+building,factory
+building,arts_centre
+building,monument
+building,observatory
+building,government
+building,civic
+building,residential
+building,sports_hall
+building,healthcare
+building,8
+building,manufacture
+building,boat
+building,semidetached_house
+building,chapel
+building,12
+building,11
+building,garage
+building,train_station
+building,48
+building,stairway
+building,parking
+building,15
+building,hut
+short_name,GTAZ
+short_name,Apollo
+short_name,BfV
+short_name,BKA
+url,https://www.bka.de/DE/UnsereAufgaben/Kooperationen/GTAZ/gtaz_node.html
+url,https://www.lohmuehle-berlin.de/
+collection_times,"Mo-Fr 15:00,17:00"
+collection_times,Sa 14:00
+collection_times,"Mo-Fr 16:45, Sa 13:30"
+collection_times,"Mo-Fr 15:15,17:15,19:00,21:00"
+collection_times, Sa 13:45
+collection_times," Su 11:30,21:00"
+collection_times,"Mo-Fr 14:45,16:45, Sa 13:45"
+collection_times,"Mo-Fr 15:00, 17:00"
+collection_times, Sa 14:00
+collection_times,Mo-Fr 20:00
+collection_times,Mo-Fr 18:00
+collection_times,"Mo-Fr 14:45,16:45"
+collection_times,Sa 13:45
+post_box,2
+post_box,lamp
+post_box,pillar
+post_box,1
+postal_code,12435
+postal_code,12059
+postal_code,12045
+support,pole
+support,ground
+support,traffic_sign
+support,wall
+support,wall_mounted
+support,street_lamp
+entrance,yes
+entrance,main
+entrance,service
+entrance,exit
+entrance_marker,yes
+barrier,gate
+barrier,swing_gate
+barrier,bollard
+barrier,yes
+barrier,cycle_barrier
+barrier,lift_gate
+barrier,entrance
+barrier,full-height_turnstile
+barrier,kerb
+barrier,collision_protection
+barrier,rock
+barrier,fence
+barrier,wall
+barrier,chain
+barrier,barrier_board
+barrier,hedge
+barrier,retaining_wall
+bicycle,no
+bicycle,yes
+bicycle,optional_sidepath
+bicycle,use_sidepath
+bicycle,designated
+bicycle,private
+bicycle,destination
+bicycle,permissive
+bicycle,dismount
+foot,yes
+foot,no
+foot,use_sidepath
+foot,designated
+foot,private
+foot,permissive
+swing_gate,single
+swing_gate,double
+bus,yes
+bus,yes|yes|yes|designated
+bus,yes|yes|yes|yes|designated
+bus,yes|yes|designated
+bus,yes|yes|yes|yes|yes|designated
+bus,yes|designated
+bench,yes
+bench,no
+bench,stand_up
+bench,block
+bin,yes
+bin,no
+lit,yes
+lit,no
+shelter,yes
+shelter,no
+disused,post_box
+disused,"Mo-Fr 15:00,16:45"
+disused, Sa 13:45
+disused,supermarket
+disused,cafe
+disused,fast_food
+disused,yes
+disused,sports
+disused,Allianz Versicherungs-AG (Niederlassung Berlin)
+disused,insurance
+disused,electronics
+disused,toilets
+disused,restaurant
+disused,zipwire
+disused,bakery
+disused,coffee
+disused,ice_cream
+disused,clinic
+disused,signal_box
+gtfs_id,070101006300
+gtfs_id,070101006032
+gtfs_id,070101005237
+gtfs_id,070101006363
+brand,real
+brand,Q698473
+brand,de:Real (Einzelhandel)
+brand,ALDI Nord
+brand,Q41171373
+brand,hu:Aldi Nord
+brand,REWE
+brand,Q16968817
+brand,de:Rewe
+brand,Q708835
+brand,de:Postbank
+brand,Amplifon
+brand,Q477222
+brand,en:Amplifon
+brand,Rossmann
+brand,Q316004
+brand,de:Rossmann (Handelskette)
+brand,Euronet
+brand,Q5412010
+brand,en:Euronet Worldwide
+brand,LPG BioMarkt
+brand,Q107983669
+brand,Volksbank
+brand,Deichmann
+brand,Q664543
+brand,en:Deichmann SE
+brand,BackWerk
+brand,Q798298
+brand,de:BackWerk
+brand,Tchibo
+brand,Q564213
+brand,de:Tchibo
+brand,McPaper
+brand,Q1915329
+brand,de:McPaper
+brand,Apollo-Optik
+brand,Q618940
+brand,de:Apollo-Optik
+brand,Mäc-Geiz
+brand,Q1957126
+brand,de:Mäc-Geiz
+brand,Ernsting's family
+brand,Q1361016
+brand,de:Ernsting’s family
+brand,SIXT
+brand,Q705664
+brand,en:Sixt
+brand,Our/Vodka
+brand,Lila Bäcker
+brand,Q57516591
+brand,fLotte
+brand,Q102333872
+brand,Deutsche Telekom
+brand,Q9396
+brand,de:Deutsche Telekom
+brand,Amazon Hub Locker
+brand,Q16974764
+brand,en:Amazon Locker
+brand,Netto
+brand,Q552652
+brand,en:Netto (store)
+brand,Netto Marken-Discount
+brand,Q879858
+brand,de:Netto Marken-Discount
+brand,CineStar
+brand,Q321889
+brand,de:Cinestar
+brand,EDEKA
+brand,Q701755
+brand,de:Edeka
+drink,retail
+drink,yes
+drink,served
+internet_access,wlan
+internet_access,no
+internet_access,yes
+shop,supermarket
+shop,second_hand
+shop,bakery
+shop,massage
+shop,hearing_aids
+shop,bicycle
+shop,chemist
+shop,convenience
+shop,clothes
+shop,florist
+shop,hairdresser
+shop,car_repair
+shop,butcher
+shop,flea_market
+shop,kiosk
+shop,beauty
+shop,toys
+shop,boutique
+shop,vacant
+shop,lottery
+shop,tattoo
+shop,greengrocer
+shop,copyshop
+shop,funeral_directors
+shop,travel_agency
+shop,fashion_accessories
+shop,shoes
+shop,music
+shop,musical_instrument
+shop,coffee
+shop,stationery
+shop,optician
+shop,variety_store
+shop,interior_decoration
+shop,coffee_roasting
+shop,alcohol
+shop,tobacco
+shop,car
+shop,tailor
+shop,books
+shop,sewing
+shop,ticket
+shop,furniture
+shop,tool_hire
+shop,fitness
+shop,garden_centre
+shop,mall
+cuisine,turkish
+cuisine,fish
+cuisine,pizza
+cuisine,pasta
+cuisine,indian
+cuisine,italian
+cuisine,mediterranean
+cuisine,asian
+cuisine,regional
+cuisine,kebab
+cuisine,vietnamese
+cuisine,coffee_shop
+cuisine,burger
+cuisine,bagel
+cuisine,sushi
+cuisine,sudanese
+cuisine,falafel
+cuisine,chinese
+cuisine,Sudanese
+cuisine,french
+cuisine,arab
+cuisine,german
+indoor_seating,no
+indoor_seating,yes
+outdoor_seating,yes
+outdoor_seating,no
+outdoor_seating,sidewalk
+bollard,removable
+bollard,foldable
+bollard,fixed
+sport,billiards
+sport,table_tennis
+sport,canoe
+sport,yoga
+sport,fitness
+sport,gymnastics
+sport,exercise
+sport,basketball
+sport,multi
+sport,soccer
+sport,swimming
+covered,no
+covered,yes
+atm,yes
+cash_in,yes
+cash_in,no
+self_service,only
+ft_link,www.freietonne.de?edit=12699
+waterway,no_entry
+waterway,weir
+waterway,1.6 m
+waterway,mindepth
+waterway,stream
+waterway,navigation
+last_checked,2022-04-27
+was,bank
+was,yes
+was,Postbank
+was,Mo-Fr 09:30-19:00
+was, Sa 10:00-14:00
+was,Deutsche Postbank AG
+was,good
+was,fine_gravel
+was,asphalt
+was,bad
+was,compacted
+maxheight,2.1
+maxheight,2.05
+maxheight,9
+maxheight,1.9
+maxheight,2
+maxheight,1.8
+maxheight,below_default
+maxheight,1.95
+maxheight,default
+maxheight,3.8|default|default|3.8
+maxheight,4
+maxheight,4.2
+maxheight,3.4
+maxheight,2.9
+maxheight,3.2
+parking,multi-storey
+parking,underground
+parking,surface
+parking,garages
+parking,no
+parking,lane
+parking,no_stopping
+parking,separate
+parking,parallel
+parking,yes
+parking,"no @ (Mo-Sa 00:00-09:00,22:00-24:00"
+parking, Su)
+parking,65
+parking,no_stopping @ (06:00-22:00)
+parking,designated
+parking,diagonal
+parking,narrow
+parking,perpendicular
+parking,street_side
+parking,on_kerb
+parking,paving_stones
+parking,junction
+parking,4
+parking,bus_stop
+parking,shoulder
+parking,no_stopping @ (Mo-Fr 07:00-17:00)
+parking,no_stopping @ (Mo-Fr 07:00-09:00)
+parking,no_parking
+parking,1 hour @ (Mo-Fr 06:00-18:00)
+parking,no_stopping @ (Mo-Fr 06:00-18:00)
+parking,no @ (22:00-06:00)
+parking,designated @ (22:00-06:00)
+capacity,50
+capacity,10
+capacity,8
+capacity,74
+capacity,2
+capacity,1
+capacity,6
+capacity,4
+capacity,16
+capacity,14
+capacity,36
+capacity,12
+capacity,24
+capacity,25
+capacity,5
+capacity,20
+capacity,30
+capacity,32
+capacity,31
+capacity,102
+capacity,7
+capacity,56
+capacity,55
+capacity,13
+capacity,125
+capacity,58
+capacity,72
+capacity,104
+capacity,182
+capacity,76
+capacity,65
+capacity,26
+capacity,3
+capacity,21
+capacity,22
+capacity,9
+capacity,48
+capacity,29
+capacity,11
+capacity,38
+sample_collection,covid19
+height,10
+height,2.5
+height,0.5
+height,15
+height,2
+height,5
+height,125
+height,3.60
+height,16.5
+height,4
+height,9
+height,14
+height,12
+height,20.8
+height,7.7
+height,0.6
+height,8
+height,3
+leaf_cycle,deciduous
+leaf_cycle,evergreen
+leaf_type,broadleaved
+leaf_type,needleleaved
+leaf_type,mixed
+smoking,outside
+smoking,yes
+smoking,no
+diet,yes
+diet,no
+diet,only
+board_type,notice
+board_type,history
+information,board
+information,map
+information,guidepost
+information,office
+tourism,information
+tourism,artwork
+tourism,gallery
+tourism,attraction
+tourism,museum
+crossing_ref,pelican
+crossing_ref,zebra
+crossing_ref,toucan
+takeaway,yes
+takeaway,only
+brothel,yes
+frequency,50
+frequency,0
+frequency,16.7
+man_made,street_cabinet
+man_made,water_well
+man_made,observatory
+man_made,chimney
+man_made,works
+man_made,surveillance
+man_made,manhole
+man_made,pier
+man_made,yes
+man_made,bridge
+power,substation
+power,catenary_mast
+power,cable
+power,transformer
+power,generator
+street_cabinet,power
+substation,minor_distribution
+substation,traction
+substation,distribution
+voltage,10000
+voltage,400
+voltage,750
+voltage,15000
+voltage,30000
+massage,sexual
+emergency,drinking_water
+emergency,fire_hydrant
+emergency,designated
+emergency,yes
+emergency,ladder_site
+image,File:Notbrunnen 1 Alt-Treptow Schmollerplatz.jpg
+image,File:Treptower_Brücke_1_Lohmühleninsel_Berlin.JPG
+image,http://storage6.openstreetcam.org/files/photo/2017/11/12/lth/967843_c6765_21.jpg
+image,http://storage6.openstreetcam.org/files/photo/2017/11/12/lth/967843_c6765_25.jpg
+image,File:Notbrunnen 5 Alt-Treptow Lohmühlen.jpg
+image,File:Notbrunnen 3 Alt-Treptow Kiefholz.jpg
+image,https://flotte-berlin.de/wp-content/uploads/2018/01/Walter.jpg
+image,File:Notbrunnen 4 Treptow Am Treptow Park.jpg
+image,File:Straßenbrunnen 6 Kiefholzstraße Alt-Treptow.jpg
+image,https://flotte-berlin.de/wp-content/uploads/2020/11/Gerard.jpg
+image,https://commons.wikimedia.org/wiki/File:AltTeptowPuschkinallee.jpg
+image,https://commons.wikimedia.org/wiki/File:Berlin_Insel_der_Jugend_-_Abteibr%C3%BCcke.jpg
+image,https://commons.wikimedia.org/wiki/File:Parkwegbrücke.jpg
+image,"https://commons.wikimedia.org/wiki/File:Karl-Kunger-Stra%C3%9Fe,_Berlin-Alt-Treptow,_442-547.jpg"
+image,File:Sowjetisches Ehrenmal Treptow - panoramio (1).jpg
+image,https://commons.wikimedia.org/wiki/File:Berlin_Alt-Treptow_Elsenstra%C3%9Fe.jpg
+image,File:Agfa-Fabrik1.jpg
+image,File:Berlin Treptow Ehrenmal 13.jpg
+image,https://www.qiez.de/app/uploads/2020/09/oberhafenkantine-huettenzauber-scaled.jpg
+image,https://portal1879.webcam-profi.de/cam1/image.jpg
+image,File:09020335 Kiefholzstrasse Firma Weber Berlin.jpg
+official_ref,TW001
+official_ref,TW005
+official_ref,TW003
+official_ref,TW004
+official_ref,TW006
+pump,manual
+pump,FSH-L
+pump,ok
+old_name,Saturn
+old_name,Kunstfabrik am Flutgraben
+old_name,Rohr-Insel
+old_name,Treptower Bruch
+old_name,Treppbruch
+old_name,Neu-Spreeland
+old_name,Abteiinsel
+old_name,Kastanienallee
+old_name,Treptower Chaussee
+old_name,Betriebspoliklinik der Elektro- und Apparate Werke (EAW)
+old_name,Köpenicker Vorstadt
+service,yes
+service,no
+service,driveway
+service,crossover
+service,parking_aisle
+service,alley
+service,emergency_access
+service,regional
+brewery,Pilsener Urquell
+construction,motorway_junction
+construction,crossing
+construction,primary_link
+construction,footway
+construction,motorway_link
+construction,motorway
+construction,residential
+construction,office
+construction,secondary
+construction,cycleway
+recycling,yes
+recycling_type,container
+leisure,pitch
+leisure,marina
+leisure,sports_centre
+leisure,playground
+leisure,hackerspace
+leisure,fitness_centre
+leisure,picnic_table
+leisure,park
+leisure,garden
+leisure,sports_hall
+leisure,event_location
+leisure,outdoor_seating
+leisure,fitness_station
+colour,yellow
+colour,orange
+colour,green
+colour,#35412E
+colour,gray
+colour,brown
+colour,silver
+colour,black
+colour,grey
+colour,#9F4C37
+colour,#C36939
+colour,#52B447
+colour,#9A3052
+colour,#7B6DAC
+colour,#da6ba2
+colour,white
+female,no
+female,yes
+male,no
+male,yes
+supervised,interval
+backrest,yes
+backrest,no
+seats,9
+seats,3
+seats,6
+seats,8
+seats,4
+artist_name,Achim Kühn
+artist_name,Jewgeni Wiktorowitsch Wutschetitsch
+artist_name,Sergej Alexander Dott
+artist_name,Björn Saul
+artist_name,Albert Manthe
+artist_name,Christian Uhlig
+artist_name,Werner Richter
+artist_name,Yoshimi Hashimoto
+artist_name,Mihai Buculei
+artist_name,Arminius Hasemann
+artist_name,Lutz Kommallein
+artist_name,Ulrike Truger
+artist_name,Antoni Wysocki-Jonczak
+artist_name,Pawel Weselow
+artist_name,Ferenc Kovacz
+artist_name,Stephan Horota
+artist_name,Otto Petri
+artist_name,Ingrid Puhlemann
+artist_name,Maria Cocoea
+artist_name,"Jewgeni Wiktorowitsch Wutschetitsch, Jakow Belopolski"
+artwork_type,sculpture
+artwork_type,statue
+artwork_type,bust
+artwork_type,installation
+material,steel
+material,granite
+material,"steel, glass fiber reinforced polyester resin"
+material,metal
+material,plastic
+material,wood
+material,concrete
+material,stone
+material,ceramics
+material,bronze
+material,sandstone
+material,clinker
+material,slate
+material,rock
+material,stainless_steel
+material,limestone
+material,"sandstone, concrete"
+start_date,1985
+start_date,1946
+start_date,2012
+start_date,1890
+start_date,1977
+start_date,1986
+start_date,1994
+start_date,1979
+start_date,1927
+start_date,1995
+start_date,1988
+start_date,1973
+start_date,1978
+start_date,1967
+start_date,1968
+start_date,1907
+start_date,1983
+start_date,2022-07-08
+start_date,2005
+start_date,1998
+start_date,1963
+start_date,1961-08-13
+start_date,1912
+start_date,~1890
+start_date,2015
+start_date,1852
+start_date,1894
+start_date,2017
+start_date,2021-06
+start_date,1993-04
+start_date,1999
+start_date,2010
+start_date,2019
+start_date,1940
+start_date,1961
+start_date,2021-12-12
+cycle_barrier,double
+cycle_barrier,fixed
+cycle_barrier,single
+cycle_barrier,openable
+bicycle_parking,stands
+bicycle_parking,sidewalk
+bicycle_parking,private_property
+bicycle_parking,wall_loops
+bicycle_parking,20
+bicycle_parking,4
+bicycle_parking,driveway
+bicycle_parking,14
+bicycle_parking,playground
+bicycle_parking,lane
+bicycle_parking,grass_verge
+bicycle_parking,street_side
+bicycle_parking,pedestrian_area
+bicycle_parking,parking_lot
+kerb,lowered
+kerb,flush
+alt_name,Code Berlin
+alt_name,Halle 19
+alt_name,CDV
+alt_name,Kita Am Treptower Park
+fire_hydrant,100
+fire_hydrant,underground
+fire_hydrant,150
+fire_hydrant,sidewalk
+fire_hydrant,wall
+advertising,column
+advertising,billboard
+advertising,totem
+animated,rotating
+waste,trash
+waste,cigarettes
+waste,dog_excrement
+waste,household
+is_in,Archenhold-Sternwarte
+observatory,astronomical
+telescope,0.68
+telescope,21
+telescope,optical
+telescope,0.25
+telescope,0.5
+telescope,0.15
+maxdraft,1.6
+maxheight_referencelevel,435
+obstacle,bridge
+obstacle,yes
+obstacle_name,Abteibrücke
+seamark,fixed
+seamark,9
+seamark,Abteibrücke
+seamark,bridge
+seamark,Klipper Restaurantschiff
+seamark,visitor_berth
+seamark,small_craft_facility
+seamark,Sportboot-Liegestelle 24h
+seamark,water
+seamark,electricity
+seamark,toilets
+seamark,1.5
+seamark,Treptower Brücke
+seamark,marina_no_facilities
+seamark,Liegestelle Sport 24h
+seamark,harbour
+seamark,"Segelschiffrestaurant ""Klipper"""
+seamark,yellow
+seamark,can
+seamark,buoy_special_purpose
+seamark,floating_restaurant
+seamark,hulk
+seamark,5.75
+seamark,37.49
+seamark,not_installed
+seamark,22.1
+seamark,kilometres
+hiking,yes
+map_size,site
+indoor,no
+indoor,yes
+draft,1.3
+draft,2.3
+organic,only
+craft,shoemaker
+craft,photographer
+craft,painter
+craft,plumber
+craft,pottery
+currency,yes
+ticket_validator,yes
+ticket_validator,07
+ticket_validator,08
+ticket_validator,03
+ticket_validator,04
+ticket_validator,05
+ticket_validator,06
+ticket_validator,01
+ticket_validator,02
+vending,public_transport_tickets
+vending,parcel_mail_in
+vending,drinks
+vending,food
+social_facility,outreach
+social_facility,disabled
+social_facility,food_bank
+social_facility,nursing_home
+social_facility,senior
+motorcar,yes
+playground,swing
+playground,structure
+playground,climbingframe
+playground,Cheese
+playground,horizontal_bar
+playground,hill
+playground,springy
+playground,sand_table
+playground,Lorry
+playground,rotator
+playground,slide
+playground,tube
+playground,ship
+amperage,32
+authentication,yes
+socket,2
+socket,11 kW
+office,physician
+office,consulting
+office,estate_agent
+office,political_party
+office,educational_institution
+office,company
+office,ngo
+office,lawyer
+office,it
+office,research
+office,coworking
+office,government
+office,diplomatic
+preschool,yes
+name_1,Lego Meine Spielwelt
+name_1,Sussane Usia
+post_office,post_partner
+post_office,DHL-Paketshop
+post_office,Deutsche Post
+post_office,DHL
+post_office,yes
+maxspeed,10
+maxspeed,50
+maxspeed,30
+maxspeed,80
+maxspeed,30 @ (Mo-Fr 07:00-17:00)
+maxspeed,60
+maxspeed,30 @ (22:00-06:00)
+maxspeed,30 @ (Mo-Fr 07:00-19:00)
+maxweight,2.5
+maxweight,no
+maxweight,7.5
+trailer,no
+canoe_rental,yes
+historic,station
+historic,memorial
+historic,railway
+historic,yes
+historic,wall
+historic,tomb
+historic,3.6
+historic,suburb
+location,overground
+location,underground
+location,indoor
+health_facility,office
+health_specialty,main
+health_specialty,yes
+health_specialty,partial
+medical_system,yes
+goods,designated
+bus_bay,right
+route_ref,166
+route_ref,167
+route_ref,365
+route_ref,N60
+direction,forward
+direction,247
+direction,263
+direction,274
+direction,42
+direction,135
+direction,backward
+direction,220
+direction,133
+direction,191
+direction,230
+direction,224
+direction,132
+direction,125
+origin,asian
+denotation,park
+denotation,street
+denotation,urban
+diameter_crown,2
+diameter_crown,16
+diameter_crown,9
+diameter_crown,11
+diameter_crown,5
+diameter_crown,4
+diameter_crown,7
+diameter_crown,3
+diameter_crown,12
+diameter_crown,8
+diameter_crown,10
+diameter_crown,14
+diameter_crown,13
+diameter_crown,6
+diameter_crown,17
+species,Betula pendula
+species,Hänge-Birke
+species,Prunus serrulata
+species,Japanische Blütenkirsche
+species,Kroneneiche
+species,Elefantenbuche
+layer,1
+layer,-1
+layer,2
+layer,-5
+layer,-2
+community_centre,meeting_room
+community_centre,youth_centre
+community_centre,juvenile
+club,yes
+club,board_games
+identity,commons
+topic,food+drink
+date,no
+display,analog
+faces,1
+visibility,street
+visibility,house
+consulting,coaching
+abandoned,bakery
+abandoned,wall
+abandoned,tram
+inscription,"Zum Gedenken an das Schiffsunglück auf dem Ausflugsdampfer ""Heimatland"", bei dem am 5. Juli 1951 30 Personen, darunter 28 Kinder, ihr Leben verloren. - Schiffsführer Bernhard Langwaldt 1919 - 2005 rettete zahlreiche Kinder."
+inscription,"GUSTAV MEYER, geboren den 14. Januar 1816 gestorben den 27. Mai 1877, Städtischer Gartendirector zu Berlin. Gewidmet von Freunden u. Verehrern."
+inscription,Die Heimat wird Ihre Helden nicht vergessen
+inscription,Hier lebte Fritz Storch Prokurist geboren 1899 verhaftet 27.01.1951 zum Tode verurteilt 25.04.1951 in Moskau erschossen 04.07.1951 rehabilitiert 1999
+inscription,https://www.morgenpost.de/berlin/article235850853/Gedenktafel-fuer-Opfer-des-stalinistischen-Terrors.html
+memorial,stone
+memorial,bust
+memorial,plaque
+memorial,Stalinism
+memorial,war_memorial
+traffic_calming,bump
+traffic_calming,island
+surface,grass
+surface,paving_stones
+surface,sett
+surface,asphalt
+surface,concrete:plates
+surface,unhewn_cobblestone
+surface,compacted
+surface,gravel
+surface,dirt
+surface,wood
+surface,fine_gravel
+surface,concrete
+surface,metal
+surface,sand
+surface,grass_paver
+surface,tartan
+surface,ground
+surface,pebblestone
+surface,paved
+surface,red
+end_date,2018-09-17
+end_date,1989-11-09
+genus,Prunus
+genus,Birch
+genus,Betula
+genus,Aesculus
+taxon,Prunus serrulata Kanzan
+bicycle_rental,institutional
+bicycle_rental,docking_station
+rental,cargo_bike
+lift_gate,single
+vehicle,delivery
+bus_routes,"Flixbus 002, N70, N232"
+artist,Q688578
+drive_through,no
+motor_vehicle,no
+motor_vehicle,private
+motor_vehicle,destination
+camera,210
+camera,wall
+camera,fixed
+camera,300
+blind,limited
+bike_ride,bus
+bike_ride,light_rail
+ref_name,S Treptower Park
+ref_name,Schmollerplatz
+studio,audio
+ownership,private
+message,commercial
+vaccination,covid19
+traffic_sign,DE:315-66
+traffic_sign,DE:315-67
+traffic_sign,DE:270.3
+traffic_sign,maxspeed
+traffic_sign,DE:1042-33[Mo-Fr 07:00-17:00]
+traffic_sign,274[30]
+traffic_sign,"DE:239,1022-10"
+traffic_sign,DE:240
+traffic_sign,"DE:260,1020-30"
+traffic_sign,DE:237
+traffic_sign,DE:298
+traffic_sign,DE:600
+traffic_sign,none
+traffic_sign,"DE:314,1044-11"
+locked,yes
+diameter,0.5
+display_operated,yes
+parcel_locker,cabinet
+parcel_mail_in,returns_only
+parcel_pickup,yes
+door,hinged
+government,it
+baby,no
+baby,yes
+canoe,put_in
+canoe,yes
+maxstay,4 hours
+maxstay,4 hours @ (08:00-18:00)
+maxstay,1 hour
+maxstay,3 hours
+maxstay,1 hour @ (Mo-Fr 08:00-20:00
+maxstay, Sa 08:00-16:00)
+maxstay,1 hour @ (Mo-Fr 08:00-18:00)
+lamp_type,high_pressure_sodium
+stroller,yes
+air_conditioning,no
+delivery,no
+waste_basket,bubble
+razed,tree
+markings,yes
+markings,lane
+markings,lines:hooked
+markings,no
+markings,surface:lines
+orientation,parallel
+orientation,perpendicular
+orientation,diagonal
+restriction,charging_only
+restriction,no_parking @ (Mo-Fr 06:00-18:00)
+restriction,"no_parking @ (Mo-Fr 07:00-09:00,15:00-17:00)"
+restriction,no_left_turn
+restriction,no_right_turn
+restriction,only_right_turn
+second_hand,yes
+public_bookcase,wooden_cabinet
+mobile,yes
+bridge,yes
+bridge,Elsenbrücke
+bridge,beam
+bridge,truss
+bridge,arch
+bridge,Treptower Brücke
+bridge,humpback
+cycleway,no
+cycleway,lane
+cycleway,exclusive
+cycleway,jersey_barrier
+cycleway,advisory
+cycleway,separate
+cycleway,track
+cycleway,paving_stones
+cycleway,double_solid_line
+cycleway,kerb
+cycleway,DE:237
+cycleway,1.4
+cycleway,0.5
+cycleway,solid_line
+cycleway,1
+cycleway,share_busway
+cycleway,1.9
+cycleway,asphalt
+cycleway,link
+cycleway,crossing
+cycleway,1.8
+cycleway,1.5
+lanes,1
+lanes,4
+lanes,2
+lanes,3
+lanes,5
+lanes,6
+oneway,yes
+oneway,no
+shoulder,no
+sidewalk,no
+sidewalk,separate
+sidewalk,both
+sidewalk,paving_stones
+sidewalk,right
+sidewalk,left
+sidewalk,yes
+sidewalk,none
+electrified,rail
+electrified,contact_line
+electrified,no
+gauge,1435
+workrules,DE:EBO
+placement,middle_of:3
+placement,right_of:2
+placement,left_of:1
+placement,right_of:3
+placement,middle_of:2
+smoothness,excellent
+smoothness,good
+smoothness,bad
+smoothness,intermediate
+turn,left|||
+turn,slight_right|slight_right
+turn,left|through|through
+turn,right|right
+turn,through|through|through|through
+turn,right
+turn,left|none
+turn,through|through|right
+turn,through|through
+turn,merge_to_right||
+turn,left|through
+turn,left|through|through|
+turn,left|left|merge_to_right|through|through
+turn,reverse|left|left|left|through|
+turn,none|right
+turn,|right
+turn,left|right
+turn,through
+turn,left|through|through|merge_to_left
+lane_markings,yes
+lane_markings,no
+width,6.5
+width,5.5
+width,11.5
+width,6
+width,10
+width,4.8
+width,4.4
+width,3.4
+width,2
+width,3
+width,7
+width,0.5
+width,9.5
+width,0.7
+width,1
+width,5
+width,4.3
+width,2.8
+width,5.8
+width,4
+width,2.5
+width,1.5
+width,11
+width,15
+width,10.5
+width,8.5
+width,6.0
+width,12
+width,1.4
+width,9
+width,1.7
+width,5.0
+zone,DE:30
+destination,Kreuzberg
+destination,Zentrum
+destination,Friedrichshain
+destination,white
+destination,
+destination,Schönefeld
+destination,Spreepark
+destination,Treptower Hafen
+destination,Park Center
+destination,B 96a
+destination,A 117
+destination,airport
+destination,ferry
+destination,parking
+destination,motorway
+destination,Dresden
+destination,||white
+destination,|white
+destination,Neukölln|Kreuzberg|Kreuzberg
+destination,Friedrichshain|Zentrum
+destination,B 96a||
+destination,B 96a|B 96a
+destination,Neukölln
+destination,white|white
+destination,white||
+destination,Park Center|Schönefeld
+destination,Park Center|Neukölln|Neukölln|
+destination,B 96a|B 96a|||
+destination,A 117|A 117|||
+destination,parking|airport
+destination,parking|||
+destination,motorway|motorway|||
+destination,Dresden|Dresden|||
+destination,Park Center|Treptower Hafen
+destination,Rummelsburg
+destination,Treptower Park
+destination,S-Bahn
+destination,Schöneberg
+destination,Südstern
+destination,Friedrichsfelde
+destination,scenic_route
+destination,Köpenick
+destination,Mitte
+destination,"scenic_route,ferry"
+destination,Oberschöneweide
+destination,Ostbahnhof
+destination,train_station
+destination,Bhf. Ostkreuz
+destination,Bhf. Treptower Park
+wikimedia_commons,Category:Puschkinallee (Berlin-Alt-Treptow)
+wikimedia_commons,Category:Abteibrücke (Berlin)
+wikimedia_commons,Category:Parkwegbrücke (Berlin-Friedrichshain)
+wikimedia_commons,File:09040272 Wachturm SchlesischerBusch Berlin.jpg
+wikimedia_commons,Category:Karl-Kunger-Straße (Berlin-Alt-Treptow)
+wikimedia_commons,Category:Elsenstraße (Berlin-Alt-Treptow)
+wikimedia_commons,"File:Villa, Eichenstraße 1.jpg"
+wikimedia_commons,Category:Ringbahnbrücke Oberspree
+wikimedia_commons,File:Lohmühleninsel Berlin Treptowerbrücke.JPG
+wikimedia_commons,"File:Berlin, Kreuzberg, Vor dem Schlesischen Tor, Obere Freiarchenbruecke.jpg"
+wikimedia_commons,Category:Elsenbrücke
+detail,track
+embankment,yes
+segregated,no
+segregated,yes
+architect,Gerhard Spangenberg
+architect,Paul Karchow
+architect,Johann Jakob Helfft
+architect,Otto Stahn
+architect,Friedrich Wermke
+roof,flat
+roof,grey
+roof,0
+roof,1
+roof,gabled
+roof,onion
+roof,hipped
+roof,skillion
+roof,saltbox
+roof,tar_paper
+roof,copper
+roof,quadruple_saltbox
+roof,roof_tiles
+roof,red
+roof,brown
+roof,many
+roof,along
+roof,double_saltbox
+roof,pyramidal
+roof,2
+roof,gambrel
+roof,round
+roof,mansard
+roof,half-hipped
+roof,dome
+roof,glass
+heritage,4
+heritage,lda
+heritage,https://denkmaldatenbank.berlin.de/daobj.php?obj_dok_nr=09040272
+heritage,https://denkmaldatenbank.berlin.de/daobj.php?obj_dok_nr=09020289
+heritage,https://denkmaldatenbank.berlin.de/daobj.php?obj_dok_nr=09031192
+heritage,https://denkmaldatenbank.berlin.de/daobj.php?obj_dok_nr=09031008
+lda,Teilobjekt
+lda,Baudenkmal
+lda,Ensembleteil
+tower,watchtower
+denomination,new_apostolic
+denomination,protestant
+religion,christian
+tracks,1
+area,yes
+area,prohibited
+area,tertiary
+area,primary
+area,footway
+area,cycleway
+area,traffic_island
+area,residential
+tunnel,yes
+tunnel,culvert
+tunnel,building_passage
+priority_road,designated
+landuse,construction
+landuse,grass
+landuse,greenfield
+landuse,residential
+landuse,commercial
+landuse,basin
+landuse,village_green
+landuse,meadow
+landuse,retail
+landuse,railway
+landuse,forest
+landuse,tree_pit
+landuse,emergency
+landuse,civic_admin
+intermittent,no
+tidal,no
+water,river
+water,pond
+water,basin
+max_age,21
+max_age,6
+max_age,14
+min_age,9
+min_age,1
+min_age,0
+min_age,7
+nohousenumber,yes
+ruined,kiosk
+handrail,no
+handrail,yes
+incline,up
+incline,down
+incline,6%
+ramp,no
+ramp,yes
+ramp,separate
+step_count,8
+step_count,15
+step_count,27
+step_count,23
+step_count,12
+step_count,4
+step_count,3
+step_count,11
+step_count,6
+step_count,55
+step_count,30
+step_count,20
+step_count,2
+step_count,24
+step_count,29
+step_count,33
+step_count,7
+step_count,5
+step_count,18
+step_count,9
+step_count,10
+park_ride,no
+proposed,motorway_link
+proposed,motorway
+proposed,A 100
+protection_title,Geschützte Grünanlage
+protection_title,Landschaftsschutzgebiet
+footway,paving_stones
+footway,crossing
+footway,sidewalk
+footway,asphalt
+footway,link
+footway,traffic_island
+is_sidepath,yes
+is_sidepath,primary
+is_sidepath,Puschkinallee
+is_sidepath,tertiary
+is_sidepath,An den Treptowers
+is_sidepath,Wildenbruchstraße
+is_sidepath,Karl-Kunger-Straße
+is_sidepath,residential
+is_sidepath,Elsenstraße
+is_sidepath,secondary
+is_sidepath,Am Treptower Park
+is_sidepath,Lohmühlenplatz
+is_sidepath,Lohmühlenstraße
+is_sidepath,Harzer Straße
+is_sidepath,Bouchéstraße
+is_sidepath,Heidelberger Straße
+is_sidepath,Sinsheimer Weg
+is_sidepath,Kiefholzstraße
+is_sidepath,Beermannstraße
+is_sidepath,Elsenbrücke
+note_2,Baustellenbedingte Reduzierung der Fahrspuren (Stand 01/2022)
+taxi,yes
+tactile_writing,yes
+conveying,backward
+conveying,forward
+opening_date,2024
+opening_date,2023-05
+opening_date,2022-01
+step,high
+length,10
+length,2070
+landcover,grass
+landcover,ground
+tomb,war_grave
+tomb,mausoleum
+psv,designated
+surface_material,stone
+isced,1
+country,VN
+diplomatic,embassy
+embassy,yes
+target,DE
+dog,no
+boat,yes
+motorboat,yes
+informal,yes
+year_of_construction,2013
+year_of_construction,2012
+passenger_information_display,yes
+passenger_information_display,no
+cutting,yes
+elevator,yes
+levelpart,elevator_platform
+shelter_type,public_transport
+path,traffic_island
+path,crossing
+fence_type,metal
+fence_type,railing
+fence_type,chain_link
+fence_type,wood
+fence_type,wire
+pipeline,substation
+substance,gas
+horse,no
+winter_service,no
+theatre,circus
+noname,yes
+garden,raised_bed
+garden,community
+garden,educational
+separation,guard_rail
+separation,hedge
+separation,surface
+separation,kerb
+separation,dashed_line
+disabled,private
+disabled,designated
+disabled,designated @ (Mo-Fr 09:00-18:00)
+disabled,designated @ (Mo-Fr 07:00-19:00)
+street,Bouchéstraße
+junction,yes
+departures_board,timetable
+departures_board,realtime
+buffer,no
+buffer,0.8
+hazard,pedestrians_crossing
+parking_space,charging
+generator,photovoltaic
+generator,yes
+generator,20
+generator,solar
+generator,solar_photovoltaic_panel
+generator,thermal
+generator,solar_thermal_collector
+generator,30.31 kW
+generator,132
+generator,18 kW
+generator,72
+trail_visibility,excellent
+private,residents
+type,multipolygon
+type,route
+type,boundary
+type,tmc
+type,public_transport
+type,restriction
+type,building
+type,site
+type,enforcement
+type,destination_sign
+distance,160
+distance,52
+distance,17
+distance,63
+distance,250
+distance,15
+distance,3.2
+distance,2.2
+distance,5.2
+distance,2.8
+distance,2.9
+distance,1.9
+distance,5.4
+distance,3.0
+distance,6.0
+distance,3.6
+distance,2.3
+distance,1.3
+distance,5.8
+distance,3.4
+distance,2.5
+distance,1.5
+distance,2.1
+distance,1.2
+distance,6.2
+distance,3.8
+distance,3.5
+distance,1.1
+distance,10
+distance,4.3
+distance,4.1
+distance,0.9
+distance,4.4
+distance,1.4
+distance,4.0
+distance,0.7
+distance,0.4
+distance,6.6
+distance,4.2
+distance,11
+distance,1.7
+distance,0.8
+distance,0.2
+distance,4.8
+roundtrip,yes
+roundtrip,no
+route,bicycle
+route,light_rail
+route,bus
+route,road
+route,hiking
+route,railway
+route,suspended:train
+route,tracks
+route,train
+boundary,low_emission_zone
+boundary,administrative
+boundary,historic
+boundary,protected_area
+boundary,traditional
+osmwiki,http://wiki.openstreetmap.org/wiki/LEZ#Germany
+interval,5
+interval,10
+interval,20
+interval,60
+alternate,no
+alternate,yes
+by_night,only
+from,Flughafen BER - Terminal 1-2
+from,Dahlem
+from,U Boddinstraße
+from,Beeskow
+from,S+U Alexanderplatz
+from,"Berlin Tempelhofer Feld Eingang Tempelhofer Damm, S- und U-Bahnhof Tempelhof"
+from,S Schöneweide
+from,U Märkisches Museum
+from,"Köpenick, Müggelschlößchenweg"
+from,"Marzahn, Helene-Weigel-Platz"
+from,U Hermannplatz
+from,Rahnsdorf/Waldschänke
+from,"Berlin Treptower Park, S-Bahnhof Treptower Park"
+from,U Magdalenenstraße
+from,S Birkenwerder
+from,S Zeuthen
+from,"Berlin Staaken, Bahnhof Albrechtshof"
+from,S Flughafen BER - Terminal 1-2
+from,S Spandau
+from,S Grünau
+from,S Pankow
+from,Berlin-Moabit
+from,Senftenberg
+from,Eberswalde Hauptbahnhof
+from,Berlin Warschauer Straße
+from,Hamburg ZOB
+from,"Prag, ÚAN Florenc"
+from,"Dresden, Hbf. Bayrische Straße"
+from,"Warnemünde, Strand"
+from,S-Bahnhof Berlin Alexanderplatz
+from,"Praha, ÚAN Florenc"
+from,"Rostock, Fährhafen"
+from,"Berlin, Alexanderplatz"
+from,"Chemnitz, Busbahnhof"
+from,"Göhren, Rügen"
+from,"Leipzig, Hbf."
+from,Berlin Hauptbahnhof (Tief)
+from,Berlin
+from,Tunnelstraße
+from,U Berliner Straße
+from,Wünsdorf-Waldstadt
+from,Berlin Hbf
+to,S+U Alexanderplatz
+to,Biesdorf
+to,S Schöneweide
+to,Berlin
+to,Flughafen BER - Terminal 1-2
+to,"Berlin Tempelhofer Feld Eingang Tempelhofer Damm, S- und U-Bahnhof Tempelhof"
+to,U Märkisches Museum
+to,"Köpenick, Müggelschlößchenweg"
+to,U Hermannplatz
+to,"Marzahn, Helene-Weigel-Platz"
+to,Rahnsdorf/Waldschänke
+to,"Berlin Mahlsdorf, Hönower Straße, S-Bahnhof Mahlsdorf"
+to,U Magdalenenstraße
+to,S Zeuthen
+to,S Birkenwerder
+to,"Berlin Rahnsdorf Hessenwinkler Straße, Bahnhof Erkner"
+to,S Spandau
+to,S Flughafen BER - Terminal 1-2
+to,S Pankow
+to,S Grünau
+to,U Boddinstraße
+to,Berlin-Moabit
+to,Eberswalde Hauptbahnhof
+to,Senftenberg
+to,Königs Wusterhausen
+to,"Prag, ÚAN Florenc"
+to,Hamburg ZOB
+to,"Dresden, Hbf. Bayrische Straße"
+to,"Warnemünde, Strand"
+to,Tramhaltestelle Berlin Rummelsburger Straße/Edisonstraße
+to,"Rostock, Fährhafen"
+to,"Praha, ÚAN Florenc"
+to,"Chemnitz, Busbahnhof"
+to,"Berlin, Alexanderplatz"
+to,"Göhren, Rügen"
+to,"Leipzig, Hbf."
+to,Berlin Hauptbahnhof (Tief)
+to,Rehfelde
+to,U Berliner Straße
+to,Tunnelstraße
+to,Berlin Hbf
+to,Wünsdorf-Waldstadt
+admin_level,10
+geographical_region,Berliner Urstromtal
+osmc,yellow:white:yellow_bar
+osmc,approved by BER319
+osmc,blue:white:blue_bar:18:black
+osmc,blue:white:blue_bar:8:black
+osmc,blue:white:blue_bar:1:black
+osmc,blue:white:blue_bar:E11:black
+osmc,yellow:white:yellow_backslash
+symbol,yellow bar on white ground
+symbol,Gelber Querbalken auf weißem Grund
+symbol,blue bar on white rectangle with 18
+symbol,Blauer Balken auf weißem Rechteck mit 18
+symbol,blue bar on white rectangle with 8
+symbol,Blauer Balken auf weißem Rechteck mit 8
+symbol,blue bar on white rectangle with 1
+symbol,Blauer Balken auf weißem Rechteck mit 1
+symbol,blue bar on white ground
+symbol,Blauer Querbalken auf weißem Grund
+symbol,"Weg in Linkskurve, golden, stilisiert"
+uic_name,Berlin Treptower Park
+photography,handheld
+section,middle
+wiki,Symbol_E3.png
+state,proposed
+state,connection
+loc_name,Hundekopf
+long_name,"Berlin-Moabit - Berlin-Moabit, Ring S-Bahn"
+long_name,"Berlin-Moabit - Berlin-Moabit, Ring"
+via,Berlin Gesundbrunnen
+via, Berlin Ostkreuz
+via, Berlin Südkreuz
+via, Berlin Westkreuz
+via,"Nikolaikirche, Märkisches Museum, Engelbecken, St. Thomas Kirche, Görlitzer Park, Treptower Park, Plänterwald"
+via,Berlin
+demolished,citywalls
+enforcement,traffic_signals
+enforcement,maxspeed
+protect_class,5
+short_protection_title,LSG

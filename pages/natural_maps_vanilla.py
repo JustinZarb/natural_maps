@@ -27,7 +27,7 @@ from config import OPENAI_API_KEY
 
 # api_key = os.getenv("OPENAI_KEY")
 
-prompts = pd.read_csv("./dev//prompts/prompts.csv")
+prompts = pd.read_csv("./src/prompts/prompts.csv")
 prompt_type = prompts.promptType.unique()
 basic_queries = prompts.loc[prompts["promptType"] == "Basic Query", "prompt"]
 
