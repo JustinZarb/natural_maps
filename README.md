@@ -16,3 +16,5 @@ The agent is aware of certain functions it is able to call. Using system prompts
 
 ### Langchain
 Currently implemented in the langchain branch, this is the more promising architecture moving forward. Also includes an implementation of a plan-and-execute agent (inspiration for the above)
+![Simple Chain Flowchart](simple_chain_flowchart.png)
+![Simple Chain](simple_chain.png)
