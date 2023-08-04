@@ -7,7 +7,7 @@ NaturalMaps is an attempt to explore maps with natural language, such as “Find
 - Use natural language processing to make map queries more accessible to non-specialists.
 - Overlay other datasets such as air pollution, noise, shade, etc. to benefit individuals as well as planners.
 
-## Aproaches
+## Approaches
 Both of the approaches discussed below use GPT-3.5-turbo.
 
 ### Function Calls using a plan-and-execute style agent
@@ -16,5 +16,6 @@ The agent is aware of certain functions it is able to call. Using system prompts
 
 ### Langchain
 Currently implemented in the langchain branch, this is the more promising architecture moving forward. Also includes an implementation of a plan-and-execute agent (inspiration for the above)
-![Simple Chain Flowchart](simple_chain_flowchart.png)
-![Simple Chain](simple_chain.png)
+
+<img src="simple_chain_flowchart.png" alt="drawing" width="200"/>
+<img src="simple_chain.png" alt="drawing" width="200"/>
