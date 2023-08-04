@@ -4,8 +4,6 @@ import pandas as pd
 
 
 def generate_wordcloud():
-    st.subheader("Tags in this area")
-
     tag_keys = list(st.session_state.tags_in_bbox.keys())
     default_key_index = tag_keys.index("amenity") if "amenity" in tag_keys else 0
 
@@ -80,52 +78,21 @@ def explore_data(st_data):
                 key="multiselected_options",
             )
 
-            if "add_selection" not in st.session_state:
-                st.session_state.add_selection = None
-
-            def add_selection_button():
-                if st.session_state["add_selection"]:
-                    st.session_state["add_selection"] = False
-                else:
-                    st.session_state["add_selection"] = True
-
-            st.button(
-                "Add items to map",
-                on_click=add_selection_button,
+            # Dictionary of key:value pairs where the keys are a tag key and the value are different tag values
+            st.session_state.mask = {
+                st.session_state.selected_key: st.session_state.multiselected_options
+            }
+            # filter the nodes in the bounding box which match the mask
+            st.session_state.selected_nodes = st_functions.filter_nodes_with_tags(
+                st.session_state.nodes, st.session_state.mask
             )
-
-            if st.session_state.add_selection:
-                # Dictionary of key:value pairs where the keys are a tag key and the value are different tag values
-                st.session_state.mask = {
-                    st.session_state.selected_key: st.session_state.multiselected_options
-                }
-                # filter the nodes in the bounding box which match the mask
-                st.session_state.selected_nodes = st_functions.filter_nodes_with_tags(
-                    st.session_state.nodes, st.session_state.mask
-                )
-                ## Create colored circles for each of the above nodes
-                st.session_state.circles = st_functions.create_circles_from_node_dict(
-                    st.session_state.selected_nodes
-                )
-                # Reset the checkbox
-                st.session_state.add_selection = False
-                st_functions.update_map()
-
-            def clear_selection():
-                # delete selection and geometry
-                temporary_variables = [
-                    "mask",
-                    "selection",
-                    "circles",
-                    "multiselected_options",
-                    "add_selection",
-                    "selected_nodes",
-                ]
-                for var in temporary_variables:
-                    if var in st.session_state:
-                        del st.session_state[var]
-
-            st.button("Reset selection", on_click=clear_selection)
+            ## Create colored circles for each of the above nodes
+            st.session_state.circles = st_functions.create_circles_from_node_dict(
+                st.session_state.selected_nodes
+            )
+            # Reset the checkbox
+            st.session_state.add_selection = False
+            st_functions.update_map()
 
             if "selected_nodes" in st.session_state:
                 st.subheader("Currently shown on map:")
